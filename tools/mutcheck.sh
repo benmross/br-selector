@@ -2,6 +2,7 @@
 # Pull labeled mutants from Legion, run the selector on them, report misses.
 cd "$(dirname "$0")/.."
 rsync -az legion:br/work/mut/ work/mut/ 2>/dev/null
+cp work/mutB/commits/*.patch work/mut/commits/ 2>/dev/null; cp work/mutB/answers.0.json work/mut/answers.B.json 2>/dev/null
 python3 - <<'PY'
 import glob, json, os, shutil
 ans = {}
