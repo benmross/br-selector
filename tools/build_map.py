@@ -43,6 +43,8 @@ def main(cov_dir, tests_json, out):
     import_lines = {}
     for path in data.measured_files():
         rel = path.split("/src/", 1)[-1]
+        if not rel.endswith(".py"):
+            continue
         by_line = data.contexts_by_lineno(path)
         lines, imp = {}, []
         for line, ctxs in by_line.items():

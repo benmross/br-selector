@@ -341,12 +341,15 @@ class Selector:
                 users |= self.class_users(module, ".".join(parts[:i]))
             names = self._assigned_names(stmt) if stmt is not None else None
             if names:
-                readers = self.readers(names)
-                if readers is not None:
-                    got = users & readers
+                # tests whose own code reads the attribute (for example by
+                # looping over every class) need not instantiate the class
+                code_readers, test_readers = self.readers(names)
+                if code_readers is not None:
+                    got = (users & code_readers) | test_readers
                     why.append(f"{path}:{line} class {cls} attr {','.join(sorted(names))}: "
                                f"{len(users)} users, {len(got)} read it")
                     return got
+                users = users | test_readers
             why.append(f"{path}:{line} class {cls} users {len(users)}")
             return users
         got = self.file_users(path) | self.module_classes_users(module)
@@ -394,7 +397,7 @@ class Selector:
         when a read happens where coverage cannot attribute it (import time,
         metaclasses, string lookups)."""
         pat = re.compile(r"\b(" + "|".join(map(re.escape, names)) + r")\b")
-        out = set()
+        out, in_tests, safe = set(), set(), True
         for rel, text in self._all_sources().items():
             if not pat.search(text):
                 continue
@@ -402,11 +405,21 @@ class Selector:
             try:
                 scopes = self._scopes(rel, text)
             except SyntaxError:
-                return None
+                safe = False
+                continue
+            if rel.startswith("tests/"):
+                for ln in lines:
+                    st = scopes.at(ln)
+                    if st is not None:
+                        in_tests |= self.cov(rel, range(st[0], min(st[2], st[1]) + 1))
+                in_tests |= self.by_file.get(rel, set()) if any(
+                    (scopes.at(ln) is None or not scopes.at(ln)[4]) for ln in lines) else set()
+                continue
             for ln in lines:
                 st = scopes.at(ln)
                 if st is None:
-                    return None
+                    safe = False
+                    continue
                 start, end, header_end, node, runtime, _ = st
                 if not runtime:
                     # another class-level definition of the same name is fine;
@@ -416,13 +429,16 @@ class Selector:
                         continue
                     if isinstance(node, ast.AnnAssign) and node.value is None:
                         continue
-                    return None
+                    safe = False
+                    continue
                 if scopes.in_func(ln, self.UNSAFE_FUNCS):
-                    return None
+                    safe = False
+                    continue
                 if re.search(r"getattr\(|__dict__|vars\(", text.split("\n")[ln - 1]):
-                    return None
+                    safe = False
+                    continue
                 out |= self.cov(rel, range(start, min(header_end, end) + 1))
-        return out
+        return (out if safe else None), in_tests
 
     _scope_cache = {}
 
