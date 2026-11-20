@@ -96,17 +96,22 @@ def apply(old_text, fp):
         start_idx = max(start - 1, 0) if lines and any(l[:1] in " -" for l in lines) else start
         out.extend(old[pos:start_idx])
         pos = start_idx
+        removed_run = False
         for l in lines:
             tag, body = l[:1], l[1:]
             if tag == " ":
                 out.append(old[pos] if pos < len(old) else body)
                 pos += 1
+                removed_run = False
             elif tag == "-":
                 changed.add(pos + 1)
                 pos += 1
+                removed_run = True
             elif tag == "+":
                 out.append(body)
-                inserts.add(pos)  # between old line pos and pos + 1
+                if not removed_run:
+                    inserts.add(pos)  # between old line pos and pos + 1
+            # "\\ No newline at end of file" leaves the run as it was
     out.extend(old[pos:])
     return "\n".join(out), changed, inserts
 
@@ -139,12 +144,32 @@ class Scopes:
                 else:
                     self._walk(child, runtime, cls)
 
+    def in_func(self, line, names):
+        for s in self.stmts:
+            if s[0] <= line <= s[1] and isinstance(s[3], (ast.FunctionDef, ast.AsyncFunctionDef)) \
+                    and s[3].name in names:
+                return True
+        return False
+
     def at(self, line):
-        """Innermost statement containing line, or None."""
+        """Innermost statement containing line, or None. A blank or comment
+        line inside a block resolves to the nearest statement of that block,
+        which runs exactly when the block does."""
         best = None
         for s in self.stmts:
             if s[0] <= line <= s[1] and (best is None or (s[1] - s[0]) <= (best[1] - best[0])):
                 best = s
+        if best is not None and line > best[2] and isinstance(best[3], (ast.stmt,)):
+            node = best[3]
+            kids = [c for f in ("body", "orelse", "finalbody", "handlers") for c in (getattr(node, f, None) or [])
+                    if isinstance(c, ast.AST) and hasattr(c, "lineno")]
+            if kids:
+                k = min(kids, key=lambda c: min(abs(c.lineno - line), abs(c.end_lineno - line)))
+                for s in self.stmts:
+                    if s[3] is k:
+                        return s
+                # handlers are not statements; fall back to their first body line
+                return self.at(k.body[0].lineno) if getattr(k, "body", None) else best
         return best
 
 
@@ -265,9 +290,19 @@ class Selector:
         out = set()
         points = set(changed)
         for ins in inserts:
-            # an inserted line sits between old lines ins and ins + 1
-            points.add(ins if ins >= 1 else 1)
-            points.add(ins + 1)
+            # An inserted line sits between old lines ins and ins + 1. If either
+            # neighbour runs inside a function, the new line runs when that
+            # block does; otherwise it runs at import.
+            before, after = scopes.at(ins) if ins >= 1 else None, scopes.at(ins + 1)
+            rt = [s for s in (before, after) if s is not None and s[4]]
+            if rt:
+                for s in rt:
+                    got = self.cov(path, range(s[0], min(s[2], s[1]) + 1))
+                    why.append(f"{path}:+{ins} runtime {len(got)}")
+                    out |= got
+            else:
+                points.add(ins if ins >= 1 else 1)
+                points.add(ins + 1)
         for line in sorted(points):
             s = scopes.at(line)
             if s is None:
@@ -281,10 +316,10 @@ class Selector:
                 out |= got
             else:
                 out |= self.cov(path, range(start, end + 1))
-                out |= self.module_level(path, module, cls, why, line)
+                out |= self.module_level(path, module, cls, why, line, node)
         return out
 
-    def module_level(self, path, module, cls, why, line):
+    def module_level(self, path, module, cls, why, line, stmt=None):
         """A statement that runs at import: a class attribute, decorator,
         default argument or module constant."""
         if path.startswith("tests/"):
@@ -292,15 +327,103 @@ class Selector:
             why.append(f"{path}:{line} test module level {len(got)}")
             return got
         if cls:
-            got = self.class_users(module, cls) | self.cov(path, self._class_span(path, cls))
-            why.append(f"{path}:{line} class {cls} users {len(got)}")
-            return got
+            parts = cls.split(".")
+            users = set()
+            for i in range(1, len(parts) + 1):
+                # a nested Tokenizer's settings are read through its dialect
+                users |= self.class_users(module, ".".join(parts[:i]))
+            names = self._assigned_names(stmt) if stmt is not None else None
+            if names:
+                readers = self.readers(names)
+                if readers is not None:
+                    got = users & readers
+                    why.append(f"{path}:{line} class {cls} attr {','.join(sorted(names))}: "
+                               f"{len(users)} users, {len(got)} read it")
+                    return got
+            why.append(f"{path}:{line} class {cls} users {len(users)}")
+            return users
         got = self.file_users(path) | self.module_classes_users(module)
         why.append(f"{path}:{line} module level {len(got)}")
         return got
 
-    def _class_span(self, path, cls):
-        return []
+    @staticmethod
+    def _assigned_names(node):
+        """Names set by a plain class-level assignment, or None."""
+        if isinstance(node, ast.Assign):
+            targets = node.targets
+        elif isinstance(node, (ast.AnnAssign, ast.AugAssign)):
+            targets = [node.target]
+        else:
+            return None
+        names = set()
+        for t in targets:
+            if not isinstance(t, ast.Name):
+                return None
+            names.add(t.id)
+        return names
+
+    _sources = None
+
+    def _all_sources(self):
+        if Selector._sources is None:
+            out = {}
+            for top in ("sqlglot", "tests"):
+                for root, _, fs in os.walk(os.path.join(SRC, top)):
+                    for f in fs:
+                        if f.endswith(".py"):
+                            full = os.path.join(root, f)
+                            try:
+                                with open(full, encoding="utf-8") as fh:
+                                    out[os.path.relpath(full, SRC)] = fh.read()
+                            except OSError:
+                                pass
+            Selector._sources = out
+        return Selector._sources
+
+    UNSAFE_FUNCS = {"__new__", "__init_subclass__", "__set_name__", "__class_getitem__"}
+
+    def readers(self, names):
+        """Tests that run a line reading any of these attribute names, or None
+        when a read happens where coverage cannot attribute it (import time,
+        metaclasses, string lookups)."""
+        pat = re.compile(r"\b(" + "|".join(map(re.escape, names)) + r")\b")
+        out = set()
+        for rel, text in self._all_sources().items():
+            if not pat.search(text):
+                continue
+            lines = [i + 1 for i, l in enumerate(text.split("\n")) if pat.search(l)]
+            try:
+                scopes = self._scopes(rel, text)
+            except SyntaxError:
+                return None
+            for ln in lines:
+                st = scopes.at(ln)
+                if st is None:
+                    return None
+                start, end, header_end, node, runtime, _ = st
+                if not runtime:
+                    # another class-level definition of the same name is fine;
+                    # anything else at import derives state from it
+                    if self._assigned_names(node) and not (self._assigned_names(node) - names) \
+                            and not pat.search(ast.get_source_segment(text, node.value) or "" if getattr(node, "value", None) else ""):
+                        continue
+                    if isinstance(node, ast.AnnAssign) and node.value is None:
+                        continue
+                    return None
+                if scopes.in_func(ln, self.UNSAFE_FUNCS):
+                    return None
+                if re.search(r"getattr\(|__dict__|vars\(", text.split("\n")[ln - 1]):
+                    return None
+                out |= self.cov(rel, range(start, min(header_end, end) + 1))
+        return out
+
+    _scope_cache = {}
+
+    def _scopes(self, rel, text):
+        sc = Selector._scope_cache.get(rel)
+        if sc is None:
+            sc = Selector._scope_cache[rel] = Scopes(ast.parse(text))
+        return sc
 
     def broad(self, path):
         if path.startswith("tests/"):

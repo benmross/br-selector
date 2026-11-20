@@ -5,6 +5,8 @@ import sys
 
 import pytest
 
+import inprocess  # noqa: F401  (run process pools inline)
+
 _current = [None]
 _opens = {}
 _root = os.path.realpath(os.getcwd())

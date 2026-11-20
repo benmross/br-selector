@@ -61,6 +61,8 @@ def main(cov_dir, tests_json, out):
             if n is None:
                 continue
             for p in paths:
+                if "__pycache__" in p:
+                    continue
                 fixtures.setdefault(p, set()).add(n)
 
     classes = {}

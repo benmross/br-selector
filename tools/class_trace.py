@@ -12,6 +12,8 @@ import pkgutil
 
 import pytest
 
+import inprocess  # noqa: F401  (run process pools inline)
+
 _current = [None]
 _used = {}
 _seen_types = {}
