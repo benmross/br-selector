@@ -11,6 +11,7 @@ t.extractall('/opt', filter='data')" \
  && chmod -R a+rX /opt/sqlglot
 
 COPY selector.py map.json.gz /app/
-RUN chmod -R a+rX /app
+# Index where each class or module setting is read, from the original source.
+RUN SQLGLOT_SRC=/opt/sqlglot python /app/selector.py --index /app/index.json.gz && chmod -R a+rX /app
 ENV PYTHONDONTWRITEBYTECODE=1
 CMD ["python", "-X", "frozen_modules=on", "/app/selector.py"]

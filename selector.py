@@ -24,6 +24,7 @@ import sys
 DATA = os.environ.get("DATA_DIR", "/data")
 SRC = os.environ.get("SQLGLOT_SRC", "/opt/sqlglot")
 MAP = os.environ.get("MAP_PATH", os.path.join(os.path.dirname(os.path.abspath(__file__)), "map.json.gz"))
+INDEX = os.environ.get("INDEX_PATH", os.path.join(os.path.dirname(os.path.abspath(__file__)), "index.json.gz"))
 WORKER_MS = 2000
 MAX_WORKERS = 8
 
@@ -165,11 +166,11 @@ class Scopes:
                     if isinstance(c, ast.AST) and hasattr(c, "lineno")]
             if kids:
                 k = min(kids, key=lambda c: min(abs(c.lineno - line), abs(c.end_lineno - line)))
+                target = k if isinstance(k, ast.stmt) else (k.body[0] if getattr(k, "body", None) else None)
                 for s in self.stmts:
-                    if s[3] is k:
+                    if s[3] is target:
                         return s
-                # handlers are not statements; fall back to their first body line
-                return self.at(k.body[0].lineno) if getattr(k, "body", None) else best
+                return best
         return best
 
 
@@ -188,6 +189,12 @@ class Selector:
         self.all = set(tests)
         self._file_users = {}
         self.pending_import = []
+        self.index = None
+        try:
+            with gzip.open(INDEX, "rt") as f:
+                self.index = json.load(f)
+        except Exception:
+            pass
 
     def cov(self, path, lines):
         fl = self.files.get(path)
@@ -280,7 +287,8 @@ class Selector:
             old_tree = ast.parse(old_text)
         except SyntaxError:
             return self.broad(path)
-        if ast.dump(old_tree) == ast.dump(new_tree):
+        touched = set(changed) | set(inserts) | {i + 1 for i in inserts}
+        if same_ast(old_tree.body, new_tree.body, min(touched or {0}), max(touched or {0})):
             why.append(f"{path}: syntax tree unchanged")
             return set()
 
@@ -339,7 +347,7 @@ class Selector:
             for i in range(1, len(parts) + 1):
                 # a nested Tokenizer's settings are read through its dialect
                 users |= self.class_users(module, ".".join(parts[:i]))
-            names = self._assigned_names(stmt) if stmt is not None else None
+            names = assigned_names(stmt) if stmt is not None else None
             if names:
                 # tests whose own code reads the attribute (for example by
                 # looping over every class) need not instantiate the class
@@ -374,71 +382,50 @@ class Selector:
 
     _sources = None
 
+    @staticmethod
+    def _load_sources():
+        out = {}
+        for top in ("sqlglot", "tests"):
+            for root, _, fs in os.walk(os.path.join(SRC, top)):
+                for f in fs:
+                    if f.endswith(".py"):
+                        full = os.path.join(root, f)
+                        try:
+                            with open(full, encoding="utf-8") as fh:
+                                out[os.path.relpath(full, SRC)] = fh.read()
+                        except OSError:
+                            pass
+        return out
+
     def _all_sources(self):
         if Selector._sources is None:
-            out = {}
-            for top in ("sqlglot", "tests"):
-                for root, _, fs in os.walk(os.path.join(SRC, top)):
-                    for f in fs:
-                        if f.endswith(".py"):
-                            full = os.path.join(root, f)
-                            try:
-                                with open(full, encoding="utf-8") as fh:
-                                    out[os.path.relpath(full, SRC)] = fh.read()
-                            except OSError:
-                                pass
-            Selector._sources = out
+            Selector._sources = self._load_sources()
         return Selector._sources
 
-    UNSAFE_FUNCS = {"__new__", "__init_subclass__", "__set_name__", "__class_getitem__"}
-
     def readers(self, names):
-        """Tests that run a line reading any of these attribute names, or None
-        when a read happens where coverage cannot attribute it (import time,
-        metaclasses, string lookups)."""
-        pat = re.compile(r"\b(" + "|".join(map(re.escape, names)) + r")\b")
-        out, in_tests, safe = set(), set(), True
-        for rel, text in self._all_sources().items():
-            if not pat.search(text):
-                continue
-            lines = [i + 1 for i, l in enumerate(text.split("\n")) if pat.search(l)]
-            try:
-                scopes = self._scopes(rel, text)
-            except SyntaxError:
-                safe = False
-                continue
-            if rel.startswith("tests/"):
-                for ln in lines:
-                    st = scopes.at(ln)
-                    if st is not None:
-                        in_tests |= self.cov(rel, range(st[0], min(st[2], st[1]) + 1))
-                in_tests |= self.by_file.get(rel, set()) if any(
-                    (scopes.at(ln) is None or not scopes.at(ln)[4]) for ln in lines) else set()
-                continue
-            for ln in lines:
-                st = scopes.at(ln)
-                if st is None:
-                    safe = False
-                    continue
-                start, end, header_end, node, runtime, _ = st
-                if not runtime:
-                    # another class-level definition of the same name is fine;
-                    # anything else at import derives state from it
-                    if self._assigned_names(node) and not (self._assigned_names(node) - names) \
-                            and not pat.search(ast.get_source_segment(text, node.value) or "" if getattr(node, "value", None) else ""):
-                        continue
-                    if isinstance(node, ast.AnnAssign) and node.value is None:
-                        continue
-                    safe = False
-                    continue
-                if scopes.in_func(ln, self.UNSAFE_FUNCS):
-                    safe = False
-                    continue
-                if re.search(r"getattr\(|__dict__|vars\(", text.split("\n")[ln - 1]):
-                    safe = False
-                    continue
-                out |= self.cov(rel, range(start, min(header_end, end) + 1))
-        return (out if safe else None), in_tests
+        """Tests that run a line reading any of these attribute names, and
+        tests whose own code reads them. The first is None when a read
+        happens where coverage cannot attribute it (import time, metaclasses,
+        string lookups)."""
+        idx = self.index
+        if idx is not None and all(n in idx for n in names):
+            sites = {"u": False, "c": [], "t": [], "tf": []}
+            for n in names:
+                e = idx[n]
+                sites["u"] |= e["u"]
+                for k in ("c", "t", "tf"):
+                    sites[k].extend(e[k])
+        else:
+            sites = reference_sites(self._all_sources(), names, self._scopes)
+        code = set()
+        for rel, a, b in sites["c"]:
+            code |= self.cov(rel, range(a, b + 1))
+        tests = set()
+        for rel, a, b in sites["t"]:
+            tests |= self.cov(rel, range(a, b + 1))
+        for rel in sites["tf"]:
+            tests |= self.by_file.get(rel, set())
+        return (None if sites["u"] else code), tests
 
     _scope_cache = {}
 
@@ -462,7 +449,152 @@ class Selector:
         return self.by_file.get(path, set()) | self.file_users(path)
 
 
+def _dump(v):
+    if isinstance(v, ast.AST):
+        return ast.dump(v)
+    if isinstance(v, list):
+        return "[" + ",".join(_dump(x) for x in v) + "]"
+    return repr(v)
+
+
+def same_ast(a_list, b_list, lo, hi):
+    """Are two statement lists the same tree? Statements wholly outside the
+    patched lines lo..hi (original numbering) are textually unchanged, so
+    only the ones that overlap are compared."""
+    if len(a_list) != len(b_list):
+        return False
+    for a, b in zip(a_list, b_list):
+        if type(a) is not type(b):
+            return False
+        if hasattr(a, "lineno") and (a.end_lineno < lo or a.lineno > hi):
+            continue
+        for field in a._fields:
+            va, vb = getattr(a, field, None), getattr(b, field, None)
+            if field in ("body", "orelse", "finalbody", "handlers") and isinstance(va, list) \
+                    and isinstance(vb, list):
+                if not same_ast(va, vb, lo, hi):
+                    return False
+            elif _dump(va) != _dump(vb):
+                return False
+    return True
+
+
+UNSAFE_FUNCS = {"__new__", "__init_subclass__", "__set_name__", "__class_getitem__"}
+DYNAMIC = re.compile(r"getattr\(|__dict__|vars\(")
+
+
+def assigned_names(node):
+    """Names set by a plain assignment statement, or None."""
+    if isinstance(node, ast.Assign):
+        targets = node.targets
+    elif isinstance(node, (ast.AnnAssign, ast.AugAssign)):
+        targets = [node.target]
+    else:
+        return None
+    names = set()
+    for t in targets:
+        if not isinstance(t, ast.Name):
+            return None
+        names.add(t.id)
+    return names
+
+
+def classify(rel, text, lines, scopes, ln, names):
+    """One line of source that mentions one of names: how does it read it?"""
+    st = scopes.at(ln)
+    if rel.startswith("tests/"):
+        if st is None or not st[4]:
+            return ("tf", rel)
+        return ("t", rel, st[0], min(st[2], st[1]))
+    if st is None:
+        return ("u",)
+    start, end, header_end, node, runtime, _ = st
+    if not runtime:
+        an = assigned_names(node)
+        if isinstance(node, ast.AnnAssign) and node.value is None:
+            return None
+        if an and not (an - names):
+            value = getattr(node, "value", None)
+            seg = ast.get_source_segment(text, value) if value is not None else ""
+            if not any(re.search(r"\b%s\b" % re.escape(n), seg or "") for n in names):
+                return None  # another class defining the same setting
+        return ("u",)
+    if scopes.in_func(ln, UNSAFE_FUNCS) or DYNAMIC.search(lines[ln - 1]):
+        return ("u",)
+    return ("c", rel, start, min(header_end, end))
+
+
+def _add(sites, r):
+    if r is None:
+        return
+    if r[0] == "u":
+        sites["u"] = True
+    elif r[0] == "tf":
+        sites["tf"].append(r[1])
+    else:
+        sites[r[0]].append(list(r[1:]))
+
+
+def reference_sites(sources, names, scopes_for):
+    pat = re.compile(r"\b(" + "|".join(map(re.escape, names)) + r")\b")
+    sites = {"u": False, "c": [], "t": [], "tf": []}
+    for rel, text in sources.items():
+        if not pat.search(text):
+            continue
+        lines = text.split("\n")
+        try:
+            scopes = scopes_for(rel, text)
+        except SyntaxError:
+            sites["u"] = True
+            continue
+        for ln in sorted({text.count("\n", 0, m.start()) + 1 for m in pat.finditer(text)}):
+            _add(sites, classify(rel, text, lines, scopes, ln, set(names)))
+    return sites
+
+
+def build_index(out_path):
+    """Run at image build: every name assigned at class or module level in
+    sqlglot, with where it is read. Saves parsing the source at run time."""
+    sources = Selector._load_sources()
+    parsed = {}
+    for rel, text in sources.items():
+        try:
+            parsed[rel] = Scopes(ast.parse(text))
+        except SyntaxError:
+            pass
+    cands = set()
+    for rel, sc in parsed.items():
+        if rel.startswith("sqlglot/"):
+            for st in sc.stmts:
+                if not st[4]:
+                    an = assigned_names(st[3])
+                    if an:
+                        cands |= an
+    index = {n: {"u": False, "c": [], "t": [], "tf": []} for n in cands}
+    for rel, text in sources.items():
+        sc = parsed.get(rel)
+        lines = text.split("\n")
+        seen = set()
+        for ln, line in enumerate(lines, 1):
+            for name in set(IDENT.findall(line)) & cands:
+                if (name, ln) in seen:
+                    continue
+                seen.add((name, ln))
+                if sc is None:
+                    index[name]["u"] = True
+                    continue
+                _add(index[name], classify(rel, text, lines, sc, ln, {name}))
+    for e in index.values():
+        e["tf"] = sorted(set(e["tf"]))
+        e["c"] = sorted({tuple(x) for x in e["c"]})
+        e["t"] = sorted({tuple(x) for x in e["t"]})
+    with gzip.open(out_path, "wt") as f:
+        json.dump(index, f, separators=(",", ":"))
+    log(f"index: {len(index)} names")
+
+
 IDENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
+KEYWORDS = set(__import__("keyword").kwlist)
 
 
 def could_raise(fp):
@@ -477,6 +609,7 @@ def could_raise(fp):
                 added.append(l[1:])
     before = set(IDENT.findall("\n".join(removed)))
     after = set(IDENT.findall("\n".join(added)))
+    after -= KEYWORDS
     return bool(after - before) or "import" in after
 
 
@@ -608,4 +741,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) == 3 and sys.argv[1] == "--index":
+        build_index(sys.argv[2])
+    else:
+        main()

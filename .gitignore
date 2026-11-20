@@ -3,3 +3,4 @@ sample/
 output.jsonl
 __pycache__/
 *.pyc
+index.json.gz
