@@ -187,6 +187,7 @@ class Selector:
             self.by_file.setdefault(f, set()).add(n)
         self.all = set(tests)
         self._file_users = {}
+        self.pending_import = []
 
     def cov(self, path, lines):
         fl = self.files.get(path)
@@ -237,7 +238,7 @@ class Selector:
         if fp.binary:
             why.append(f"{path}: binary, every user")
             return self.fixture_users(path) | self.file_users(path)
-        if path.endswith(".py") and (path.startswith("sqlglot/") or path.startswith("tests/")):
+        if path.endswith(".py") and (path.startswith("sqlglot/") or path.startswith("tests/") or path in self.files):
             return self.for_python(fp, path, why)
         if path.startswith("tests/") or path.startswith("sqlglot/"):
             users = self.fixture_users(path)
@@ -288,6 +289,7 @@ class Selector:
         if module.endswith(".__init__"):
             module = module[: -len(".__init__")]
         out = set()
+        import_level = False
         points = set(changed)
         for ins in inserts:
             # An inserted line sits between old lines ins and ins + 1. If either
@@ -303,10 +305,12 @@ class Selector:
             else:
                 points.add(ins if ins >= 1 else 1)
                 points.add(ins + 1)
+                import_level = True
         for line in sorted(points):
             s = scopes.at(line)
             if s is None:
                 out |= self.module_level(path, module, None, why, line)
+                import_level = True
                 continue
             start, end, header_end, node, runtime, cls = s
             if runtime:
@@ -317,6 +321,9 @@ class Selector:
             else:
                 out |= self.cov(path, range(start, end + 1))
                 out |= self.module_level(path, module, cls, why, line, node)
+                import_level = True
+        if import_level and could_raise(fp):
+            self.pending_import.append((path, module, new_text))
         return out
 
     def module_level(self, path, module, cls, why, line, stmt=None):
@@ -439,6 +446,70 @@ class Selector:
         return self.by_file.get(path, set()) | self.file_users(path)
 
 
+IDENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
+
+
+def could_raise(fp):
+    """Could this patch make a module fail to import? Swapping literals or
+    operators cannot; a new name, attribute, call or import can."""
+    removed, added = [], []
+    for _, lines in fp.hunks:
+        for l in lines:
+            if l[:1] == "-":
+                removed.append(l[1:])
+            elif l[:1] == "+":
+                added.append(l[1:])
+    before = set(IDENT.findall("\n".join(removed)))
+    after = set(IDENT.findall("\n".join(added)))
+    return bool(after - before) or "import" in after
+
+
+IMPORT_CHECK = r"""
+import importlib, importlib.abc, importlib.machinery, json, os, sys
+d = json.load(sys.stdin)
+sys.path.insert(0, d["src"])
+files = d["files"]
+class L(importlib.abc.Loader):
+    def __init__(self, n): self.n = n
+    def create_module(self, spec): return None
+    def exec_module(self, m):
+        fn, code, _ = files[self.n]
+        exec(compile(code, fn, "exec"), m.__dict__)
+class F(importlib.abc.MetaPathFinder):
+    def find_spec(self, name, path, target=None):
+        if name not in files: return None
+        fn, _, pkg = files[name]
+        spec = importlib.machinery.ModuleSpec(name, L(name), origin=fn, is_package=pkg)
+        if pkg: spec.submodule_search_locations = [os.path.dirname(fn)]
+        spec.has_location = True
+        return spec
+sys.meta_path.insert(0, F())
+import sqlglot
+for name in files: importlib.import_module(name)
+"""
+
+
+def import_fails(pending):
+    """Import the patched modules in a fresh interpreter. True if any raises."""
+    import subprocess
+
+    files = {}
+    for path, module, text in pending:
+        files[module] = (os.path.join(SRC, path), text, path.endswith("__init__.py"))
+    try:
+        r = subprocess.run(
+            [sys.executable, "-I", "-c", IMPORT_CHECK],
+            input=json.dumps({"src": SRC, "files": files}),
+            capture_output=True, text=True, timeout=60,
+        )
+    except Exception as e:
+        log("import check failed to run:", repr(e))
+        return True
+    if r.returncode:
+        log("import check:", (r.stderr.strip().splitlines() or ["?"])[-1])
+    return r.returncode != 0
+
+
 # ---------------------------------------------------------------- packing
 
 
@@ -498,8 +569,18 @@ def main():
             files = parse_patch(text)
             if not files:
                 raise RuntimeError("no files in patch")
+            sel.pending_import = []
             for fp in files:
                 chosen |= sel.for_file(fp, why)
+            if sel.pending_import and import_fails(sel.pending_import):
+                for path, module, _ in sel.pending_import:
+                    if sel.m.get("import_lines", {}).get(path):
+                        why.append(f"{path}: fails to import and loads with sqlglot, everything")
+                        chosen |= sel.all
+                    else:
+                        got = sel.broad(path)
+                        why.append(f"{path}: fails to import, its users {len(got)}")
+                        chosen |= got
             chosen &= set(tests)
         except Exception as e:
             why.append(f"error {e!r}: everything")

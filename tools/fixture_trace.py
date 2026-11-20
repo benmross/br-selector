@@ -20,7 +20,12 @@ def _hook(event, args):
                 p = os.path.realpath(os.fsdecode(path))
             except Exception:
                 return
-            if p.startswith(_root + os.sep) and not p.endswith((".pyc", ".py")):
+            rel = os.path.relpath(p, _root) if p.startswith(_root + os.sep) else None
+            # .py files under sqlglot/ and tests/ are imports, which coverage
+            # already sees; any other file a test opens is data it depends on
+            if rel and not rel.endswith(".pyc") and "__pycache__" not in rel and not (
+                rel.endswith(".py") and rel.split(os.sep)[0] in ("sqlglot", "tests")
+            ):
                 _opens.setdefault(_current[0], set()).add(os.path.relpath(p, _root))
     elif event == "os.listdir" and _current[0] is not None:
         try:
