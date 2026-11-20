@@ -187,6 +187,7 @@ class Selector:
         for n, (_, f, _) in tests.items():
             self.by_file.setdefault(f, set()).add(n)
         self.all = set(tests)
+        self.import_lines = {f: set(v) for f, v in m.get("import_lines", {}).items()}
         self._file_users = {}
         self.pending_import = []
         self.index = None
@@ -307,9 +308,11 @@ class Selector:
             rt = [s for s in (before, after) if s is not None and s[4]]
             if rt:
                 for s in rt:
-                    got = self.cov(path, range(s[0], min(s[2], s[1]) + 1))
+                    span = range(s[0], min(s[2], s[1]) + 1)
+                    got = self.cov(path, span)
                     why.append(f"{path}:+{ins} runtime {len(got)}")
                     out |= got
+                    out |= self.at_import(path, span, why)
             else:
                 points.add(ins if ins >= 1 else 1)
                 points.add(ins + 1)
@@ -326,6 +329,7 @@ class Selector:
                 got = self.cov(path, span)
                 why.append(f"{path}:{line} runtime {len(got)}")
                 out |= got
+                out |= self.at_import(path, span, why)
             else:
                 out |= self.cov(path, range(start, end + 1))
                 out |= self.module_level(path, module, cls, why, line, node)
@@ -333,6 +337,17 @@ class Selector:
         if import_level and could_raise(fp):
             self.pending_import.append((path, module, new_text))
         return out
+
+    def at_import(self, path, span, why):
+        """A function line that also ran while modules were imported (a
+        metaclass, a trie or registry builder) leaves state every later test
+        sees, which coverage credits to no test. Widen to the module's users."""
+        imp = self.import_lines.get(path)
+        if not imp or not any(l in imp for l in span):
+            return set()
+        got = self.broad(path)
+        why.append(f"{path}:{span.start} also runs at import, module users {len(got)}")
+        return got
 
     def module_level(self, path, module, cls, why, line, stmt=None):
         """A statement that runs at import: a class attribute, decorator,

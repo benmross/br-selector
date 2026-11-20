@@ -15,12 +15,13 @@ sys.path.insert(0, "/kit")
 from selector import apply, parse_patch  # noqa: E402
 
 muts, src, out = sys.argv[1:4]
+shard, nshards = (int(x) for x in (sys.argv[4:6] if len(sys.argv) > 5 else ("0", "1")))
 tests = {t["id"]: t["number"] for t in json.load(open("/kit/sample/tests.json"))["tests"]}
 answers = json.load(open(out))["commits"] if os.path.exists(out) else {}
 env = dict(os.environ, SKIP_INTEGRATION="0", PYTHONPATH=src, PYTHONDONTWRITEBYTECODE="1")
-for name in sorted(os.listdir(os.path.join(muts, "commits"))):
+for k, name in enumerate(sorted(os.listdir(os.path.join(muts, "commits")))):
     cid = name[:-6]
-    if cid in answers:
+    if k % nshards != shard or cid in answers:
         continue
     fps = parse_patch(open(os.path.join(muts, "commits", name)).read())
     saved = {}
