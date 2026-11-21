@@ -669,8 +669,14 @@ class Selector:
             return set()
         if self._single_file_patch and (self.index or {}).get('@pinned_string_audit') \
                 and inert_string_changes(old_tree, new_tree) and self.docstrings_unobserved(path, old_tree, new_tree):
-            why.append(f'{path}: only inert string statements changed; audited doc consumers have no numbered runtime users')
-            return set()
+            # A function docstring is also a code-object constant. Typing's
+            # metadata redundancy test compares co_consts without calling
+            # the function; ordinary line coverage cannot see that observer.
+            code_doc = any(any(isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) for n in chain)
+                           for chain in string_changes(old_tree, new_tree))
+            readers = set(self.by_file.get('tests/test_typing.py', ())) if code_doc else set()
+            why.append(f'{path}: only inert string statements changed; audited documentation/code-constant readers {len(readers)}')
+            return readers
         if path.startswith("tests/"):
             shared = changed_test_state(old_tree, new_tree, touched)
             if shared:

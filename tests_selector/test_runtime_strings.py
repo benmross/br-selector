@@ -4,6 +4,7 @@ import importlib.util
 from pathlib import Path
 
 import pytest
+from test_patches import sandbox
 
 spec=importlib.util.spec_from_file_location('runtime_selector',Path(__file__).resolve().parents[1]/'selector.py')
 s=importlib.util.module_from_spec(spec)
@@ -85,3 +86,29 @@ def test_keyword_keys_exclude_base_collisions_and_registries(before,after,allowe
 ])
 def test_rename_factory_is_only_an_unchanged_closure_constructor(before,allowed):
     assert s.runtime_rename_changes(ast.parse(before),ast.parse(before.replace('OLD','NEW'))) is allowed
+
+
+def test_function_doc_keeps_code_constant_observer(sandbox):
+    run, src = sandbox
+    mapping = run.env["MAP_PATH"]
+    # TestTyping reads the function's code constant without calling it, so
+    # its ID has no runtime coverage of the changed function.
+    p=src/'sqlglot/other.py'
+    before='def other():\n    "old"\n    return 3\n'
+    after=before.replace('old','new')
+    p.write_text(before)
+    # This sandbox's pinned audit is deliberately absent: exercise the
+    # complete AST proof and its separate observer through a direct Selector.
+    import gzip,json
+    m=json.load(gzip.open(mapping,'rt'))
+    tests=json.load(open(Path(run.env['DATA_DIR'])/'tests.json'))['tests']
+    nums={t['number']:(t['id'],t['file'],1) for t in tests}
+    obj=s.Selector(nums,m)
+    obj.index={'@pinned_string_audit':True}
+    obj.by_file['tests/test_typing.py']={4}
+    obj._single_file_patch=True
+    obj.docstrings_unobserved=lambda *args:True
+    from test_patches import diff
+    s.SRC=str(src)
+    why=[]
+    assert obj.for_file(s.parse_patch(diff('sqlglot/other.py',before,after))[0],why)=={4}
