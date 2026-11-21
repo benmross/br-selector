@@ -928,14 +928,16 @@ class Selector:
         if path != 'sqlglot/generator.py' and not path.startswith('sqlglot/generators/'):
             return False
         lambdas = runtime_lambda_changes(old_tree, new_tree)
-        if not lambdas:
+        factory = runtime_rename_changes(old_tree, new_tree) if not lambdas else False
+        if not lambdas and not factory:
             return False
         for rel, first, last in self.index['@generator_string_calls']:
             if any(line in self.import_lines.get(rel, ()) for line in range(first, last + 1)):
                 return False
-        for node in lambdas:
+        for node in lambdas or ():
             self._literal_extra_users |= self.cov(path, range(node.lineno, node.end_lineno + 1))
-        why.append(f'{path}: only stored generator lambda-body strings changed; runtime dispatch coverage retained')
+        kind = 'rename_func closure arguments' if factory else 'lambda-body strings'
+        why.append(f'{path}: only stored generator {kind} changed; runtime dispatch coverage retained')
         return True
 
     def generator_table_strings_safe(self, path, old_tree, new_tree, why):
@@ -1549,6 +1551,26 @@ def dialect_keyword_changes(old_tree, new_tree):
     for chain in reverse:
         keys = [k.value for k in chain[-2].keys if isinstance(k, ast.Constant)]
         if len(keys) != len(set(keys)):
+            return False
+    return True
+
+
+def runtime_rename_changes(old_tree, new_tree):
+    changes = string_changes(old_tree, new_tree)
+    reverse = string_changes(new_tree, old_tree)
+    if not changes or not all(chain[-1].value for chain in changes + reverse):
+        return False
+    for chain in changes:
+        if len(chain) != 6:
+            return False
+        module, owner, stmt, table, call, const = chain
+        if not isinstance(module, ast.Module) or not isinstance(owner, ast.ClassDef) \
+                or not owner.name.endswith('Generator') or owner.decorator_list or owner.keywords \
+                or not isinstance(stmt, (ast.Assign, ast.AnnAssign)) or assigned_names(stmt) != {'TRANSFORMS'} \
+                or stmt.value is not table or not isinstance(table, ast.Dict) \
+                or not any(v is call for v in table.values) or not isinstance(call, ast.Call) \
+                or not isinstance(call.func, ast.Name) or call.func.id != 'rename_func' \
+                or call.args != [const] or call.keywords:
             return False
     return True
 

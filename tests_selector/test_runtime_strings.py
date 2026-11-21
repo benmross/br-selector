@@ -73,3 +73,15 @@ def test_generator_type_values_only(before,after,allowed):
 ])
 def test_keyword_keys_exclude_base_collisions_and_registries(before,after,allowed):
     assert s.dialect_keyword_changes(ast.parse(before),ast.parse(after)) is allowed
+
+
+@pytest.mark.parametrize('before,allowed',[
+ ('class XGenerator:\n    TRANSFORMS={1:rename_func("OLD")}\n',True),
+ ('class XGenerator:\n    TRANSFORMS={1:rename_func("OLD")()}\n',False),
+ ('class XGenerator:\n    TRANSFORMS={1:factory("OLD")}\n',False),
+ ('class XGenerator:\n    TRANSFORMS={1:rename_func(name="OLD")}\n',False),
+ ('class XGenerator:\n    TYPE_MAPPING={1:rename_func("OLD")}\n',False),
+ ('class XGenerator:\n    TRANSFORMS={"OLD":rename_func("UNCHANGED")}\n',False),
+])
+def test_rename_factory_is_only_an_unchanged_closure_constructor(before,allowed):
+    assert s.runtime_rename_changes(ast.parse(before),ast.parse(before.replace('OLD','NEW'))) is allowed
