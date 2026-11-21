@@ -24,14 +24,14 @@
 | t56x005 | 4 | base FUNCTIONS key DATE_TO_DATE_STR renamed DATE_TO_DATESTR | unlabeled | 1620 | 36.8 | 36.8 | yes | - |
 | t56x006 | 4 | Trino FUNCTION_PARSERS key LISTAGG renamed LIST_AGG (Athena inherits; anonymize reads it) | 4 | 95 | 7.0 | 36.8 | yes | no |
 | t56x007 | 4 | Oracle FUNCTION_PARSERS key LISTAGG renamed LIST_AGG | 1 | 98 | 6.1 | 36.8 | yes | no |
-| t56x008 | 4 | Snowflake FUNCTION_PARSERS key LISTAGG renamed LIST_AGG | unlabeled | 276 | 9.1 | 36.8 | yes | - |
+| t56x008 | 4 | Snowflake FUNCTION_PARSERS key LISTAGG renamed LIST_AGG | 1 | 276 | 9.1 | 36.8 | yes | no |
 | t56x009 | 4 | Hive FUNCTIONS key GET_JSON_OBJECT renamed GET_JSON (Spark2/Spark/Databricks inherit) | unlabeled | 307 | 10.9 | 36.8 | yes | - |
 | t56x010 | 4 | Hive FUNCTIONS key DATE_FORMAT renamed DATEFORMAT (Spark family inherits) | unlabeled | 307 | 10.9 | 36.8 | yes | - |
 | t56x011 | 4 | MySQL FUNCTIONS DATE_FORMAT lambda reads Dialect["mysql"] changed to Dialect["doris"] | unlabeled | 298 | 9.8 | 36.8 | yes | - |
 | t56x012 | 4 | Snowflake FUNCTIONS key ARRAY_TO_STRING renamed ARRAY_TOSTRING | unlabeled | 323 | 9.6 | 36.8 | yes | - |
-| t56x013 | 4 | Postgres FUNCTION_PARSERS key DATE_PART renamed DATEPART (Redshift/Materialize/RisingWave inherit) | unlabeled | 224 | 10.0 | 36.8 | yes | - |
+| t56x013 | 4 | Postgres FUNCTION_PARSERS key DATE_PART renamed DATEPART (Redshift/Materialize/RisingWave inherit) | 4 | 224 | 10.0 | 36.8 | yes | no |
 | t56x014 | 4 | Postgres FUNCTION_PARSERS key JSONB_EXISTS renamed JSONB_KEY_EXISTS | unlabeled | 224 | 10.0 | 36.8 | yes | - |
-| t56x015 | 4 | Postgres PROPERTY_PARSERS key TABLESPACE renamed TABLE_SPACE | unlabeled | 219 | 10.0 | 36.8 | yes | - |
+| t56x015 | 4 | Postgres PROPERTY_PARSERS key TABLESPACE renamed TABLE_SPACE | 1 | 219 | 10.0 | 36.8 | yes | no |
 | t56x016 | 4 | Oracle NO_PAREN_FUNCTION_PARSERS key SYSDATE renamed SYS_DATE | 2 | 93 | 6.1 | 36.8 | yes | no |
 | t56x017 | 4 | Oracle FUNCTION_PARSERS key TO_NUMBER renamed TONUMBER | 1 | 98 | 6.1 | 36.8 | yes | no |
 | t56x018 | 4 | Doris PROPERTY_PARSERS key REFRESH renamed REFRESH_MODE | 0 | 27 | 2.8 | 36.8 | yes | no |
@@ -40,8 +40,8 @@
 | t56x021 | 4 | Databricks generator TRANSFORMS date_delta_sql("DATEADD") changed to "DATE_ADD" | 1 | 158 | 10.7 | 36.8 | yes | no |
 | t56x022 | 4 | Drill generator TRANSFORMS date_add_sql("ADD") changed to "PLUS" | 1 | 32 | 10.7 | 36.8 | yes | no |
 | t56x023 | 4 | ClickHouse generator TRANSFORMS _datetime_delta_sql("TIMESTAMP_ADD") changed to "TIMESTAMPADD" | 1 | 123 | 11.3 | 36.8 | yes | no |
-| t56x024 | 4 | BigQuery generator TRANSFORMS date_add_interval_sql("DATETIME", "ADD") unit DATETIME changed to TIMESTAMP | unlabeled | 226 | 12.2 | 36.8 | yes | - |
-| t56x025 | 4 | BigQuery generator TRANSFORMS lambda self.func("REGEXP_EXTRACT_ALL") changed to "REGEXP_EXTRACTALL" | unlabeled | 226 | 12.2 | 36.8 | yes | - |
+| t56x024 | 4 | BigQuery generator TRANSFORMS date_add_interval_sql("DATETIME", "ADD") unit DATETIME changed to TIMESTAMP | 1 | 226 | 12.2 | 36.8 | yes | no |
+| t56x025 | 4 | BigQuery generator TRANSFORMS lambda self.func("REGEXP_EXTRACT_ALL") changed to "REGEXP_EXTRACTALL" | 1 | 226 | 12.2 | 36.8 | yes | no |
 | t56x026 | 4 | DuckDB annotator DateBin _annotate_by_args(e, "expression") changed to "origin" | unlabeled | 1620 | 36.8 | 36.8 | yes | - |
 | t56x027 | 4 | Snowflake annotator ConcatWs _annotate_by_args(e, "expressions") changed to "this" | unlabeled | 1620 | 36.8 | 36.8 | yes | - |
 | t56x028 | 4 | Spark2 annotator Concat _annotate_by_similar_args(.., "expressions") changed to "this" | unlabeled | 1620 | 36.8 | 36.8 | yes | - |
