@@ -36,10 +36,10 @@
 | t56x017 | 4 | Oracle FUNCTION_PARSERS key TO_NUMBER renamed TONUMBER | 1 | 98 | 6.1 | 36.8 | yes | no |
 | t56x018 | 4 | Doris PROPERTY_PARSERS key REFRESH renamed REFRESH_MODE | 0 | 27 | 2.8 | 36.8 | yes | no |
 | t56x019 | 4 | Databricks NO_PAREN_FUNCTION_PARSERS key CURDATE renamed CUR_DATE | 1 | 108 | 6.9 | 36.8 | yes | no |
-| t56x020 | 4 | SingleStore FUNCTIONS build_formatted_time(exp.StrToDate, "mysql") dialect name changed to "hive" | unlabeled | 117 | 6.7 | 36.8 | yes | - |
-| t56x021 | 4 | Databricks generator TRANSFORMS date_delta_sql("DATEADD") changed to "DATE_ADD" | unlabeled | 158 | 10.7 | 36.8 | yes | - |
+| t56x020 | 4 | SingleStore FUNCTIONS build_formatted_time(exp.StrToDate, "mysql") dialect name changed to "hive" | 2 | 117 | 6.7 | 36.8 | yes | no |
+| t56x021 | 4 | Databricks generator TRANSFORMS date_delta_sql("DATEADD") changed to "DATE_ADD" | 1 | 158 | 10.7 | 36.8 | yes | no |
 | t56x022 | 4 | Drill generator TRANSFORMS date_add_sql("ADD") changed to "PLUS" | 1 | 32 | 10.7 | 36.8 | yes | no |
-| t56x023 | 4 | ClickHouse generator TRANSFORMS _datetime_delta_sql("TIMESTAMP_ADD") changed to "TIMESTAMPADD" | unlabeled | 123 | 11.3 | 36.8 | yes | - |
+| t56x023 | 4 | ClickHouse generator TRANSFORMS _datetime_delta_sql("TIMESTAMP_ADD") changed to "TIMESTAMPADD" | 1 | 123 | 11.3 | 36.8 | yes | no |
 | t56x024 | 4 | BigQuery generator TRANSFORMS date_add_interval_sql("DATETIME", "ADD") unit DATETIME changed to TIMESTAMP | unlabeled | 226 | 12.2 | 36.8 | yes | - |
 | t56x025 | 4 | BigQuery generator TRANSFORMS lambda self.func("REGEXP_EXTRACT_ALL") changed to "REGEXP_EXTRACTALL" | unlabeled | 226 | 12.2 | 36.8 | yes | - |
 | t56x026 | 4 | DuckDB annotator DateBin _annotate_by_args(e, "expression") changed to "origin" | unlabeled | 1620 | 36.8 | 36.8 | yes | - |

@@ -1,0 +1,989 @@
+{
+ "t46a02": {
+  "main": 1620,
+  "t56b": 377,
+  "nostr": 377,
+  "failing": 2,
+  "why": "sqlglot/generators/duckdb.py:1672 class DuckDBGenerator users 377"
+ },
+ "t46a03": {
+  "main": 1620,
+  "t56b": 200,
+  "nostr": 200,
+  "failing": 2,
+  "why": "sqlglot/generators/presto.py:326 class PrestoGenerator users 200; sqlglot/generators/trino.py:25 class TrinoGenerator users 114; sqlglot/generators/trino.py:25 copies a changed class attribute: keep 114 consumer tests; sqlglot/generators/athena.py:123 class AthenaTrinoGenerator users 24; sqlglot/generators/athena.py:123 copies a changed class attribute: keep 24 consumer tests"
+ },
+ "t46a04": {
+  "main": 1620,
+  "t56b": 261,
+  "nostr": 261,
+  "failing": 3,
+  "why": "sqlglot/generators/postgres.py:362 class PostgresGenerator users 261; sqlglot/generators/materialize.py:23 class MaterializeGenerator users 13; sqlglot/generators/materialize.py:23 copies a changed class attribute: keep 13 consumer tests; sqlglot/generators/redshift.py:69 class RedshiftGenerator users 96; sqlglot/generators/redshift.py:69 copies a changed class attribute: keep 96 consumer tests; sqlglot/generators/risingwave.py:14 class RisingWaveGenerator users 11; sqlglot/generators/risingwave.py:14 copies a changed class attribute: keep 11 consumer tests"
+ },
+ "t46a05": {
+  "main": 1620,
+  "t56b": 96,
+  "nostr": 96,
+  "failing": 2,
+  "why": "sqlglot/generators/redshift.py:86 class RedshiftGenerator users 96"
+ },
+ "t46a06": {
+  "main": 1620,
+  "t56b": 283,
+  "nostr": 283,
+  "failing": 2,
+  "why": "sqlglot/generators/snowflake.py:421 class SnowflakeGenerator users 283"
+ },
+ "t46b00": {
+  "main": 1620,
+  "t56b": 120,
+  "nostr": 120,
+  "failing": 1,
+  "why": "sqlglot/generators/redshift.py:58 class RedshiftGenerator users 96; sqlglot/expressions/builders.py:508 runtime read of a changed class attribute 36"
+ },
+ "t46b01": {
+  "main": 1620,
+  "t56b": 216,
+  "nostr": 216,
+  "failing": 0,
+  "why": "sqlglot/generators/presto.py:310 class PrestoGenerator users 200; sqlglot/expressions/builders.py:508 runtime read of a changed class attribute 36"
+ },
+ "t46b02": {
+  "main": 1620,
+  "t56b": 278,
+  "nostr": 278,
+  "failing": 1,
+  "why": "sqlglot/generators/postgres.py:338 class PostgresGenerator users 261; sqlglot/expressions/builders.py:508 runtime read of a changed class attribute 36; sqlglot/generators/redshift.py:56 class RedshiftGenerator users 96; sqlglot/generators/redshift.py:56 copies a changed class attribute: keep 96 consumer tests"
+ },
+ "t46b03": {
+  "main": 1620,
+  "t56b": 388,
+  "nostr": 388,
+  "failing": 5,
+  "why": "sqlglot/generators/duckdb.py:1877 class DuckDBGenerator users 377; sqlglot/expressions/builders.py:508 runtime read of a changed class attribute 36"
+ },
+ "t46b04": {
+  "main": 1620,
+  "t56b": 243,
+  "nostr": 243,
+  "failing": 16,
+  "why": "sqlglot/generators/bigquery.py:577 class BigQueryGenerator users 226; sqlglot/expressions/builders.py:508 runtime read of a changed class attribute 36"
+ },
+ "t46c00": {
+  "main": 1620,
+  "t56b": 107,
+  "nostr": 107,
+  "failing": 1,
+  "why": "sqlglot/dialects/redshift.py:51 class Redshift.Tokenizer users 107"
+ },
+ "t46c01": {
+  "main": 1620,
+  "t56b": 437,
+  "nostr": 437,
+  "failing": 4,
+  "why": "sqlglot/dialects/duckdb.py:107 class DuckDB.Tokenizer users 437"
+ },
+ "t46c02": {
+  "main": 1620,
+  "t56b": 358,
+  "nostr": 358,
+  "failing": 1,
+  "why": "sqlglot/dialects/snowflake.py:142 class Snowflake.Tokenizer users 358"
+ },
+ "t46c03": {
+  "main": 1620,
+  "t56b": 171,
+  "nostr": 171,
+  "failing": 10,
+  "why": "sqlglot/dialects/tsql.py:169 class TSQL.Tokenizer users 171; sqlglot/dialects/fabric.py:46 class Fabric.Tokenizer users 15; sqlglot/dialects/fabric.py:46 copies a changed class attribute: keep 15 consumer tests"
+ },
+ "t46c04": {
+  "main": 1620,
+  "t56b": 294,
+  "nostr": 294,
+  "failing": 1,
+  "why": "sqlglot/dialects/bigquery.py:168 class BigQuery.Tokenizer users 294"
+ },
+ "t46g05": {
+  "main": 1620,
+  "t56b": 0,
+  "nostr": 0,
+  "failing": 0,
+  "why": "sqlglot/optimizer/__init__.py:2 module level 0"
+ },
+ "t46r00": {
+  "main": 1620,
+  "t56b": 226,
+  "nostr": 226,
+  "failing": 1,
+  "why": "sqlglot/generators/bigquery.py:408 class BigQueryGenerator users 226"
+ },
+ "t46r01": {
+  "main": 1620,
+  "t56b": 123,
+  "nostr": 123,
+  "failing": 2,
+  "why": "sqlglot/generators/clickhouse.py:299 class ClickHouseGenerator users 123"
+ },
+ "t46r02": {
+  "main": 1620,
+  "t56b": 283,
+  "nostr": 283,
+  "failing": 1,
+  "why": "sqlglot/generators/snowflake.py:413 class SnowflakeGenerator users 283"
+ },
+ "t46r03": {
+  "main": 1620,
+  "t56b": 246,
+  "nostr": 246,
+  "failing": 2,
+  "why": "sqlglot/generators/mysql.py:160 class MySQLGenerator users 246; sqlglot/generators/doris.py:58 class DorisGenerator users 39; sqlglot/generators/doris.py:58 copies a changed class attribute: keep 39 consumer tests; sqlglot/generators/singlestore.py:46 class SingleStoreGenerator users 34; sqlglot/generators/singlestore.py:46 copies a changed class attribute: keep 34 consumer tests; sqlglot/generators/starrocks.py:106 class StarRocksGenerator users 64; sqlglot/generators/starrocks.py:106 copies a changed class attribute: keep 64 consumer tests"
+ },
+ "t46r04": {
+  "main": 1620,
+  "t56b": 200,
+  "nostr": 200,
+  "failing": 1,
+  "why": "sqlglot/generators/presto.py:330 class PrestoGenerator users 200; sqlglot/generators/trino.py:25 class TrinoGenerator users 114; sqlglot/generators/trino.py:25 copies a changed class attribute: keep 114 consumer tests; sqlglot/generators/athena.py:123 class AthenaTrinoGenerator users 24; sqlglot/generators/athena.py:123 copies a changed class attribute: keep 24 consumer tests"
+ },
+ "t46r05": {
+  "main": 1620,
+  "t56b": 377,
+  "nostr": 377,
+  "failing": 10,
+  "why": "sqlglot/generators/duckdb.py:1662 class DuckDBGenerator users 377"
+ },
+ "t46a07": {
+  "main": 1620,
+  "t56b": 118,
+  "nostr": 118,
+  "failing": 2,
+  "why": "sqlglot/generators/oracle.py:79 class OracleGenerator users 118"
+ },
+ "m1x000": {
+  "main": 1620,
+  "t56b": 201,
+  "nostr": 201,
+  "failing": 0,
+  "why": "sqlglot/expressions/ddl.py:71 class SequenceProperties users 201"
+ },
+ "m5x002": {
+  "main": 1620,
+  "t56b": 5,
+  "nostr": 5,
+  "failing": 0,
+  "why": "sqlglot/expressions/functions.py:391 class AIForecast users 5"
+ },
+ "m5x014": {
+  "main": 567,
+  "t56b": 320,
+  "nostr": 320,
+  "failing": 0,
+  "why": "sqlglot/dialects/postgres.py:69 class Postgres users 320; sqlglot/dialects/redshift.py:31 class Redshift users 107; sqlglot/dialects/redshift.py:31 copies a changed class attribute: keep 107 consumer tests"
+ },
+ "m5x026": {
+  "main": 1620,
+  "t56b": 7,
+  "nostr": 7,
+  "failing": 2,
+  "why": "sqlglot/expressions/constraints.py:132 class IndexColumnConstraint users 7"
+ },
+ "m4x014": {
+  "main": 1620,
+  "t56b": 9,
+  "nostr": 9,
+  "failing": 2,
+  "why": "sqlglot/expressions/temporal.py:362 class MakeInterval users 9; sqlglot/parsers/postgres.py:42 runtime read of a changed class attribute 1"
+ },
+ "m1x020": {
+  "main": 1620,
+  "t56b": 164,
+  "nostr": 164,
+  "failing": 84,
+  "why": "sqlglot/expressions/datatypes.py:467 class Interval users 164"
+ },
+ "m2x014": {
+  "main": 1620,
+  "t56b": 5,
+  "nostr": 5,
+  "failing": 2,
+  "why": "sqlglot/expressions/query.py:2025 class AnalyzeWith users 5"
+ },
+ "fa911x029": {
+  "main": 1620,
+  "t56b": 171,
+  "nostr": 171,
+  "failing": 1,
+  "why": "sqlglot/dialects/tsql.py:43 class TSQL users 171"
+ },
+ "fa911x030": {
+  "main": 1620,
+  "t56b": 115,
+  "nostr": 115,
+  "failing": 1,
+  "why": "sqlglot/parsers/exasol.py:71 class ExasolParser users 39; sqlglot/anonymize.py:85 runtime read of a changed class attribute 5; sqlglot/expressions/builders.py:1027 runtime read of a changed class attribute 74"
+ },
+ "fa911x031": {
+  "main": 1620,
+  "t56b": 100,
+  "nostr": 100,
+  "failing": 1,
+  "why": "sqlglot/parsers/drill.py:28 class DrillParser users 24; sqlglot/anonymize.py:85 runtime read of a changed class attribute 5; sqlglot/expressions/builders.py:1027 runtime read of a changed class attribute 74"
+ },
+ "fa911x033": {
+  "main": 1620,
+  "t56b": 100,
+  "nostr": 100,
+  "failing": 2,
+  "why": "sqlglot/parsers/drill.py:32 class DrillParser users 24; sqlglot/anonymize.py:85 runtime read of a changed class attribute 5; sqlglot/expressions/builders.py:1027 runtime read of a changed class attribute 74"
+ },
+ "fa911x040": {
+  "main": 495,
+  "t56b": 137,
+  "nostr": 137,
+  "failing": 1,
+  "why": "sqlglot/dialects/oracle.py:43 class Oracle users 137"
+ },
+ "fa911x065": {
+  "main": 1620,
+  "t56b": 11,
+  "nostr": 11,
+  "failing": 4,
+  "why": "sqlglot/expressions/aggregate.py:69 class ArgMax users 11"
+ },
+ "fa911x068": {
+  "main": 1620,
+  "t56b": 200,
+  "nostr": 200,
+  "failing": 6,
+  "why": "sqlglot/generators/presto.py:324 class PrestoGenerator users 200; sqlglot/generators/trino.py:25 class TrinoGenerator users 114; sqlglot/generators/trino.py:25 copies a changed class attribute: keep 114 consumer tests; sqlglot/generators/athena.py:123 class AthenaTrinoGenerator users 24; sqlglot/generators/athena.py:123 copies a changed class attribute: keep 24 consumer tests"
+ },
+ "fa911x074": {
+  "main": 1620,
+  "t56b": 46,
+  "nostr": 46,
+  "failing": 2,
+  "why": "sqlglot/dialects/exasol.py:57 class Exasol.Tokenizer users 46"
+ },
+ "fa911x079": {
+  "main": 1620,
+  "t56b": 46,
+  "nostr": 46,
+  "failing": 2,
+  "why": "sqlglot/dialects/exasol.py:31 class Exasol users 46"
+ },
+ "fa911x100": {
+  "main": 1620,
+  "t56b": 265,
+  "nostr": 265,
+  "failing": 4,
+  "why": "sqlglot/parsers/spark2.py:67 class Spark2Parser users 204; sqlglot/anonymize.py:85 runtime read of a changed class attribute 5; sqlglot/expressions/builders.py:1027 runtime read of a changed class attribute 74; sqlglot/parsers/spark.py:72 class SparkParser users 202; sqlglot/parsers/spark.py:72 copies a changed class attribute: keep 202 consumer tests; sqlglot/parsers/databricks.py:22 class DatabricksParser users 117; sqlglot/parsers/databricks.py:22 copies a changed class attribute: keep 117 consumer tests"
+ },
+ "fa911x122": {
+  "main": 1620,
+  "t56b": 150,
+  "nostr": 150,
+  "failing": 2,
+  "why": "sqlglot/dialects/clickhouse.py:110 class ClickHouse.Tokenizer users 150"
+ },
+ "fa911x137": {
+  "main": 448,
+  "t56b": 46,
+  "nostr": 46,
+  "failing": 0,
+  "why": "sqlglot/dialects/exasol.py:39 class Exasol users 46"
+ },
+ "fa911x149": {
+  "main": 1620,
+  "t56b": 39,
+  "nostr": 39,
+  "failing": 0,
+  "why": "sqlglot/generators/doris.py:73 class DorisGenerator users 39"
+ },
+ "fa911x000": {
+  "main": 436,
+  "t56b": 36,
+  "nostr": 36,
+  "failing": 1,
+  "why": "sqlglot/dialects/drill.py:26 class Drill users 36"
+ },
+ "fa911x004": {
+  "main": 567,
+  "t56b": 320,
+  "nostr": 320,
+  "failing": 1,
+  "why": "sqlglot/dialects/postgres.py:54 class Postgres users 320; sqlglot/dialects/redshift.py:31 class Redshift users 107; sqlglot/dialects/redshift.py:31 copies a changed class attribute: keep 107 consumer tests"
+ },
+ "fa911x039": {
+  "main": 453,
+  "t56b": 37,
+  "nostr": 37,
+  "failing": 1,
+  "why": "sqlglot/dialects/dremio.py:50 class Dremio users 37"
+ },
+ "fa911x041": {
+  "main": 453,
+  "t56b": 37,
+  "nostr": 37,
+  "failing": 0,
+  "why": "sqlglot/dialects/dremio.py:51 class Dremio users 37"
+ },
+ "fa911x046": {
+  "main": 459,
+  "t56b": 37,
+  "nostr": 37,
+  "failing": 0,
+  "why": "sqlglot/dialects/singlestore.py:26 class SingleStore users 37"
+ },
+ "fa911x048": {
+  "main": 492,
+  "t56b": 171,
+  "nostr": 171,
+  "failing": 0,
+  "why": "sqlglot/dialects/tsql.py:66 class TSQL users 171; sqlglot/parsers/tsql.py:139 runtime read of a changed class attribute 1; sqlglot/parsers/tsql.py:141 runtime read of a changed class attribute 1; sqlglot/parsers/tsql.py:171 runtime read of a changed class attribute 1"
+ },
+ "fa911x064": {
+  "main": 492,
+  "t56b": 171,
+  "nostr": 171,
+  "failing": 0,
+  "why": "sqlglot/dialects/tsql.py:83 class TSQL users 171; sqlglot/parsers/tsql.py:139 runtime read of a changed class attribute 1; sqlglot/parsers/tsql.py:141 runtime read of a changed class attribute 1; sqlglot/parsers/tsql.py:171 runtime read of a changed class attribute 1"
+ },
+ "fa911x080": {
+  "main": 448,
+  "t56b": 46,
+  "nostr": 46,
+  "failing": 1,
+  "why": "sqlglot/dialects/exasol.py:37 class Exasol users 46"
+ },
+ "fa911x088": {
+  "main": 453,
+  "t56b": 37,
+  "nostr": 37,
+  "failing": 0,
+  "why": "sqlglot/dialects/dremio.py:28 class Dremio users 37"
+ },
+ "fa911x092": {
+  "main": 451,
+  "t56b": 355,
+  "nostr": 355,
+  "failing": 2,
+  "why": "sqlglot/dialects/hive.py:83 class Hive users 355; sqlglot/dialects/spark2.py:25 class Spark2 users 308; sqlglot/dialects/spark2.py:25 copies a changed class attribute: keep 308 consumer tests; sqlglot/dialects/spark.py:28 class Spark users 306; sqlglot/dialects/spark.py:28 copies a changed class attribute: keep 306 consumer tests"
+ },
+ "fa911x096": {
+  "main": 567,
+  "t56b": 320,
+  "nostr": 320,
+  "failing": 3,
+  "why": "sqlglot/dialects/postgres.py:76 class Postgres users 320; sqlglot/dialects/redshift.py:31 class Redshift users 107; sqlglot/dialects/redshift.py:31 copies a changed class attribute: keep 107 consumer tests"
+ },
+ "fa911x102": {
+  "main": 463,
+  "t56b": 75,
+  "nostr": 75,
+  "failing": 0,
+  "why": "sqlglot/dialects/teradata.py:26 class Teradata users 75"
+ },
+ "fa911x130": {
+  "main": 567,
+  "t56b": 320,
+  "nostr": 320,
+  "failing": 1,
+  "why": "sqlglot/dialects/postgres.py:57 class Postgres users 320; sqlglot/dialects/redshift.py:31 class Redshift users 107; sqlglot/dialects/redshift.py:31 copies a changed class attribute: keep 107 consumer tests"
+ },
+ "m31x001": {
+  "main": 492,
+  "t56b": 171,
+  "nostr": 171,
+  "failing": 0,
+  "why": "sqlglot/dialects/tsql.py:73 class TSQL users 171; sqlglot/parsers/tsql.py:139 runtime read of a changed class attribute 1; sqlglot/parsers/tsql.py:141 runtime read of a changed class attribute 1; sqlglot/parsers/tsql.py:171 runtime read of a changed class attribute 1"
+ },
+ "t14x008": {
+  "main": 1620,
+  "t56b": 23,
+  "nostr": 23,
+  "failing": 5,
+  "why": "tests/dialects/test_presto.py:9 test module level 23"
+ },
+ "t41x000": {
+  "main": 1620,
+  "t56b": 200,
+  "nostr": 200,
+  "failing": 3,
+  "why": "sqlglot/generators/presto.py:408 class PrestoGenerator users 200; sqlglot/generators/trino.py:25 class TrinoGenerator users 114; sqlglot/generators/trino.py:25 copies a changed class attribute: keep 114 consumer tests; sqlglot/generators/athena.py:123 class AthenaTrinoGenerator users 24; sqlglot/generators/athena.py:123 copies a changed class attribute: keep 24 consumer tests"
+ },
+ "t41x014": {
+  "main": 1620,
+  "t56b": 120,
+  "nostr": 120,
+  "failing": 3,
+  "why": "sqlglot/generators/redshift.py:57 class RedshiftGenerator users 96; sqlglot/expressions/builders.py:508 runtime read of a changed class attribute 36"
+ },
+ "t41x028": {
+  "main": 1620,
+  "t56b": 107,
+  "nostr": 107,
+  "failing": 1,
+  "why": "sqlglot/dialects/redshift.py:51 class Redshift.Tokenizer users 107"
+ },
+ "t41x040": {
+  "main": 1620,
+  "t56b": 5,
+  "nostr": 5,
+  "failing": 0,
+  "why": "sqlglot/generators/duckdb.py:52 module constant TIMEZONE_PATTERN: 5 read it"
+ },
+ "t41x063": {
+  "main": 1620,
+  "t56b": 60,
+  "nostr": 60,
+  "failing": 60,
+  "why": "tests/test_executor.py:30 test module level 60"
+ },
+ "t41x001": {
+  "main": 1620,
+  "t56b": 200,
+  "nostr": 200,
+  "failing": 6,
+  "why": "sqlglot/generators/presto.py:370 class PrestoGenerator users 200; sqlglot/generators/trino.py:25 class TrinoGenerator users 114; sqlglot/generators/trino.py:25 copies a changed class attribute: keep 114 consumer tests; sqlglot/generators/athena.py:123 class AthenaTrinoGenerator users 24; sqlglot/generators/athena.py:123 copies a changed class attribute: keep 24 consumer tests"
+ },
+ "t41x015": {
+  "main": 1620,
+  "t56b": 216,
+  "nostr": 216,
+  "failing": 17,
+  "why": "sqlglot/generators/presto.py:312 class PrestoGenerator users 200; sqlglot/expressions/builders.py:508 runtime read of a changed class attribute 36"
+ },
+ "t41x029": {
+  "main": 1620,
+  "t56b": 320,
+  "nostr": 320,
+  "failing": 1,
+  "why": "sqlglot/dialects/postgres.py:140 class Postgres.Tokenizer users 320; sqlglot/dialects/redshift.py:49 class Redshift.Tokenizer users 107; sqlglot/dialects/redshift.py:49 copies a changed class attribute: keep 107 consumer tests; sqlglot/dialects/risingwave.py:19 class RisingWave.Tokenizer users 17; sqlglot/dialects/risingwave.py:19 copies a changed class attribute: keep 17 consumer tests"
+ },
+ "t41x041": {
+  "main": 1620,
+  "t56b": 226,
+  "nostr": 226,
+  "failing": 0,
+  "why": "sqlglot/generators/bigquery.py:372 class BigQueryGenerator users 226"
+ },
+ "t41x064": {
+  "main": 1620,
+  "t56b": 60,
+  "nostr": 60,
+  "failing": 60,
+  "why": "tests/test_executor.py:31 test module level 60"
+ },
+ "t41x002": {
+  "main": 1620,
+  "t56b": 200,
+  "nostr": 200,
+  "failing": 1,
+  "why": "sqlglot/generators/presto.py:437 class PrestoGenerator users 200; sqlglot/generators/trino.py:25 class TrinoGenerator users 114; sqlglot/generators/trino.py:25 copies a changed class attribute: keep 114 consumer tests; sqlglot/generators/athena.py:123 class AthenaTrinoGenerator users 24; sqlglot/generators/athena.py:123 copies a changed class attribute: keep 24 consumer tests"
+ },
+ "t41x016": {
+  "main": 1620,
+  "t56b": 278,
+  "nostr": 278,
+  "failing": 2,
+  "why": "sqlglot/generators/postgres.py:345 class PostgresGenerator users 261; sqlglot/expressions/builders.py:508 runtime read of a changed class attribute 36; sqlglot/generators/redshift.py:56 class RedshiftGenerator users 96; sqlglot/generators/redshift.py:56 copies a changed class attribute: keep 96 consumer tests"
+ },
+ "t41x030": {
+  "main": 1620,
+  "t56b": 437,
+  "nostr": 437,
+  "failing": 0,
+  "why": "sqlglot/dialects/duckdb.py:139 class DuckDB.Tokenizer users 437"
+ },
+ "t41x042": {
+  "main": 1620,
+  "t56b": 19,
+  "nostr": 19,
+  "failing": 0,
+  "why": "sqlglot/generators/hive.py:57 module constant CANONICAL_TIME_FORMAT: 19 read it"
+ },
+ "t41x065": {
+  "main": 1620,
+  "t56b": 1377,
+  "nostr": 1377,
+  "failing": 90,
+  "why": "tests/helpers.py:4 test module level 1377"
+ },
+ "t41x003": {
+  "main": 1620,
+  "t56b": 261,
+  "nostr": 261,
+  "failing": 1,
+  "why": "sqlglot/generators/postgres.py:408 class PostgresGenerator users 261; sqlglot/generators/materialize.py:23 class MaterializeGenerator users 13; sqlglot/generators/materialize.py:23 copies a changed class attribute: keep 13 consumer tests; sqlglot/generators/redshift.py:69 class RedshiftGenerator users 96; sqlglot/generators/redshift.py:69 copies a changed class attribute: keep 96 consumer tests; sqlglot/generators/risingwave.py:14 class RisingWaveGenerator users 11; sqlglot/generators/risingwave.py:14 copies a changed class attribute: keep 11 consumer tests"
+ },
+ "t41x017": {
+  "main": 1620,
+  "t56b": 388,
+  "nostr": 388,
+  "failing": 11,
+  "why": "sqlglot/generators/duckdb.py:1887 class DuckDBGenerator users 377; sqlglot/expressions/builders.py:508 runtime read of a changed class attribute 36"
+ },
+ "t41x031": {
+  "main": 1620,
+  "t56b": 73,
+  "nostr": 73,
+  "failing": 1,
+  "why": "sqlglot/dialects/starrocks.py:52 class StarRocks.Tokenizer users 73"
+ },
+ "t41x043": {
+  "main": 1620,
+  "t56b": 304,
+  "nostr": 304,
+  "failing": 0,
+  "why": "sqlglot/generators/hive.py:245 class HiveGenerator users 304"
+ },
+ "t41x066": {
+  "main": 1620,
+  "t56b": 60,
+  "nostr": 60,
+  "failing": 0,
+  "why": "tests/test_executor.py:70 test module level 60"
+ },
+ "t41x004": {
+  "main": 1620,
+  "t56b": 261,
+  "nostr": 261,
+  "failing": 1,
+  "why": "sqlglot/generators/postgres.py:465 class PostgresGenerator users 261; sqlglot/generators/materialize.py:23 class MaterializeGenerator users 13; sqlglot/generators/materialize.py:23 copies a changed class attribute: keep 13 consumer tests; sqlglot/generators/redshift.py:69 class RedshiftGenerator users 96; sqlglot/generators/redshift.py:69 copies a changed class attribute: keep 96 consumer tests; sqlglot/generators/risingwave.py:14 class RisingWaveGenerator users 11; sqlglot/generators/risingwave.py:14 copies a changed class attribute: keep 11 consumer tests"
+ },
+ "t41x018": {
+  "main": 1620,
+  "t56b": 69,
+  "nostr": 69,
+  "failing": 1,
+  "why": "sqlglot/generators/singlestore.py:357 class SingleStoreGenerator users 34; sqlglot/expressions/builders.py:508 runtime read of a changed class attribute 36"
+ },
+ "t41x032": {
+  "main": 1620,
+  "t56b": 171,
+  "nostr": 171,
+  "failing": 2,
+  "why": "sqlglot/dialects/tsql.py:179 class TSQL.Tokenizer users 171; sqlglot/dialects/fabric.py:46 class Fabric.Tokenizer users 15; sqlglot/dialects/fabric.py:46 copies a changed class attribute: keep 15 consumer tests"
+ },
+ "t41x044": {
+  "main": 1620,
+  "t56b": 55,
+  "nostr": 55,
+  "failing": 0,
+  "why": "sqlglot/expressions/builders.py:347 module constant INTERVAL_STRING_RE: 55 read it"
+ },
+ "t41x068": {
+  "main": 1620,
+  "t56b": 41,
+  "nostr": 41,
+  "failing": 38,
+  "why": "tests/dialects/test_oracle.py:7 test module level 41"
+ },
+ "t41x005": {
+  "main": 1620,
+  "t56b": 261,
+  "nostr": 261,
+  "failing": 2,
+  "why": "sqlglot/generators/postgres.py:466 class PostgresGenerator users 261; sqlglot/generators/materialize.py:23 class MaterializeGenerator users 13; sqlglot/generators/materialize.py:23 copies a changed class attribute: keep 13 consumer tests; sqlglot/generators/redshift.py:69 class RedshiftGenerator users 96; sqlglot/generators/redshift.py:69 copies a changed class attribute: keep 96 consumer tests; sqlglot/generators/risingwave.py:14 class RisingWaveGenerator users 11; sqlglot/generators/risingwave.py:14 copies a changed class attribute: keep 11 consumer tests"
+ },
+ "t41x021": {
+  "main": 1620,
+  "t56b": 243,
+  "nostr": 243,
+  "failing": 2,
+  "why": "sqlglot/generators/bigquery.py:566 class BigQueryGenerator users 226; sqlglot/expressions/builders.py:508 runtime read of a changed class attribute 36"
+ },
+ "t41x033": {
+  "main": 1620,
+  "t56b": 358,
+  "nostr": 358,
+  "failing": 1,
+  "why": "sqlglot/dialects/snowflake.py:143 class Snowflake.Tokenizer users 358"
+ },
+ "t41x055": {
+  "main": 1620,
+  "t56b": 10,
+  "nostr": 10,
+  "failing": 0,
+  "why": "sqlglot/expressions/math.py:136 class Ceil users 10"
+ },
+ "t41x069": {
+  "main": 1620,
+  "t56b": 45,
+  "nostr": 45,
+  "failing": 44,
+  "why": "tests/dialects/test_postgres.py:12 test module level 45"
+ },
+ "t41x006": {
+  "main": 1620,
+  "t56b": 377,
+  "nostr": 377,
+  "failing": 1,
+  "why": "sqlglot/generators/duckdb.py:1844 class DuckDBGenerator users 377"
+ },
+ "t41x022": {
+  "main": 608,
+  "t56b": 444,
+  "nostr": 444,
+  "failing": 0,
+  "why": "sqlglot/dialects/mysql.py:49 class MySQL users 291; sqlglot/dialects/presto.py:36 class Presto users 233; sqlglot/dialects/presto.py:36 copies a changed class attribute: keep 233 consumer tests"
+ },
+ "t41x034": {
+  "main": 1620,
+  "t56b": 137,
+  "nostr": 137,
+  "failing": 2,
+  "why": "sqlglot/dialects/oracle.py:115 class Oracle.Tokenizer users 137"
+ },
+ "t41x046": {
+  "main": 1620,
+  "t56b": 3,
+  "nostr": 3,
+  "failing": 0,
+  "why": "sqlglot/generator.py:28 module constant _HIGH_BYTE_RE: 3 read it"
+ },
+ "t41x056": {
+  "main": 1620,
+  "t56b": 5,
+  "nostr": 5,
+  "failing": 3,
+  "why": "sqlglot/expressions/math.py:152 class IsInf users 5"
+ },
+ "t41x070": {
+  "main": 1620,
+  "t56b": 0,
+  "nostr": 0,
+  "failing": 0,
+  "why": "tests/leakcheck.py:97 test module level 0"
+ },
+ "t41x007": {
+  "main": 1620,
+  "t56b": 272,
+  "nostr": 272,
+  "failing": 1,
+  "why": "sqlglot/generators/spark2.py:188 class Spark2Generator users 272; sqlglot/generators/spark.py:94 class SparkGenerator users 271; sqlglot/generators/spark.py:94 copies a changed class attribute: keep 271 consumer tests; sqlglot/generators/databricks.py:50 class DatabricksGenerator users 158; sqlglot/generators/databricks.py:50 copies a changed class attribute: keep 158 consumer tests"
+ },
+ "t41x023": {
+  "main": 1620,
+  "t56b": 377,
+  "nostr": 377,
+  "failing": 6,
+  "why": "sqlglot/generators/duckdb.py:1709 class DuckDBGenerator users 377"
+ },
+ "t41x035": {
+  "main": 1620,
+  "t56b": 143,
+  "nostr": 143,
+  "failing": 0,
+  "why": "sqlglot/dialects/trino.py:17 class Trino.Tokenizer users 143; sqlglot/dialects/athena.py:67 class Athena.Tokenizer users 33; sqlglot/dialects/athena.py:67 copies a changed class attribute: keep 33 consumer tests; sqlglot/dialects/athena.py:156 class _TrinoTokenizer users 22; sqlglot/dialects/athena.py:156 copies a changed class attribute: keep 22 consumer tests"
+ },
+ "t41x047": {
+  "main": 608,
+  "t56b": 444,
+  "nostr": 444,
+  "failing": 7,
+  "why": "sqlglot/dialects/mysql.py:50 class MySQL users 291; sqlglot/dialects/presto.py:36 class Presto users 233; sqlglot/dialects/presto.py:36 copies a changed class attribute: keep 233 consumer tests"
+ },
+ "t41x057": {
+  "main": 1620,
+  "t56b": 4,
+  "nostr": 4,
+  "failing": 1,
+  "why": "sqlglot/expressions/math.py:194 class Sign users 4"
+ },
+ "t41x071": {
+  "main": 1620,
+  "t56b": 42,
+  "nostr": 42,
+  "failing": 0,
+  "why": "tests/dialects/test_sqlite.py:36 definition header of test_variadic_iif_execution: callers 0; tests/dialects/test_sqlite.py:36 test module level 42"
+ },
+ "t41x008": {
+  "main": 1620,
+  "t56b": 96,
+  "nostr": 96,
+  "failing": 1,
+  "why": "sqlglot/generators/redshift.py:114 class RedshiftGenerator users 96"
+ },
+ "t41x024": {
+  "main": 1620,
+  "t56b": 226,
+  "nostr": 226,
+  "failing": 1,
+  "why": "sqlglot/generators/bigquery.py:466 class BigQueryGenerator users 226"
+ },
+ "t41x048": {
+  "main": 608,
+  "t56b": 444,
+  "nostr": 444,
+  "failing": 8,
+  "why": "sqlglot/dialects/mysql.py:46 class MySQL users 291; sqlglot/dialects/presto.py:36 class Presto users 233; sqlglot/dialects/presto.py:36 copies a changed class attribute: keep 233 consumer tests"
+ },
+ "t41x058": {
+  "main": 1620,
+  "t56b": 8,
+  "nostr": 8,
+  "failing": 0,
+  "why": "sqlglot/expressions/math.py:285 class Getbit users 8"
+ },
+ "t41x072": {
+  "main": 1620,
+  "t56b": 79,
+  "nostr": 79,
+  "failing": 0,
+  "why": "tests/test_expressions.py:1235 definition header of test_convert_python39: callers 1; tests/test_expressions.py:1235 test module level 79"
+ },
+ "t41x009": {
+  "main": 1620,
+  "t56b": 200,
+  "nostr": 200,
+  "failing": 1,
+  "why": "sqlglot/generators/presto.py:363 class PrestoGenerator users 200; sqlglot/generators/trino.py:25 class TrinoGenerator users 114; sqlglot/generators/trino.py:25 copies a changed class attribute: keep 114 consumer tests; sqlglot/generators/athena.py:123 class AthenaTrinoGenerator users 24; sqlglot/generators/athena.py:123 copies a changed class attribute: keep 24 consumer tests"
+ },
+ "t41x025": {
+  "main": 1620,
+  "t56b": 123,
+  "nostr": 123,
+  "failing": 2,
+  "why": "sqlglot/generators/clickhouse.py:321 class ClickHouseGenerator users 123"
+ },
+ "t41x049": {
+  "main": 1620,
+  "t56b": 4,
+  "nostr": 4,
+  "failing": 0,
+  "why": "tests/test_time.py:9 test module level 4"
+ },
+ "t41x059": {
+  "main": 1620,
+  "t56b": 19,
+  "nostr": 19,
+  "failing": 0,
+  "why": "sqlglot/expressions/math.py:203 class Trunc users 19"
+ },
+ "t41x073": {
+  "main": 1620,
+  "t56b": 5,
+  "nostr": 5,
+  "failing": 0,
+  "why": "tests/test_serde.py:30 definition header of test_custom_expression: callers 1; tests/test_serde.py:30 test module level 5"
+ },
+ "t41x087": {
+  "main": 1620,
+  "t56b": 0,
+  "nostr": 0,
+  "failing": 0,
+  "why": "sqlglot/optimizer/__init__.py:2 module level 0"
+ },
+ "t41x010": {
+  "main": 1620,
+  "t56b": 200,
+  "nostr": 200,
+  "failing": 2,
+  "why": "sqlglot/generators/presto.py:410 class PrestoGenerator users 200; sqlglot/generators/trino.py:25 class TrinoGenerator users 114; sqlglot/generators/trino.py:25 copies a changed class attribute: keep 114 consumer tests; sqlglot/generators/athena.py:123 class AthenaTrinoGenerator users 24; sqlglot/generators/athena.py:123 copies a changed class attribute: keep 24 consumer tests"
+ },
+ "t41x026": {
+  "main": 1620,
+  "t56b": 283,
+  "nostr": 283,
+  "failing": 1,
+  "why": "sqlglot/generators/snowflake.py:523 class SnowflakeGenerator users 283"
+ },
+ "t41x060": {
+  "main": 1620,
+  "t56b": 1377,
+  "nostr": 1377,
+  "failing": 0,
+  "why": "tests/helpers.py:66 test module level 1377"
+ },
+ "t41x075": {
+  "main": 1620,
+  "t56b": 3,
+  "nostr": 3,
+  "failing": 3,
+  "why": "tests/dialects/test_drill.py:5 test module level 3"
+ },
+ "t41x011": {
+  "main": 1620,
+  "t56b": 96,
+  "nostr": 96,
+  "failing": 2,
+  "why": "sqlglot/generators/redshift.py:91 class RedshiftGenerator users 96"
+ },
+ "t41x027": {
+  "main": 1620,
+  "t56b": 0,
+  "nostr": 0,
+  "failing": 0,
+  "why": "tests/leakcheck.py:92 test module level 0"
+ },
+ "t41x061": {
+  "main": 1620,
+  "t56b": 7,
+  "nostr": 7,
+  "failing": 7,
+  "why": "tests/dialects/test_fabric.py:5 test module level 7"
+ },
+ "t41x076": {
+  "main": 1620,
+  "t56b": 1020,
+  "nostr": 1020,
+  "failing": 0,
+  "why": "tests/dialects/test_dialect.py:6100 definition header of test_patch_dialect_parser: callers 1; tests/dialects/test_dialect.py:6100 test module level 1020"
+ },
+ "t41x012": {
+  "main": 1620,
+  "t56b": 200,
+  "nostr": 200,
+  "failing": 2,
+  "why": "sqlglot/generators/presto.py:346 class PrestoGenerator users 200; sqlglot/generators/trino.py:25 class TrinoGenerator users 114; sqlglot/generators/trino.py:25 copies a changed class attribute: keep 114 consumer tests; sqlglot/generators/athena.py:123 class AthenaTrinoGenerator users 24; sqlglot/generators/athena.py:123 copies a changed class attribute: keep 24 consumer tests"
+ },
+ "t41x062": {
+  "main": 1620,
+  "t56b": 2,
+  "nostr": 2,
+  "failing": 2,
+  "why": "tests/dialects/test_risingwave.py:5 test module level 2"
+ },
+ "t41x013": {
+  "main": 1620,
+  "t56b": 96,
+  "nostr": 96,
+  "failing": 2,
+  "why": "sqlglot/generators/redshift.py:86 class RedshiftGenerator users 96"
+ },
+ "t30x013": {
+  "main": 1620,
+  "t56b": 358,
+  "nostr": 358,
+  "failing": 0,
+  "why": "sqlglot/dialects/snowflake.py:61 class Snowflake users 358"
+ },
+ "t32x000": {
+  "main": 432,
+  "t56b": 306,
+  "nostr": 306,
+  "failing": 0,
+  "why": "sqlglot/dialects/spark.py:32 class Spark users 306"
+ },
+ "t32x001": {
+  "main": 448,
+  "t56b": 46,
+  "nostr": 46,
+  "failing": 0,
+  "why": "sqlglot/dialects/exasol.py:41 class Exasol users 46"
+ },
+ "t32x002": {
+  "main": 492,
+  "t56b": 171,
+  "nostr": 171,
+  "failing": 0,
+  "why": "sqlglot/dialects/tsql.py:63 class TSQL users 171; sqlglot/parsers/tsql.py:139 runtime read of a changed class attribute 1; sqlglot/parsers/tsql.py:141 runtime read of a changed class attribute 1; sqlglot/parsers/tsql.py:171 runtime read of a changed class attribute 1"
+ },
+ "t32x003": {
+  "main": 567,
+  "t56b": 320,
+  "nostr": 320,
+  "failing": 0,
+  "why": "sqlglot/dialects/postgres.py:70 class Postgres users 320; sqlglot/dialects/redshift.py:31 class Redshift users 107; sqlglot/dialects/redshift.py:31 copies a changed class attribute: keep 107 consumer tests"
+ },
+ "t32x004": {
+  "main": 451,
+  "t56b": 355,
+  "nostr": 355,
+  "failing": 0,
+  "why": "sqlglot/dialects/hive.py:81 class Hive users 355; sqlglot/dialects/spark2.py:25 class Spark2 users 308; sqlglot/dialects/spark2.py:25 copies a changed class attribute: keep 308 consumer tests; sqlglot/dialects/spark.py:28 class Spark users 306; sqlglot/dialects/spark.py:28 copies a changed class attribute: keep 306 consumer tests"
+ },
+ "t32x005": {
+  "main": 608,
+  "t56b": 444,
+  "nostr": 444,
+  "failing": 2,
+  "why": "sqlglot/dialects/mysql.py:48 class MySQL users 291; sqlglot/dialects/presto.py:36 class Presto users 233; sqlglot/dialects/presto.py:36 copies a changed class attribute: keep 233 consumer tests"
+ },
+ "t32x006": {
+  "main": 463,
+  "t56b": 75,
+  "nostr": 75,
+  "failing": 0,
+  "why": "sqlglot/dialects/teradata.py:26 class Teradata users 75"
+ },
+ "t32x007": {
+  "main": 459,
+  "t56b": 37,
+  "nostr": 37,
+  "failing": 0,
+  "why": "sqlglot/dialects/singlestore.py:24 class SingleStore users 37"
+ },
+ "t32x008": {
+  "main": 567,
+  "t56b": 320,
+  "nostr": 320,
+  "failing": 0,
+  "why": "sqlglot/dialects/postgres.py:74 class Postgres users 320; sqlglot/dialects/redshift.py:31 class Redshift users 107; sqlglot/dialects/redshift.py:31 copies a changed class attribute: keep 107 consumer tests"
+ },
+ "t32x009": {
+  "main": 432,
+  "t56b": 306,
+  "nostr": 306,
+  "failing": 2,
+  "why": "sqlglot/dialects/spark.py:33 class Spark users 306"
+ },
+ "t32x010": {
+  "main": 463,
+  "t56b": 75,
+  "nostr": 75,
+  "failing": 0,
+  "why": "sqlglot/dialects/teradata.py:38 class Teradata users 75"
+ },
+ "t32x011": {
+  "main": 451,
+  "t56b": 355,
+  "nostr": 355,
+  "failing": 3,
+  "why": "sqlglot/dialects/hive.py:70 class Hive users 355; sqlglot/dialects/spark2.py:25 class Spark2 users 308; sqlglot/dialects/spark2.py:25 copies a changed class attribute: keep 308 consumer tests; sqlglot/dialects/spark.py:28 class Spark users 306; sqlglot/dialects/spark.py:28 copies a changed class attribute: keep 306 consumer tests"
+ },
+ "t32x012": {
+  "main": 492,
+  "t56b": 171,
+  "nostr": 171,
+  "failing": 0,
+  "why": "sqlglot/dialects/tsql.py:74 class TSQL users 171; sqlglot/parsers/tsql.py:139 runtime read of a changed class attribute 1; sqlglot/parsers/tsql.py:141 runtime read of a changed class attribute 1; sqlglot/parsers/tsql.py:171 runtime read of a changed class attribute 1"
+ },
+ "t32x013": {
+  "main": 453,
+  "t56b": 37,
+  "nostr": 37,
+  "failing": 1,
+  "why": "sqlglot/dialects/dremio.py:22 class Dremio users 37"
+ },
+ "t32x014": {
+  "main": 448,
+  "t56b": 46,
+  "nostr": 46,
+  "failing": 0,
+  "why": "sqlglot/dialects/exasol.py:29 class Exasol users 46"
+ },
+ "a44l02": {
+  "main": 608,
+  "t56b": 444,
+  "nostr": 444,
+  "failing": 1,
+  "why": "sqlglot/dialects/mysql.py:49 class MySQL users 291; sqlglot/dialects/presto.py:36 class Presto users 233; sqlglot/dialects/presto.py:36 copies a changed class attribute: keep 233 consumer tests"
+ },
+ "a44l03": {
+  "main": 451,
+  "t56b": 355,
+  "nostr": 355,
+  "failing": 3,
+  "why": "sqlglot/dialects/hive.py:63 class Hive users 355; sqlglot/dialects/spark2.py:25 class Spark2 users 308; sqlglot/dialects/spark2.py:25 copies a changed class attribute: keep 308 consumer tests; sqlglot/dialects/spark.py:28 class Spark users 306; sqlglot/dialects/spark.py:28 copies a changed class attribute: keep 306 consumer tests"
+ },
+ "a44l04": {
+  "main": 492,
+  "t56b": 171,
+  "nostr": 171,
+  "failing": 0,
+  "why": "sqlglot/dialects/tsql.py:68 class TSQL users 171; sqlglot/parsers/tsql.py:139 runtime read of a changed class attribute 1; sqlglot/parsers/tsql.py:141 runtime read of a changed class attribute 1; sqlglot/parsers/tsql.py:171 runtime read of a changed class attribute 1"
+ }
+}
