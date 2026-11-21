@@ -334,6 +334,13 @@ class Selector:
         self._cmp_drop = None
         self._test_import_map = None
         self._shared_setup_map = None
+        # Filled by prepare_batch in the parent, before any commit is forked:
+        # parsed patches by path. Children only read them. (Caching parsed
+        # original files here was measured and rejected: it doubles the
+        # parent, and the extra fork and page-copy CPU on every commit
+        # outweighs the parsing it saves.)
+        self.patches = {}
+        self.vm_base = None
         try:
             with gzip.open(INDEX, "rt") as f:
                 self.index = json.load(f)
@@ -1787,20 +1794,77 @@ def pack(nums, tests):
 # ---------------------------------------------------------------- main
 
 
-def select_patch(patch_path, sel, tests, deadline):
-    """Analyze one commit. Any exception is handled by the parent process."""
-    if time.monotonic() >= deadline:
-        raise RuntimeError("batch analysis deadline reached")
+def read_patch(patch_path):
     with open(patch_path, "rb") as f:
         raw = f.read(MAX_PATCH_BYTES + 1)
     if len(raw) > MAX_PATCH_BYTES:
         raise ValueError("patch exceeds size limit")
     text = raw.decode("utf-8")
-    chosen, why = set(), []
-    sel.pending_shared = set()
     files = parse_patch(text)
     if not files and text.strip():
         raise RuntimeError("no files in patch")
+    return files
+
+
+def _vm_size():
+    try:
+        with open("/proc/self/status") as f:
+            for line in f:
+                if line.startswith("VmSize:"):
+                    return int(line.split()[1]) * 1024
+    except (OSError, ValueError, IndexError):
+        pass
+    return None
+
+
+# Below this many commits, loading the comparison profile in every child that
+# needs it (about 8% of proxy commits) costs less CPU than loading it once.
+CMP_PRELOAD_COMMITS = 16
+
+
+def prepare_batch(sel, paths, deadline):
+    """Work done once in the parent before forking: parse each patch (which
+    also compiles its regular expressions once for every child) and load the
+    comparison profile. Returns an estimated analysis cost per patch path (bytes of Python
+    to parse), so the cheapest commits can go first. A patch that fails here
+    is left for its own child, which fails it the same way."""
+    sel.vm_base = _vm_size()
+    cost, touched = {}, {}
+    for path in paths:
+        cost[path] = 1 << 40
+        if time.monotonic() >= deadline:
+            continue
+        try:
+            files = read_patch(path)
+        except Exception:
+            continue
+        sel.patches[path] = files
+        for fp in files:
+            if fp.old is not None and fp.old.endswith(".py"):
+                touched.setdefault(fp.old, []).append(path)
+    size = {}
+    for rel in touched:
+        try:
+            size[rel] = os.path.getsize(os.path.join(SRC, rel))
+        except OSError:
+            size[rel] = 0
+    for path, files in sel.patches.items():
+        cost[path] = 1 + sum(size.get(fp.old, 0) for fp in files if fp.old is not None and fp.old.endswith(".py")) \
+            + sum(len(l) for fp in files for _, ls in fp.hunks for l in ls)
+    if len(paths) >= CMP_PRELOAD_COMMITS:
+        sel.cmp_profile()
+    return cost
+
+
+def select_patch(patch_path, sel, tests, deadline):
+    """Analyze one commit. Any exception is handled by the parent process."""
+    if time.monotonic() >= deadline:
+        raise RuntimeError("batch analysis deadline reached")
+    files = getattr(sel, "patches", {}).get(patch_path)
+    if files is None:
+        files = read_patch(patch_path)
+    chosen, why = set(), []
+    sel.pending_shared = set()
     for fp in files:
         if time.monotonic() >= deadline:
             raise RuntimeError("batch analysis deadline reached")
@@ -1822,10 +1886,21 @@ def _analyze_child(connection, patch_path, sel, tests, deadline):
 
         soft, hard = resource.getrlimit(resource.RLIMIT_AS)
         limit = 768 * 1024 * 1024
+        # Keep the same headroom over what the parent's caches added.
+        base, now = getattr(sel, "vm_base", None), _vm_size()
+        if base is not None and now is not None and now > base:
+            limit += now - base
         if soft != resource.RLIM_INFINITY:
             limit = min(limit, soft)
         resource.setrlimit(resource.RLIMIT_AS, (limit, hard))
         resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+        # If two children together exhaust the container's memory, the kernel
+        # must kill a child, never the parent that writes the output.
+        try:
+            with open("/proc/self/oom_score_adj", "w") as f:
+                f.write("1000")
+        except OSError:
+            pass
         # SIGXCPU ends the child after MAX_COMMIT_SECONDS of its own CPU time
         # (a forked child starts from zero); SIGKILL one second later.
         cpu_soft, cpu_hard = resource.getrlimit(resource.RLIMIT_CPU)
@@ -1843,6 +1918,98 @@ def _analyze_child(connection, patch_path, sel, tests, deadline):
         connection.send((set(tests), [f"analysis error {type(e).__name__}: everything"]))
     finally:
         connection.close()
+
+
+def cpu_slots():
+    """How many analysis children to run at once: the CPUs this container may
+    use (its cgroup quota, else its affinity mask), at most 4. Each child is
+    still one process at a time on one CPU, so the CPU charge is unchanged."""
+    override = os.environ.get("BLAST_WORKERS")
+    if override:
+        try:
+            return max(1, min(4, int(override)))
+        except ValueError:
+            pass
+    try:
+        n = len(os.sched_getaffinity(0))
+    except (AttributeError, OSError):
+        n = os.cpu_count() or 1
+    try:
+        with open("/sys/fs/cgroup/cpu.max") as f:
+            quota, period = f.read().split()[:2]
+        if quota != "max":
+            n = min(n, max(1, int(quota) // int(period)))
+    except (OSError, ValueError):
+        pass
+    return max(1, min(4, n))
+
+
+def _reap(process):
+    if process.pid is not None:
+        process.join(0.01)
+        if process.is_alive():
+            process.terminate()
+            process.join(0.1)
+        if process.is_alive():
+            process.kill()
+            process.join()
+        process.close()
+
+
+def analyze_batch(context, patch_paths, sel, tests, deadline, emit, slots=1):
+    """Analyze commits in the given order with up to `slots` children at once
+    and call emit(patch_path, chosen, why) once per commit, in completion
+    order. Each child has the per-commit CPU limit and its own wall backstop;
+    once the batch deadline passes, the remaining commits select everything."""
+    from multiprocessing.connection import wait
+
+    pending = list(reversed(patch_paths))
+    running = {}  # receiver -> (process, patch_path, wall limit)
+    while pending or running:
+        while pending and len(running) < slots:
+            path = pending.pop()
+            now = time.monotonic()
+            budget = min(MAX_COMMIT_WALL_SECONDS, deadline - now)
+            if budget <= 0:
+                emit(path, set(tests), ["batch analysis deadline reached: everything"])
+                continue
+            receiver, sender = context.Pipe(duplex=False)
+            process = None
+            try:
+                process = context.Process(target=_analyze_child,
+                                          args=(sender, path, sel, tests, deadline))
+                process.start()
+            except Exception as e:
+                receiver.close()
+                if process is not None:
+                    _reap(process)
+                emit(path, set(tests), [f"analysis process failed {type(e).__name__}: everything"])
+                continue
+            finally:
+                sender.close()
+            running[receiver] = (process, path, now + budget)
+        if not running:
+            continue
+        timeout = max(0.0, min(limit for _, _, limit in running.values()) - time.monotonic())
+        ready = wait(list(running), timeout)
+        now = time.monotonic()
+        for receiver in list(running):
+            process, path, limit = running[receiver]
+            if receiver in ready:
+                try:
+                    result = receiver.recv()
+                except EOFError:
+                    result = (set(tests), ["commit analysis stopped by a resource limit: everything"])
+                except Exception as e:
+                    result = (set(tests), [f"analysis process failed {type(e).__name__}: everything"])
+            elif now >= limit:
+                result = (set(tests), ["commit analysis timed out: everything"])
+            else:
+                continue
+            del running[receiver]
+            receiver.close()
+            _reap(process)
+            emit(path, *result)
 
 
 def analyze_patch(context, patch_path, sel, tests, deadline):
@@ -1905,17 +2072,35 @@ def main():
 
     cdir = os.path.join(DATA, "commits")
     fallback_workers = pack(set(tests), tests)
-    for name in sorted(os.listdir(cdir)):
-        if not name.endswith(".patch"):
-            continue
-        cid = name[: -len(".patch")]
-        if sel is None:
-            chosen, why = set(tests), ["map unavailable: everything"]
-        else:
-            chosen, why = analyze_patch(context, os.path.join(cdir, name), sel, tests, deadline)
-        workers = fallback_workers if chosen == set(tests) else pack(chosen, tests)
+    everything = set(tests)
+    paths = [os.path.join(cdir, name) for name in sorted(os.listdir(cdir)) if name.endswith(".patch")]
+
+    def emit(path, chosen, why):
+        cid = os.path.basename(path)[: -len(".patch")]
+        workers = fallback_workers if chosen == everything else pack(chosen, tests)
         log(cid, len(chosen), "tests;", "; ".join(why))
         sys.stdout.write(json.dumps({"commit": cid, "workers": workers}) + "\n")
+
+    if sel is None:
+        for path in paths:
+            emit(path, everything, ["map unavailable: everything"])
+    else:
+        cost = {}
+        try:
+            cost = prepare_batch(sel, paths, deadline)
+        except Exception as e:  # caches are an optimisation only
+            log("batch preparation failed:", repr(e))
+            sel.patches = {}
+        # Cheapest first: if the deadline comes, the fewest commits fall back
+        # to every test. Output order is free.
+        paths.sort(key=lambda p: (cost.get(p, 1 << 40), p))
+        # Children never free the parent's objects. Without this, a child's
+        # first collection walks every inherited object (the maps, the cached
+        # trees), copying their pages and spending CPU on each commit.
+        import gc
+        gc.collect()
+        gc.freeze()
+        analyze_batch(context, paths, sel, tests, deadline, emit, cpu_slots())
     sys.stdout.flush()
 
 

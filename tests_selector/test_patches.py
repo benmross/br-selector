@@ -584,3 +584,116 @@ def test_comparison_without_profile_is_normal(cmp_sandbox, tmp_path):
     (tmp_path / "cmp.json.gz").unlink()
     answers, why, _ = run({"swap": cmp_diff("x is None", "x == None")})
     assert answers["swap"] == {0, 3}, why
+
+
+class PerFileSelector:
+    """Behaviour chosen by the patched file's name, for batch tests."""
+    all = ALL
+
+    def __init__(self, plan):
+        self.plan = plan
+
+    def for_file(self, fp, why):
+        action = self.plan.get(fp.new, "ok")
+        if action.startswith("sleep:"):
+            time.sleep(float(action[6:]))
+        elif action == "hang":
+            time.sleep(60)
+        elif action == "memory":
+            bytearray(2 * 1024 * 1024 * 1024)
+        elif action == "oom-kill":
+            os.kill(os.getpid(), signal.SIGKILL)
+        return {int(fp.new[len("sqlglot/f"):-3]) % 6}
+
+    def expand_shared_setup(self, chosen, why):
+        return chosen
+
+
+def batch(tmp_path, plan, n, deadline=20, slots=2, context=None):
+    selector = load_selector()
+    selector.MAX_COMMIT_WALL_SECONDS = 1.5
+    paths = []
+    for i in range(n):
+        p = tmp_path / f"c{i}.patch"
+        p.write_text(diff(f"sqlglot/f{i}.py"))
+        paths.append(str(p))
+    out, alive = [], []
+
+    def emit(path, chosen, why):
+        alive.append(len(multiprocessing.active_children()))
+        out.append((os.path.basename(path), chosen, why))
+
+    started = time.monotonic()
+    selector.analyze_batch(context or multiprocessing.get_context("fork"), paths,
+                           PerFileSelector(plan), {n: None for n in ALL},
+                           started + deadline, emit, slots)
+    assert sorted(o[0] for o in out) == sorted(os.path.basename(p) for p in paths)
+    assert not multiprocessing.active_children()
+    return out, alive, time.monotonic() - started
+
+
+def test_batch_children_finish_out_of_order(tmp_path):
+    out, alive, _ = batch(tmp_path, {"sqlglot/f0.py": "sleep:0.8"}, 2)
+    assert [o[0] for o in out] == ["c1.patch", "c0.patch"]
+    assert {o[0]: o[1] for o in out} == {"c0.patch": {0}, "c1.patch": {1}}
+
+
+def test_batch_hanging_child_does_not_hold_the_others(tmp_path):
+    out, _, elapsed = batch(tmp_path, {"sqlglot/f0.py": "hang"}, 6)
+    got = {o[0]: o for o in out}
+    assert got["c0.patch"][1] == ALL and "timed out" in got["c0.patch"][2][0]
+    assert all(got[f"c{i}.patch"][1] == {i % 6} for i in range(1, 6))
+    assert elapsed < 6
+
+
+def test_batch_child_killed_by_memory_limit(tmp_path):
+    out, _, _ = batch(tmp_path, {"sqlglot/f1.py": "memory", "sqlglot/f2.py": "oom-kill"}, 4)
+    got = {o[0]: o for o in out}
+    assert {k: o[1] for k, o in got.items()} == {"c0.patch": {0}, "c1.patch": ALL, "c2.patch": ALL, "c3.patch": {3}}
+    assert "resource limit" in got["c2.patch"][2][0]
+
+
+def test_batch_budget_runs_out_mid_batch(tmp_path):
+    plan = {f"sqlglot/f{i}.py": "sleep:0.5" for i in range(10)}
+    out, _, elapsed = batch(tmp_path, plan, 10, deadline=1.2)
+    analysed = [o for o in out if o[1] != ALL]
+    late = [o for o in out if o[1] == ALL]
+    assert 2 <= len(analysed) <= 6
+    assert late and all("deadline" in o[2][0] or "timed out" in o[2][0] for o in late)
+    assert elapsed < 3
+
+
+def test_batch_never_exceeds_its_slots_and_survives_fork_failure(tmp_path):
+    """Under a pids limit (256 in the scorer) fork fails with EAGAIN. The
+    batch runs at most `slots` children, and a failed start falls back for
+    that commit only."""
+    ctx = multiprocessing.get_context("fork")
+
+    class Limited:
+        def __init__(self):
+            self.n = 0
+
+        def Pipe(self, duplex):
+            return ctx.Pipe(duplex)
+
+        def Process(self, **kw):
+            self.n += 1
+            if self.n == 3:
+                raise OSError(11, "Resource temporarily unavailable")
+            return ctx.Process(**kw)
+
+    out, alive, _ = batch(tmp_path, {}, 8, context=Limited())
+    got = {o[0]: o for o in out}
+    assert got["c2.patch"][1] == ALL and "process failed" in got["c2.patch"][2][0]
+    assert all(got[f"c{i}.patch"][1] == {i % 6} for i in range(8) if i != 2)
+    assert max(alive) <= 2
+
+
+def test_cpu_slots_reads_the_override():
+    selector = load_selector()
+    os.environ["BLAST_WORKERS"] = "3"
+    try:
+        assert selector.cpu_slots() == 3
+    finally:
+        del os.environ["BLAST_WORKERS"]
+    assert 1 <= selector.cpu_slots() <= 4
