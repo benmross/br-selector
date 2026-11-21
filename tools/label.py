@@ -36,13 +36,13 @@ def oom_kills():
         return 0
 
 
-def run_suite(tag):
+def run_suite(tag, targets=("tests",)):
     oom_before = oom_kills()
     prefix = out + ".reports/" + tag
     suite_env = dict(env, LABEL_REPORT_PREFIX=prefix,
                      LABEL_STOP_AFTER_FILE=out + ".stop-after", LABEL_STOP_REQUEST_FILE=out + ".stop")
     r = subprocess.run(
-        [sys.executable, "-m", "pytest", "tests", "-q", "-n", os.environ.get("LABEL_N", "1"), "--dist", os.environ.get("LABEL_DIST", "load"), "-rfE", "-p", "no:cacheprovider",
+        [sys.executable, "-m", "pytest", *targets, "-q", "-n", os.environ.get("LABEL_N", "1"), "--dist", os.environ.get("LABEL_DIST", "load"), "-rfE", "-p", "no:cacheprovider",
          "-o", "addopts=", "--timeout=300", "--tb=no", "-p", "label_trace"],
         cwd=src, env=suite_env, capture_output=True, text=True,
     )
@@ -69,7 +69,10 @@ base_path = out + ".baseline"
 if os.path.exists(base_path):
     baseline = set(json.load(open(base_path)))
 else:
-    baseline = run_suite("baseline")
+    # A manifest may list the tests to run per mutant (a candidate selection
+    # checked against real outcomes); the baseline then covers their union.
+    subset = sorted({t for v in manifest.values() for t in v.get("tests", [])})
+    baseline = run_suite("baseline", subset or ["tests"])
     json.dump(sorted(baseline), open(base_path, "w"))
 print("baseline failures:", sorted(baseline), flush=True)
 names = sorted(n for n in os.listdir(os.path.join(muts, "commits")) if n.endswith(".patch"))
@@ -106,7 +109,7 @@ for k, name in enumerate(names):
             if old_path is not None and old_path != new_path:
                 os.unlink(old_path)
         t0 = time.time()
-        failing = run_suite(cid) - baseline
+        failing = run_suite(cid, manifest.get(cid, {}).get("tests") or ["tests"]) - baseline
     finally:
         for p, text in saved.items():
             if text is None:
