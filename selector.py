@@ -1962,6 +1962,9 @@ def _vm_size():
 # Below this many commits, loading the comparison profile in every child that
 # needs it (about 8% of proxy commits) costs less CPU than loading it once.
 CMP_PRELOAD_COMMITS = 16
+# Hunk lines prepare_batch may keep for the children (about 60 bytes each in
+# memory: 2,000,000 is about 120 MB). 2,000 proxy commits hold 24,000.
+MAX_CACHED_PATCH_LINES = 2_000_000
 
 
 def prepare_batch(sel, paths, deadline):
@@ -1971,7 +1974,12 @@ def prepare_batch(sel, paths, deadline):
     to parse), so the cheapest commits can go first. A patch that fails here
     is left for its own child, which fails it the same way."""
     sel.vm_base = _vm_size()
-    cost, touched = {}, {}
+    cost, size = {}, {}
+    # The cache lives in the parent for the whole batch, and the OOM killer
+    # takes the parent once it is the only large process: about 700 patches
+    # of 49,000 short lines (105 MB on disk) filled 2 GB. Past this many
+    # cached hunk lines (about 60 bytes each), children re-read their patch.
+    lines_left = MAX_CACHED_PATCH_LINES
     for path in paths:
         cost[path] = 1 << 40
         if time.monotonic() >= deadline:
@@ -1980,19 +1988,23 @@ def prepare_batch(sel, paths, deadline):
             files = read_patch(path)
         except Exception:
             continue
-        sel.patches[path] = files
+        c, n = 1, 0
         for fp in files:
             if fp.old is not None and fp.old.endswith(".py"):
-                touched.setdefault(fp.old, []).append(path)
-    size = {}
-    for rel in touched:
-        try:
-            size[rel] = os.path.getsize(os.path.join(SRC, rel))
-        except OSError:
-            size[rel] = 0
-    for path, files in sel.patches.items():
-        cost[path] = 1 + sum(size.get(fp.old, 0) for fp in files if fp.old is not None and fp.old.endswith(".py")) \
-            + sum(len(l) for fp in files for _, ls in fp.hunks for l in ls)
+                if fp.old not in size:
+                    try:
+                        size[fp.old] = os.path.getsize(os.path.join(SRC, fp.old))
+                    except OSError:
+                        size[fp.old] = 0
+                c += size[fp.old]
+            for _, ls in fp.hunks:
+                n += len(ls)
+                c += sum(len(l) for l in ls)
+        cost[path] = c
+        if n <= lines_left:
+            lines_left -= n
+            sel.patches[path] = files
+        del files
     if len(paths) >= CMP_PRELOAD_COMMITS:
         sel.cmp_profile()
     return cost
