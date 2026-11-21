@@ -1,0 +1,11 @@
+diff --git a/sqlglot/expressions/__init__.py b/sqlglot/expressions/__init__.py
+--- a/sqlglot/expressions/__init__.py
++++ b/sqlglot/expressions/__init__.py
+@@ -23,7 +23,6 @@
+ from sqlglot.expressions.temporal import *  # noqa: F401,F403
+ from sqlglot.expressions.aggregate import *  # noqa: F401,F403
+ from sqlglot.expressions.array import *  # noqa: F401,F403
+-from sqlglot.expressions.json import *  # noqa: F401,F403
+ from sqlglot.expressions.functions import *  # noqa: F401,F403
+ from sqlglot.expressions.builders import *  # noqa: F401,F403
+ 

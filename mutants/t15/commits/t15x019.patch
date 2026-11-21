@@ -1,0 +1,12 @@
+diff --git a/sqlglot/jsonpath.py b/sqlglot/jsonpath.py
+--- a/sqlglot/jsonpath.py
++++ b/sqlglot/jsonpath.py
+@@ -222,7 +222,7 @@
+ JSON_PATH_PART_TRANSFORMS: dict[type[exp.Expr], t.Callable[..., str]] = {
+     exp.JSONPathFilter: lambda _, e: f"?{e.this}",
+     exp.JSONPathKey: lambda self, e: self._jsonpathkey_sql(e),
+-    exp.JSONPathRecursive: lambda _, e: f"..{e.this or ''}",
++    exp.JSONPathRecursive: lambda _, e: f".{e.this or ''}",
+     exp.JSONPathRoot: lambda *_: "$",
+     exp.JSONPathScript: lambda _, e: f"({e.this}",
+     exp.JSONPathSelector: lambda self, e: f"[{self.json_path_part(e.this)}]",

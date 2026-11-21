@@ -27,12 +27,22 @@ manifest = json.load(open(manifest_path))["commits"] if os.path.exists(manifest_
 env = dict(os.environ, SKIP_INTEGRATION="0", PYTHONPATH=src + os.pathsep + os.path.dirname(os.path.abspath(__file__)), PYTHONDONTWRITEBYTECODE="1")
 
 
+def oom_kills():
+    """OOM kills in this container's memory cgroup (t7's relabeler check)."""
+    try:
+        with open("/sys/fs/cgroup/memory.events") as f:
+            return int(dict(line.split() for line in f)["oom_kill"])
+    except (OSError, KeyError, ValueError):
+        return 0
+
+
 def run_suite(tag):
+    oom_before = oom_kills()
     prefix = out + ".reports/" + tag
     suite_env = dict(env, LABEL_REPORT_PREFIX=prefix,
                      LABEL_STOP_AFTER_FILE=out + ".stop-after", LABEL_STOP_REQUEST_FILE=out + ".stop")
     r = subprocess.run(
-        [sys.executable, "-m", "pytest", "tests", "-q", "-n", os.environ.get("LABEL_N", "3"), "--dist", os.environ.get("LABEL_DIST", "load"), "-rfE", "-p", "no:cacheprovider",
+        [sys.executable, "-m", "pytest", "tests", "-q", "-n", os.environ.get("LABEL_N", "1"), "--dist", os.environ.get("LABEL_DIST", "load"), "-rfE", "-p", "no:cacheprovider",
          "-o", "addopts=", "--timeout=300", "--tb=no", "-p", "label_trace"],
         cwd=src, env=suite_env, capture_output=True, text=True,
     )
@@ -46,6 +56,8 @@ def run_suite(tag):
         open(os.path.join(os.path.dirname(out), "raw", tag + ".txt"), "w").write(r.stdout)
     except OSError:
         pass
+    if oom_kills() > oom_before:
+        raise RuntimeError(f"OOM during pytest {tag}; refusing an infrastructure-dependent label")
     if r.returncode not in (0, 1, 2):
         raise RuntimeError(f"pytest exited {r.returncode}; see {log_dir}/{tag}.log")
     return report_failures(prefix, tests)

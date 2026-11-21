@@ -601,6 +601,15 @@ class Selector:
             if code is None:
                 why.append(f"{path}: import-time value of {','.join(sorted(names))} changed shape, everything")
                 return set(self.all)
+        dropped = removed_dict_keys(old_tree, new_tree)
+        if dropped:
+            # A key removed or renamed in a table that import-time code pops,
+            # deletes or indexes by that key (KEYWORDS.pop("/*+") in a dialect
+            # tokenizer body) raises KeyError while that module loads.
+            hit = popped_at_import(self._all_sources(), dropped, self._scopes)
+            if hit:
+                why.append(f"{path}: removed key of {hit[0]} looked up at import in {hit[1]}, everything")
+                return set(self.all)
         removed = bound_names(scopes) - bound_names(new_scopes)
         removed_readers = set()
         if removed:
@@ -654,6 +663,21 @@ class Selector:
                 out |= got
                 out |= self.at_import(path, span, why)
             else:
+                if any(l[:1] == "+" for _, ls in fp.hunks for l in ls) \
+                        and lookup_at_import(node, line, changed):
+                    # A changed key in an import-time pop/del/index (a class
+                    # body's KEYWORDS.pop("SORT BY")) can raise while the
+                    # module loads, failing every importer at collection.
+                    why.append(f"{path}:{line} import-time lookup changed, importers")
+                    return self.importers(path)
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and line <= header_end:
+                    # A decorator or signature edit reaches every caller of the
+                    # function, including callers through the class (class and
+                    # static methods) and calls made while modules load.
+                    body = range(node.body[0].lineno, node.end_lineno + 1)
+                    got = self.cov(path, body)
+                    why.append(f"{path}:{line} definition header of {node.name}: callers {len(got)}")
+                    out |= got | self.at_import(path, body, why)
                 out |= self.cov(path, range(start, end + 1))
                 out |= self.module_level(path, module, cls, why, line, node)
                 import_level = True
@@ -1140,6 +1164,121 @@ def _mentions(node, names, skip=()):
             continue
         if _is_ref(n, names) or (isinstance(n, ast.Constant) and n.value in names):
             return True
+        stack.extend(ast.iter_child_nodes(n))
+    return False
+
+
+def _key(node, consts):
+    """A comparable spelling of a dict key or lookup argument, or None."""
+    if isinstance(node, ast.Constant):
+        return repr(node.value)
+    if isinstance(node, ast.Name) and node.id in consts:
+        return repr(consts[node.id])
+    if isinstance(node, (ast.Name, ast.Attribute)):
+        return ast.unparse(node)
+    return None
+
+
+def _str_consts(tree):
+    """Plain NAME = <constant> assignments anywhere at import level in a
+    module, so HINT_START: ... keys resolve to "/*+"."""
+    out = {}
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)):
+            continue
+        if isinstance(node, (ast.Assign, ast.AnnAssign)) and isinstance(getattr(node, "value", None), ast.Constant):
+            for t in (node.targets if isinstance(node, ast.Assign) else [node.target]):
+                if isinstance(t, ast.Name):
+                    out.setdefault(t.id, node.value.value)
+    return out
+
+
+def removed_dict_keys(old_tree, new_tree):
+    """{table name: keys} removed or renamed in a dict display assigned at
+    import level (a class attribute or module constant)."""
+    def tables(tree):
+        consts = _str_consts(tree)
+        out = {}
+        for start, end, header_end, node, runtime, cls in Scopes(tree).stmts:
+            if runtime or not isinstance(node, (ast.Assign, ast.AnnAssign)):
+                continue
+            names = assigned_names(node)
+            if names and len(names) == 1 and isinstance(node.value, ast.Dict):
+                keys = {_key(k, consts) for k in node.value.keys if k is not None} - {None}
+                out.setdefault((cls, next(iter(names))), set()).update(keys)
+        return out
+    old, new = tables(old_tree), tables(new_tree)
+    out = {}
+    for (cls, name), keys in old.items():
+        gone = keys - new.get((cls, name), set())
+        if gone:
+            out.setdefault(name, set()).update(gone)
+    return out
+
+
+def popped_at_import(sources, dropped, scopes_for):
+    """(table, file) of an import-time NAME.pop(key), del NAME[key] or
+    NAME[key] read whose key was dropped, or None. A pop with a default
+    cannot raise."""
+    pats = {n: re.compile(r"\b%s\s*(?:\.pop\(|\[)" % re.escape(n)) for n in dropped}
+    for rel, text in sources.items():
+        names = [n for n, p in pats.items() if p.search(text)]
+        if not names:
+            continue
+        try:
+            tree = ast.parse(text)
+            scopes = scopes_for(rel, text)
+        except SyntaxError:
+            continue
+        consts = _str_consts(tree)
+
+        def table(node):
+            if isinstance(node, ast.Name):
+                return node.id
+            if isinstance(node, ast.Attribute):
+                return node.attr
+            return None
+
+        for node in ast.walk(tree):
+            target = key = None
+            if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) \
+                    and node.func.attr == "pop" and len(node.args) == 1 and not node.keywords:
+                target, key = table(node.func.value), node.args[0]
+            elif isinstance(node, ast.Subscript) and not isinstance(node.ctx, ast.Store):
+                target, key = table(node.value), node.slice
+            if target not in names or _key(key, consts) not in dropped[target]:
+                continue
+            st = scopes.at(node.lineno)
+            if st is None or not st[4]:
+                return target, rel
+    return None
+
+
+def lookup_at_import(node, line, changed):
+    """Does a changed line of this import-level statement sit in a pop, del or
+    subscript read that runs while the module loads?"""
+    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+        return False
+    lines = set(changed)
+    stack = [node]
+    while stack:
+        n = stack.pop()
+        if isinstance(n, (ast.Lambda, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            continue
+        hit = False
+        if isinstance(n, ast.Subscript) and not isinstance(n.ctx, ast.Store):
+            hit = True
+        elif isinstance(n, ast.Delete):
+            hit = True
+        elif isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute) and n.func.attr == "pop" \
+                and len(n.args) == 1 and not n.keywords:
+            hit = True
+        if hit and any(n.lineno <= l <= n.end_lineno for l in lines):
+            return True
+        if isinstance(n, ast.AnnAssign):
+            # Annotations (t.ClassVar[...]) are subscripts that cannot raise here.
+            stack.extend(c for c in (n.target, n.value) if c is not None)
+            continue
         stack.extend(ast.iter_child_nodes(n))
     return False
 

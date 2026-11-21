@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/optimizer/qualify_columns.sql b/tests/fixtures/optimizer/qualify_columns.sql
+--- a/tests/fixtures/optimizer/qualify_columns.sql
++++ b/tests/fixtures/optimizer/qualify_columns.sql
+@@ -18,7 +18,7 @@
+ SELECT xx.x AS x, yy.p AS p FROM (SELECT xx.x AS x FROM xx AS xx) AS xx CROSS JOIN yy AS yy;
+ 
+ SELECT a FROM x AS z;
+-SELECT z.a AS a FROM x AS z;
++SELECT x.a AS a FROM x AS z;
+ 
+ SELECT a AS a FROM x;
+ SELECT x.a AS a FROM x AS x;

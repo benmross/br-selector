@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_dialect.py b/tests/dialects/test_dialect.py
+--- a/tests/dialects/test_dialect.py
++++ b/tests/dialects/test_dialect.py
+@@ -52,7 +52,7 @@
+         return duckdb_sql
+ 
+     def validate_identity(
+-        self, sql, write_sql=None, pretty=False, check_command_warning=False, identify=False
++        self, sql, write_sql=None, pretty=False, check_command_warning=False, identify=True
+     ):
+         if check_command_warning:
+             with self.assertLogs(parser_logger) as cm:

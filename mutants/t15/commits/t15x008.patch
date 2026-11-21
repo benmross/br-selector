@@ -1,0 +1,11 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -1088,7 +1088,6 @@
+         "version",
+     }
+ 
+-    @classmethod
+     def get_or_raise(cls, dialect: DialectType) -> Dialect:
+         """
+         Look up a dialect in the global dialect registry and return it if it exists.

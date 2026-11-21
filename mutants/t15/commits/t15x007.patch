@@ -1,0 +1,11 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -1687,7 +1687,6 @@
+ 
+         return cls(**args_dict)
+ 
+-    @classmethod
+     def sql_names(cls) -> list[str]:
+         if cls is Func:
+             raise NotImplementedError(

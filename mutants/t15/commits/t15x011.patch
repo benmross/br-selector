@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/jsonpath/cts.json b/tests/fixtures/jsonpath/cts.json
+--- a/tests/fixtures/jsonpath/cts.json
++++ b/tests/fixtures/jsonpath/cts.json
+@@ -17,7 +17,7 @@
+     },
+     {
+       "name": "basic, no leading whitespace",
+-      "selector": " $",
++      "selector": "$",
+       "invalid_selector": true
+     },
+     {

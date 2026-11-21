@@ -1,0 +1,12 @@
+diff --git a/tests/test_optimizer.py b/tests/test_optimizer.py
+--- a/tests/test_optimizer.py
++++ b/tests/test_optimizer.py
+@@ -35,7 +35,7 @@
+ 
+ 
+ def parse_and_optimize(func, sql, read_dialect, **kwargs):
+-    optimized = func(parse_one(sql, read=read_dialect), **kwargs)
++    optimized = func(parse_one(sql), **kwargs)
+ 
+     for expression in optimized.walk():
+         for arg_key, arg in expression.args.items():

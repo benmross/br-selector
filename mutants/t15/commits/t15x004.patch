@@ -1,0 +1,11 @@
+diff --git a/sqlglot/tokens.py b/sqlglot/tokens.py
+--- a/sqlglot/tokens.py
++++ b/sqlglot/tokens.py
+@@ -142,7 +142,6 @@
+         "=": TokenType.EQ,
+         ">": TokenType.GT,
+         "<": TokenType.LT,
+-        "%": TokenType.MOD,
+         "!": TokenType.NOT,
+         "|": TokenType.PIPE,
+         "+": TokenType.PLUS,

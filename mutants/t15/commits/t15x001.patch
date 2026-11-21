@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokens.py b/sqlglot/tokens.py
+--- a/sqlglot/tokens.py
++++ b/sqlglot/tokens.py
+@@ -399,7 +399,7 @@
+         "SIMILAR TO": TokenType.SIMILAR_TO,
+         "SOME": TokenType.SOME,
+         "SORT BY": TokenType.SORT_BY,
+-        "SQL SECURITY": TokenType.SQL_SECURITY,
++        "SQL_SECURITY": TokenType.SQL_SECURITY,
+         "STRAIGHT_JOIN": TokenType.STRAIGHT_JOIN,
+         "TABLE": TokenType.TABLE,
+         "TABLESAMPLE": TokenType.TABLE_SAMPLE,

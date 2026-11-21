@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -1680,7 +1680,7 @@
+         exp.ArrayMin: rename_func("LIST_MIN"),
+         exp.Base64DecodeBinary: lambda self, e: _base64_decode_sql(self, e, to_string=False),
+         exp.Base64DecodeString: lambda self, e: _base64_decode_sql(self, e, to_string=True),
+-        exp.BitwiseAnd: lambda self, e: self._bitwise_op(e, "&"),
++        exp.BitwiseAnd: lambda self, e: self._bitwise_op(e, "|"),
+         exp.BitwiseAndAgg: _bitwise_agg_sql,
+         exp.BitwiseCount: rename_func("BIT_COUNT"),
+         exp.BitwiseLeftShift: _bitshift_sql,

@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/identity.sql b/tests/fixtures/identity.sql
+--- a/tests/fixtures/identity.sql
++++ b/tests/fixtures/identity.sql
+@@ -3,7 +3,7 @@
+ 1
+ (1)
+ 1.
+-(1.)
++(1.))
+ 1.0
+ (1.0)
+ 1E2

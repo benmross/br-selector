@@ -1,0 +1,11 @@
+diff --git a/sqlglot/dialects/__init__.py b/sqlglot/dialects/__init__.py
+--- a/sqlglot/dialects/__init__.py
++++ b/sqlglot/dialects/__init__.py
+@@ -94,7 +94,6 @@
+     "Spark2",
+     "SQLite",
+     "StarRocks",
+-    "Tableau",
+     "Teradata",
+     "Trino",
+     "TSQL",

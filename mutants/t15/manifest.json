@@ -1,0 +1,91 @@
+{
+ "commits": {
+  "t15x000": {
+   "kind": "base_key_popped_by_subclass",
+   "file": "sqlglot/tokens.py"
+  },
+  "t15x001": {
+   "kind": "base_key_renamed_popped_by_subclass",
+   "file": "sqlglot/tokens.py"
+  },
+  "t15x002": {
+   "kind": "class_body_pop_literal",
+   "file": "sqlglot/dialects/duckdb.py"
+  },
+  "t15x003": {
+   "kind": "class_body_pop_literal",
+   "file": "sqlglot/dialects/trino.py"
+  },
+  "t15x004": {
+   "kind": "base_key_popped_by_subclass",
+   "file": "sqlglot/tokens.py"
+  },
+  "t15x005": {
+   "kind": "package_star_export_removed",
+   "file": "sqlglot/expressions/__init__.py"
+  },
+  "t15x006": {
+   "kind": "dialect_registry_entry_removed",
+   "file": "sqlglot/dialects/__init__.py"
+  },
+  "t15x007": {
+   "kind": "decorator_removed_import_call",
+   "file": "sqlglot/expressions/core.py"
+  },
+  "t15x008": {
+   "kind": "decorator_removed_classmethod",
+   "file": "sqlglot/dialects/dialect.py"
+  },
+  "t15x009": {
+   "kind": "sql_fixture_line",
+   "file": "tests/fixtures/identity.sql"
+  },
+  "t15x010": {
+   "kind": "sql_fixture_expected",
+   "file": "tests/fixtures/optimizer/qualify_columns.sql"
+  },
+  "t15x011": {
+   "kind": "json_fixture",
+   "file": "tests/fixtures/jsonpath/cts.json"
+  },
+  "t15x012": {
+   "kind": "sql_fixture_metadata",
+   "file": "tests/fixtures/optimizer/qualify_columns.sql"
+  },
+  "t15x013": {
+   "kind": "test_helper_function",
+   "file": "tests/helpers.py"
+  },
+  "t15x014": {
+   "kind": "test_helper_default_arg",
+   "file": "tests/dialects/test_dialect.py"
+  },
+  "t15x015": {
+   "kind": "test_setup_edit",
+   "file": "tests/test_optimizer.py"
+  },
+  "t15x016": {
+   "kind": "test_module_helper",
+   "file": "tests/test_optimizer.py"
+  },
+  "t15x018": {
+   "kind": "lambda_body_class_table",
+   "file": "sqlglot/generators/duckdb.py"
+  },
+  "t15x019": {
+   "kind": "lambda_body_module_table",
+   "file": "sqlglot/jsonpath.py"
+  },
+  "t15x020": {
+   "kind": "lambda_sort_key",
+   "file": "sqlglot/errors.py"
+  },
+  "t15x021": {
+   "kind": "lambda_body_parser_table",
+   "file": "sqlglot/parser.py"
+  },
+  "t15x017": {
+   "kind": "module_renamed_imports_updated"
+  }
+ }
+}

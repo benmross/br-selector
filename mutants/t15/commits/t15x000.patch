@@ -1,0 +1,11 @@
+diff --git a/sqlglot/tokens.py b/sqlglot/tokens.py
+--- a/sqlglot/tokens.py
++++ b/sqlglot/tokens.py
+@@ -231,7 +231,6 @@
+         **{f"{prefix}%}}": TokenType.BLOCK_END for prefix in ("", "+", "-")},
+         **{f"{{{{{postfix}": TokenType.BLOCK_START for postfix in ("+", "-")},
+         **{f"{prefix}}}}}": TokenType.BLOCK_END for prefix in ("+", "-")},
+-        HINT_START: TokenType.HINT,
+         "&<": TokenType.AMP_LT,
+         "&>": TokenType.AMP_GT,
+         "==": TokenType.EQ,

@@ -1,0 +1,12 @@
+diff --git a/tests/test_optimizer.py b/tests/test_optimizer.py
+--- a/tests/test_optimizer.py
++++ b/tests/test_optimizer.py
+@@ -158,7 +158,7 @@
+         self.schema = {
+             "x": {
+                 "a": "INT",
+-                "b": "INT",
++                "b": "TEXT",
+             },
+             # non-nullable columns, for rewrites that are only valid when a value can't be NULL
+             "nn": {
