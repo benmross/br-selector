@@ -81,7 +81,7 @@ def sandbox(tmp_path):
         json.dump(mapping, f)
     env = {**os.environ, "DATA_DIR": str(data), "SQLGLOT_SRC": str(src),
            "MAP_PATH": str(map_path), "INDEX_PATH": str(tmp_path / "missing-index.gz"),
-           "PYTHONDONTWRITEBYTECODE": "1"}
+           "CMP_PATH": str(tmp_path / "cmp.json.gz"), "PYTHONDONTWRITEBYTECODE": "1"}
 
     def run(patches, timeout=10):
         for p in (data / "commits").iterdir():
@@ -110,6 +110,7 @@ def sandbox(tmp_path):
             answers[answer["commit"]] = set(numbers)
         return answers, result.stderr.decode("utf-8", "replace"), time.monotonic() - started
 
+    run.env = env
     return run, src
 
 
@@ -408,3 +409,118 @@ def test_import_time_literal_edits(sandbox, name, before, after, everything):
     (src / "sqlglot/other.py").write_text(before)
     answers, _, _ = run({name: diff("sqlglot/other.py", before, after)})
     assert (answers[name] == ALL) is everything
+
+
+# ---------------------------------------------------------------- comparison profile
+
+CMP_SRC = (
+    "def f(x, y):\n"            # 1
+    "    if x is None:\n"       # 2  site 2:7  is
+    "        return 1\n"        # 3
+    "    if x < y:\n"           # 4  site 4:7  <
+    "        return 2\n"        # 5
+    "    if x == y:\n"          # 6  site 6:7  == (never profiled)
+    "        return 3\n"        # 7
+    "    if 0 < x < y:\n"       # 8  chained, never rewritten
+    "        return 4\n"        # 9
+    "    if y is None:\n"       # 10 site 10:7 is, flipped only outside tests
+    "        return 5\n"        # 11
+    "    return x != y\n"       # 12 site 12:11 !=, also runs at import
+)
+# test sets of the map: index -> tests
+CMP_SETS = [[0], [1], [2], [3], [4], [5], [1, 2], [0, 3]]
+# op indexes: 0 == 1 != 2 < 3 <= 4 > 5 >= 6 is 7 is-not
+CMP_PROFILE = {
+    "2:7": [6, (1 << 1) | (1 << 7), 0, 7, {"1": 7, "7": 7}],
+    "4:7": [2, (1 << 3) | (1 << 0) | (1 << 4) | (1 << 5), 0, 6, {"0": 6, "3": 2, "4": 6, "5": 6}],
+    "10:7": [6, (1 << 0) | (1 << 1) | (1 << 7), 1 << 0, 3, {"1": 3, "7": 3}],
+    "12:11": [1, 1 << 0, 0, 1, {"0": 1}],
+}
+
+
+@pytest.fixture
+def cmp_sandbox(sandbox, tmp_path):
+    run, src = sandbox
+    (src / "sqlglot/cmp.py").write_text(CMP_SRC)
+    map_path = tmp_path / "map.json.gz"
+    with gzip.open(map_path, "rt") as f:
+        mapping = json.load(f)
+    mapping["sets"] = CMP_SETS
+    mapping["files"]["sqlglot/cmp.py"] = {"1": 7, "2": 7, "3": 0, "4": 6, "5": 6, "6": 6, "7": 1,
+                                          "8": 6, "9": 2, "10": 3, "11": 3, "12": 1}
+    mapping["import_lines"]["sqlglot/cmp.py"] = [12]
+    with gzip.open(map_path, "wt") as f:
+        json.dump(mapping, f)
+    profile = {"tests": mapping["tests"], "sets": CMP_SETS, "sites": {"sqlglot/cmp.py": CMP_PROFILE}}
+    with gzip.open(tmp_path / "cmp.json.gz", "wt") as f:
+        json.dump(profile, f)
+
+    def run_cmp(patches, per_test=False):
+        run.env["CMP_PER_TEST"] = "1" if per_test else "0"
+        return run(patches)
+
+    return run_cmp, src
+
+
+def cmp_diff(old, new, path="sqlglot/cmp.py", before=CMP_SRC):
+    assert old in before
+    return diff(path, before, before.replace(old, new, 1))
+
+
+CMP_CASES = [
+    # name, old text, new text, selection, selection with per-test narrowing
+    ("equivalent-swap", "x is None", "x == None", set(), set()),
+    ("equivalent-reformatted", "    if x is None:", "    if  x   ==None :", set(), set()),
+    ("differing-swap", "x is None", "x is not None", {0, 3}, {0, 3}),
+    ("per-test-subset", "x < y", "x <= y", {1, 2}, {2}),
+    ("never-profiled-site", "x == y", "x != y", {1, 2}, {1, 2}),
+    ("substitute-outside-family", "x < y", "x is y", {1, 2}, {1, 2}),
+    ("chained-comparison", "0 < x < y", "0 <= x < y", {1, 2}, {1, 2}),
+    ("unattributed-flip", "y is None", "y == None", {3}, {3}),
+    ("runs-at-import", "x != y", "x == y", ALL, ALL),
+    ("in-operator", "x == y", "x in y", {1, 2}, {1, 2}),
+]
+
+
+@pytest.mark.parametrize("name,old,new,expected,per_test", CMP_CASES, ids=[c[0] for c in CMP_CASES])
+def test_comparison_profile(cmp_sandbox, name, old, new, expected, per_test):
+    run, _ = cmp_sandbox
+    patch = cmp_diff(old, new)
+    answers, why, _ = run({name: patch})
+    assert answers[name] == expected, why
+    answers, why, _ = run({name: patch}, per_test=True)
+    assert answers[name] == per_test, why
+
+
+def test_comparison_swap_mixed_with_other_edit(cmp_sandbox):
+    run, _ = cmp_sandbox
+    # Same file, separate hunks: the whole file gets normal selection.
+    mixed = CMP_SRC.replace("x is None", "x == None").replace("return 5", "return 50")
+    # Separate files: the equivalent swap adds nothing, the other edit keeps its tests.
+    two_files = cmp_diff("x is None", "x == None") + NORMAL
+    answers, why, _ = run({"mixed": diff("sqlglot/cmp.py", CMP_SRC, mixed), "two-files": two_files})
+    assert answers["mixed"] == {0, 3}, why
+    assert answers["two-files"] == {0}, why
+
+
+def test_two_swaps_in_one_file(cmp_sandbox):
+    run, _ = cmp_sandbox
+    after = CMP_SRC.replace("x is None", "x == None", 1)
+    # Two swaps that each change no result: together they change none either.
+    both = after.replace("    if x < y:", "    if x != y:", 1)
+    answers, why, _ = run({"both": diff("sqlglot/cmp.py", CMP_SRC, both)})
+    assert answers["both"] == set(), why
+    # One swap changes a result: normal selection for the file, which still
+    # includes the equivalent swap's line; per-test drops site 4's safe test.
+    after = after.replace("    if x < y:", "    if x <= y:", 1)
+    answers, why, _ = run({"mixed": diff("sqlglot/cmp.py", CMP_SRC, after)})
+    assert answers["mixed"] == {0, 1, 2, 3}, why
+    answers, why, _ = run({"mixed": diff("sqlglot/cmp.py", CMP_SRC, after)}, per_test=True)
+    assert answers["mixed"] == {0, 2, 3}, why
+
+
+def test_comparison_without_profile_is_normal(cmp_sandbox, tmp_path):
+    run, _ = cmp_sandbox
+    (tmp_path / "cmp.json.gz").unlink()
+    answers, why, _ = run({"swap": cmp_diff("x is None", "x == None")})
+    assert answers["swap"] == {0, 3}, why

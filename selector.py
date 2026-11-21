@@ -28,6 +28,10 @@ DATA = os.environ.get("DATA_DIR", "/data")
 SRC = os.environ.get("SQLGLOT_SRC", "/opt/sqlglot")
 MAP = os.environ.get("MAP_PATH", os.path.join(os.path.dirname(os.path.abspath(__file__)), "map.json.gz"))
 INDEX = os.environ.get("INDEX_PATH", os.path.join(os.path.dirname(os.path.abspath(__file__)), "index.json.gz"))
+CMP = os.environ.get("CMP_PATH", os.path.join(os.path.dirname(os.path.abspath(__file__)), "cmp.json.gz"))
+# Per-test narrowing of comparison swaps that change some results (off: only
+# swaps that change no result anywhere in the suite select nothing).
+CMP_PER_TEST = os.environ.get("CMP_PER_TEST", "0") == "1"
 WORKER_MS = 2000
 MAX_WORKERS = 8
 # Leave ample time to serialize fallbacks before the scorer's 180 s deadline.
@@ -316,6 +320,8 @@ class Selector:
         self.import_lines = {f: set(v) for f, v in m.get("import_lines", {}).items()}
         self._file_users = {}
         self.index = None
+        self._cmp = None
+        self._cmp_drop = None
         self._test_import_map = None
         self._shared_setup_map = None
         try:
@@ -457,6 +463,65 @@ class Selector:
         # Building tables reads coverage; it must not mark affected setups.
         self.pending_shared = pending
 
+    # -- comparison value profile
+
+    def cmp_profile(self):
+        """tools/build_cmp.py's record of which operator swaps changed a
+        comparison result while the suite ran, renumbered like the map."""
+        if self._cmp is None:
+            self._cmp = False
+            try:
+                with gzip.open(CMP, "rt") as f:
+                    prof = json.load(f)
+                ids = {t[0]: n for n, t in self.tests.items()}
+                remap = {n: ids[tid] for tid, n in prof["tests"].items() if tid in ids}
+                prof["sets"] = [frozenset(remap[n] for n in s if n in remap) for s in prof["sets"]]
+                self._cmp = prof
+            except Exception:
+                pass
+        return self._cmp
+
+    def comparison_verdict(self, path, swaps, why):
+        """Swapping a comparison operator changes nothing for this suite when
+        the profile saw the site evaluated and the new operator never gave a
+        different bool there. Then every run of the suite executes exactly as
+        before. Returns "equivalent", or None for normal selection; with
+        CMP_PER_TEST, also sets tests to drop: those that evaluated the site
+        and saw no different result (_cmp_drop)."""
+        prof = self.cmp_profile()
+        if not prof:
+            return None
+        entries = prof["sites"].get(path)
+        imp = self.import_lines.get(path, set())
+        drop = None
+        for node, old_op, new_op in swaps:
+            where = f"{path}:{node.lineno}:{node.col_offset}"
+            if any(l in imp for l in range(node.lineno, node.end_lineno + 1)):
+                # Code that also ran at import: keep the at-import rule.
+                why.append(f"{where}: comparison runs at import, no shortcut")
+                return None
+            e = (entries or {}).get(f"{node.lineno}:{node.col_offset}")
+            if e is None:
+                why.append(f"{where}: comparison not profiled")
+                return None
+            op, union, unattributed, evaluated, flipped = e
+            if op != old_op or not (new_op in CMP_FAMILY[op] and new_op != op):
+                why.append(f"{where}: substitute not profiled")
+                return None
+            bit = 1 << new_op
+            if not union & bit:
+                continue
+            if not CMP_PER_TEST or unattributed & bit:
+                why.append(f"{where}: swap changes a result")
+                return None
+            safe = prof["sets"][evaluated] - prof["sets"][flipped[str(new_op)]]
+            drop = safe if drop is None else drop & safe
+        if drop is None:
+            why.append(f"{path}: comparison swap changes no result anywhere in the suite, nothing")
+            return "equivalent"
+        self._cmp_drop = drop
+        return None
+
     # -- one file of a patch
 
     def for_file(self, fp, why):
@@ -508,6 +573,16 @@ class Selector:
         return set(self.all)
 
     def for_python(self, fp, path, why):
+        self._cmp_drop = None
+        out = self._for_python(fp, path, why)
+        if self._cmp_drop and not out >= self.all:
+            dropped = out & self._cmp_drop
+            if dropped:
+                why.append(f"{path}: comparison swap changes no result in {len(dropped)} selected tests")
+            out = out - self._cmp_drop
+        return out
+
+    def _for_python(self, fp, path, why):
         old_text = None
         if fp.old is not None:
             try:
@@ -568,6 +643,11 @@ class Selector:
         if same_ast(old_tree.body, new_tree.body, min(touched or {0}), max(touched or {0})):
             why.append(f"{path}: syntax tree unchanged")
             return set()
+        swaps = comparison_swaps(old_tree.body, new_tree.body, min(touched or {0}), max(touched or {0}))
+        if swaps:
+            verdict = self.comparison_verdict(path, swaps, why)
+            if verdict == "equivalent":
+                return set()
 
         # An insertion next to a function need not run inside it. In particular,
         # dedented code appended at EOF executes during import, even though its
@@ -1094,6 +1174,43 @@ def same_ast(a_list, b_list, lo, hi):
             elif _dump(va) != _dump(vb):
                 return False
     return True
+
+
+CMP_OPS = (ast.Eq, ast.NotEq, ast.Lt, ast.LtE, ast.Gt, ast.GtE, ast.Is, ast.IsNot)
+CMP_FAMILY = {op: ((0, 1, 6, 7) if op in (0, 1, 6, 7) else (0, 1, 2, 3, 4, 5)) for op in range(8)}
+
+
+def comparison_swaps(a_list, b_list, lo, hi):
+    """The statements overlapping lines lo..hi differ only in the operators
+    of single-operator comparisons: return [(old Compare, old op, new op)].
+    Positions are ignored, so reformatting around the operator still
+    matches. Anything else differing returns None."""
+    swaps = []
+
+    def same(a, b):
+        if type(a) is not type(b):
+            return False
+        if isinstance(a, list):
+            return len(a) == len(b) and all(same(x, y) for x, y in zip(a, b))
+        if not isinstance(a, ast.AST):
+            return repr(a) == repr(b)
+        if isinstance(a, ast.Compare) and len(a.ops) == 1 and len(b.ops) == 1 \
+                and type(a.ops[0]) is not type(b.ops[0]):
+            if type(a.ops[0]) not in CMP_OPS or type(b.ops[0]) not in CMP_OPS:
+                return False
+            swaps.append((a, CMP_OPS.index(type(a.ops[0])), CMP_OPS.index(type(b.ops[0]))))
+            return same(a.left, b.left) and same(a.comparators, b.comparators)
+        return all(same(getattr(a, f, None), getattr(b, f, None)) for f in a._fields)
+
+    if len(a_list) != len(b_list):
+        return None
+    for a, b in zip(a_list, b_list):
+        start = min([getattr(a, "lineno", 0)] + [d.lineno for d in getattr(a, "decorator_list", [])])
+        if hasattr(a, "lineno") and (a.end_lineno < lo or start > hi):
+            continue
+        if not same(a, b):
+            return None
+    return swaps or None
 
 
 UNSAFE_FUNCS = {"__new__", "__init_subclass__", "__set_name__", "__class_getitem__"}
