@@ -1,0 +1,5 @@
+# Generator type spellings
+
+The pinned source's TYPE_MAPPING and STRING_TYPE_MAPPING values are strings used by runtime SQL generation and cast-equivalence checks. Import consumers only copy/unpack/filter dictionaries; their keys and computed expressions are unchanged. No value is parsed or used to resolve a Python name at import. Only direct, nonempty str values in a generator class's assigned literal dict qualify. Keys, factory calls, nested shape/type changes, registry names and multiple-file patches are excluded.
+
+Normal class/MRO users cover datatype_sql and ClickHouse's string-type membership reader. t44's qualified consumers retain cross-class copy users. Exasol's STRING_TYPE_MAPPING is unpacked into TYPE_MAPPING in the same class, so its class users observe both. builders.cast reads target_dialect.generator_class.TYPE_MAPPING directly, without making a generator: add every test covering that exact read independently (36 in the pinned map), and reject the proof if that read ran at import. This extra reader is necessary even if existing labels happen to pass without it. The complete source fingerprint binds the audited graph.

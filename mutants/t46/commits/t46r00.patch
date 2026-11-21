@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -405,7 +405,7 @@
+ 
+     TRANSFORMS = {
+         **generator.Generator.TRANSFORMS,
+-        exp.AIEmbed: rename_func("EMBED"),
++        exp.AIEmbed: rename_func('T46_RENAME_EMBED'),
+         exp.AIGenerate: rename_func("GENERATE"),
+         exp.AISimilarity: rename_func("SIMILARITY"),
+         exp.ApproxTopK: rename_func("APPROX_TOP_COUNT"),

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/bigquery.py b/sqlglot/dialects/bigquery.py
+--- a/sqlglot/dialects/bigquery.py
++++ b/sqlglot/dialects/bigquery.py
+@@ -165,7 +165,7 @@
+ 
+         KEYWORDS = {
+             **tokens.Tokenizer.KEYWORDS,
+-            "ANY TYPE": TokenType.VARIANT,
++            'T46_KEY_ANY TYPE': TokenType.VARIANT,
+             "BEGIN": TokenType.COMMAND,
+             "BEGIN TRANSACTION": TokenType.BEGIN,
+             "BYTEINT": TokenType.INT,

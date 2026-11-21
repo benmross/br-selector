@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -574,7 +574,7 @@
+         exp.DType.NCHAR: "STRING",
+         exp.DType.NVARCHAR: "STRING",
+         exp.DType.SMALLINT: "INT64",
+-        exp.DType.TEXT: "STRING",
++        exp.DType.TEXT: "T46_TEXT",
+         exp.DType.TIMESTAMP: "DATETIME",
+         exp.DType.TIMESTAMPNTZ: "DATETIME",
+         exp.DType.TIMESTAMPTZ: "TIMESTAMP",

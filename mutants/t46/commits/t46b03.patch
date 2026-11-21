@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -1874,7 +1874,7 @@
+ 
+     TYPE_MAPPING = {
+         **generator.Generator.TYPE_MAPPING,
+-        exp.DType.BINARY: "BLOB",
++        exp.DType.BINARY: "T46_BINARY",
+         exp.DType.BPCHAR: "TEXT",
+         exp.DType.CHAR: "TEXT",
+         exp.DType.DATETIME: "TIMESTAMP",

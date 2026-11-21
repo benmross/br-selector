@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/postgres.py b/sqlglot/generators/postgres.py
+--- a/sqlglot/generators/postgres.py
++++ b/sqlglot/generators/postgres.py
+@@ -359,7 +359,7 @@
+         exp.ArrayPrepend: array_append_sql("ARRAY_PREPEND", swap_params=True),
+         exp.BitwiseAndAgg: rename_func("BIT_AND"),
+         exp.BitwiseOrAgg: rename_func("BIT_OR"),
+-        exp.BitwiseXor: lambda self, e: self.binary(e, "#"),
++        exp.BitwiseXor: lambda self, e: self.binary(e, 'T46_BROKEN_#'),
+         exp.BitwiseXorAgg: rename_func("BIT_XOR"),
+         exp.ColumnDef: transforms.preprocess([_auto_increment_to_serial, _serial_to_generated]),
+         exp.ConvertToCharset: lambda self, e: self.func(

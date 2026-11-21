@@ -18,6 +18,7 @@ unchanged (comments, blank lines) cannot change behaviour and selects nothing.
 """
 import ast
 import gzip
+import hashlib
 import json
 import os
 import re
@@ -606,6 +607,7 @@ class Selector:
 
     def _for_python(self, fp, path, why):
         self._literal_extra_users = set()
+        self._runtime_string_users = None
         old_text = None
         if fp.old is not None:
             try:
@@ -666,6 +668,19 @@ class Selector:
         if same_ast(old_tree.body, new_tree.body, min(touched or {0}), max(touched or {0})):
             why.append(f"{path}: syntax tree unchanged")
             return set()
+        if self._single_file_patch and (self.index or {}).get('@pinned_string_audit') \
+                and inert_string_changes(old_tree, new_tree) and self.docstrings_unobserved(path, old_tree, new_tree):
+            # A function docstring is also a code-object constant. Typing's
+            # metadata redundancy test compares co_consts without calling
+            # the function; ordinary line coverage cannot see that observer.
+            code_doc = any(any(isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) for n in chain)
+                           for chain in string_changes(old_tree, new_tree))
+            # All metadata annotators in the pinned reader graph are local
+            # typing lambdas or functions defined/imported within typing/.
+            readers = set(self.by_file.get('tests/test_typing.py', ())) \
+                if code_doc and path.startswith('sqlglot/typing/') else set()
+            why.append(f'{path}: only inert string statements changed; audited documentation/code-constant readers {len(readers)}')
+            return readers
         if path.startswith("tests/"):
             shared = changed_test_state(old_tree, new_tree, touched)
             if shared:
@@ -809,7 +824,10 @@ class Selector:
                 out |= self.module_level(path, module, cls, why, line, node)
                 out |= self.qualified_consumers(cls, node, why)
                 import_level = True
-        if import_level and could_raise(fp, old_text, new_text) and not self.literal_only(path, old_tree, new_tree, why):
+        if import_level and could_raise(fp, old_text, new_text) and not self.literal_only(path, old_tree, new_tree, why) \
+                and not self.runtime_strings_safe(path, old_tree, new_tree, why) \
+                and not self.generator_table_strings_safe(path, old_tree, new_tree, why) \
+                and not self.dialect_keyword_strings_safe(path, old_tree, new_tree, why):
             # Never execute patch-supplied code in the selector. Even an
             # innocent import may loop, fork, write files, or produce unlimited
             # output. Unknown import effects need a conservative selection.
@@ -829,6 +847,10 @@ class Selector:
                 why.append(f"{path}: possible import failure, everything")
                 return set(self.all)
             why.append(f"{path}: no runtime/data users, stock argparse help stored but never read at import")
+        if self._runtime_string_users is not None:
+            # These constants cannot affect registration or other callbacks.
+            # Only the changed lambda scopes can observe their values.
+            out = set(self._runtime_string_users)
         out |= self._literal_extra_users
         return out
 
@@ -883,6 +905,100 @@ class Selector:
                 why.append(f"{path}:{ref} dedented line runs with its outer block: {len(got)}")
                 out |= got | self.at_import(path, span, why)
         return out
+
+    def docstrings_unobserved(self, path, old_tree, new_tree):
+        # Complete source-tree fingerprint guards this closed reader audit.
+        # pytest does not collect unittest.load_tests; test_docs has no
+        # numbered tests. leakcheck reads its own module doc only in main(),
+        # which no numbered test invokes. Expr.__init_subclass__ copies a
+        # nonempty __doc__ or ""; no runtime code consumes that content.
+        if path.startswith('sqlglot/expressions/'):
+            for chain in string_changes(old_tree, new_tree):
+                owner = chain[-3] if len(chain) >= 3 else None
+                if isinstance(owner, ast.ClassDef) and owner.body[0] is chain[-2]:
+                    # Expr's hook reads even inherited class documentation.
+                    # Keep the fallback rather than assume a metadata copy is
+                    # unobservable for every descendant.
+                    return False
+        for rel in ('tests/test_docs.py', 'tests/leakcheck.py'):
+            if self.by_file.get(rel) or self.file_users(rel) or self.fixture_users(rel):
+                return False
+        return True
+
+    def runtime_strings_safe(self, path, old_tree, new_tree, why):
+        """Stored generator callbacks are invoked only by runtime dispatch.
+
+        The source audit is bound to the complete pinned Python source tree at
+        index build. A one-file patch may change only string constants in the
+        body of a lambda stored directly in a generator dispatch table. It
+        cannot change defaults, keys, registration, readers or other code.
+        Import hooks copy/filter callbacks; they never invoke them. The three
+        dispatch consumers and preprocess's adapter must have no import-time
+        execution in the map. Keep coverage of every changed lambda body even
+        when its table is copied to an unrelated generator class.
+        """
+        if not self._single_file_patch or not (self.index or {}).get('@pinned_string_audit'):
+            return False
+        if path != 'sqlglot/generator.py' and not path.startswith('sqlglot/generators/'):
+            return False
+        lambdas = runtime_lambda_changes(old_tree, new_tree)
+        factory = runtime_rename_changes(old_tree, new_tree) if not lambdas else False
+        if not lambdas and not factory:
+            return False
+        for rel, first, last in self.index['@generator_string_calls']:
+            if any(line in self.import_lines.get(rel, ()) for line in range(first, last + 1)):
+                return False
+        if lambdas:
+            self._literal_extra_users = set()
+            self._runtime_string_users = set()
+            for node in lambdas:
+                self._runtime_string_users |= self.cov(path, range(node.lineno, node.end_lineno + 1))
+        kind = 'rename_func closure arguments' if factory else 'lambda-body strings'
+        why.append(f'{path}: only stored generator {kind} changed; runtime dispatch coverage retained')
+        return True
+
+    def generator_table_strings_safe(self, path, old_tree, new_tree, why):
+        """Type spellings are runtime output data, including cast's direct read.
+
+        Only nonempty direct string values change; keys, table shape and all
+        readers agree. The audited import consumers only copy/filter tables.
+        Generator instances/MRO and qualified copies retain their users.
+        builders.cast can inspect TYPE_MAPPING without instantiating a
+        generator: keep its 36 covered readers independently of class users.
+        """
+        if not self._single_file_patch or not (self.index or {}).get('@pinned_string_audit'):
+            return False
+        if path != 'sqlglot/generator.py' and not path.startswith('sqlglot/generators/'):
+            return False
+        if not generator_table_changes(old_tree, new_tree):
+            return False
+        # A failed generic literal proof may have accumulated unrelated
+        # same-name aliases. This proof retains its own complete readers.
+        self._literal_extra_users = set()
+        for rel, line in self.index['@generator_type_reads']:
+            if line in self.import_lines.get(rel, ()):
+                return False
+            self._literal_extra_users |= self.cov(rel, [line])
+        why.append(f'{path}: only generator type spellings changed; class users, qualified copies and direct cast readers retained')
+        return True
+
+    def dialect_keyword_strings_safe(self, path, old_tree, new_tree, why):
+        """Dialect-only keyword tries have no import-time SQL consumers.
+
+        Pinned import SQL templates all parse with the base dialect. A base
+        Tokenizer KEYWORDS edit can therefore break imports and is excluded.
+        A dialect tokenizer's nonempty string keys feed only pure trie/copy
+        builders at import. Required pop/index keys were checked earlier.
+        Its runtime tokenizer users, dialect users and qualified copies stay
+        selected, including readers of the derived SUPPORTS_COLUMN_JOIN_MARKS.
+        """
+        if not self._single_file_patch or not (self.index or {}).get('@pinned_string_audit'):
+            return False
+        if not path.startswith('sqlglot/dialects/') or not dialect_keyword_changes(old_tree, new_tree):
+            return False
+        self._literal_extra_users = set()
+        why.append(f'{path}: only dialect keyword strings changed; import SQL uses the unchanged base tokenizer')
+        return True
 
     # Import-time hooks reviewed at the pinned commit. Given non-empty strings
     # of unchanged type and no lost dict keys, they cannot raise on a changed
@@ -1371,6 +1487,137 @@ UNSAFE_FUNCS = {"__new__", "__init_subclass__", "__set_name__", "__class_getitem
 DYNAMIC = re.compile(r"getattr\(|__dict__|vars\(")
 # A maximal dotted chain such as `tokens.Tokenizer.KEYWORDS.copy`.
 QUALIFIED_READ = re.compile(r"(?<![\w.])[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)+")
+
+
+# This is a closed-source reader audit, invalidated by any change to the
+# original source tree. Patches are compared separately and must be one file.
+PINNED_STRING_AUDIT = 'fc8e3c215f006385b628ef4612295b1d074b93b42de8c773997de3f40103d090'
+
+
+def source_fingerprint(sources):
+    digest = hashlib.sha256()
+    for path, text in sorted(sources.items()):
+        digest.update(path.encode() + b'\0' + text.encode() + b'\0')
+    return digest.hexdigest()
+
+
+def string_changes(old_tree, new_tree):
+    """All AST fields agree except str constants; return their old ancestors."""
+    changes = []
+
+    def same(a, b, chain=()):
+        if type(a) is not type(b):
+            return False
+        if isinstance(a, ast.Constant) and a.value != b.value:
+            if type(a.value) is not str or type(b.value) is not str or a.kind != b.kind:
+                return False
+            changes.append(chain + (a,))
+            return True
+        if isinstance(a, ast.AST):
+            return all(same(getattr(a, field), getattr(b, field), chain + (a,)) for field in a._fields)
+        if isinstance(a, list):
+            return len(a) == len(b) and all(same(x, y, chain) for x, y in zip(a, b))
+        return type(a) is type(b) and a == b
+
+    return changes if same(old_tree, new_tree) and changes else None
+
+
+def inert_string_changes(old_tree, new_tree):
+    changes = string_changes(old_tree, new_tree)
+    return bool(changes) and all(len(chain) >= 2 and isinstance(chain[-2], ast.Expr)
+                                and chain[-2].value is chain[-1] for chain in changes)
+
+
+def generator_table_changes(old_tree, new_tree):
+    changes = string_changes(old_tree, new_tree)
+    if not changes:
+        return False
+    for chain in changes:
+        if len(chain) < 5 or not isinstance(chain[-2], ast.Dict) \
+                or not any(v is chain[-1] for v in chain[-2].values) or not chain[-1].value:
+            return False
+        stmt = chain[-3]
+        if not isinstance(stmt, (ast.Assign, ast.AnnAssign)) or stmt.value is not chain[-2] \
+                or not assigned_names(stmt) or not assigned_names(stmt) <= {'TYPE_MAPPING', 'STRING_TYPE_MAPPING'}:
+            return False
+        outer = chain[:-3]
+        if len(outer) != 2 or not isinstance(outer[0], ast.Module) or not isinstance(outer[1], ast.ClassDef) \
+                or not outer[1].name.endswith('Generator') or outer[1].decorator_list or outer[1].keywords:
+            return False
+    # An empty replacement remains a str but is deliberately outside the
+    # audited type-name contract.
+    return all(chain[-1].value for chain in string_changes(new_tree, old_tree))
+
+
+def dialect_keyword_changes(old_tree, new_tree):
+    changes = string_changes(old_tree, new_tree)
+    reverse = string_changes(new_tree, old_tree)
+    if not changes or not all(chain[-1].value for chain in changes + reverse):
+        return False
+    for chain in changes:
+        if len(chain) != 6 or not isinstance(chain[-2], ast.Dict) \
+                or not any(k is chain[-1] for k in chain[-2].keys):
+            return False
+        module, dialect, tokenizer, stmt = chain[:4]
+        if not isinstance(module, ast.Module) or not isinstance(dialect, ast.ClassDef) \
+                or not isinstance(tokenizer, ast.ClassDef) or tokenizer.name != 'Tokenizer' \
+                or dialect.decorator_list or dialect.keywords or tokenizer.decorator_list or tokenizer.keywords \
+                or not isinstance(stmt, (ast.Assign, ast.AnnAssign)) \
+                or assigned_names(stmt) != {'KEYWORDS'} or stmt.value is not chain[-2]:
+            return False
+    for chain in reverse:
+        keys = [k.value for k in chain[-2].keys if isinstance(k, ast.Constant)]
+        if len(keys) != len(set(keys)):
+            return False
+    return True
+
+
+def runtime_rename_changes(old_tree, new_tree):
+    changes = string_changes(old_tree, new_tree)
+    reverse = string_changes(new_tree, old_tree)
+    if not changes or not all(chain[-1].value for chain in changes + reverse):
+        return False
+    for chain in changes:
+        if len(chain) != 6:
+            return False
+        module, owner, stmt, table, call, const = chain
+        if not isinstance(module, ast.Module) or not isinstance(owner, ast.ClassDef) \
+                or not owner.name.endswith('Generator') or owner.decorator_list or owner.keywords \
+                or not isinstance(stmt, (ast.Assign, ast.AnnAssign)) or assigned_names(stmt) != {'TRANSFORMS'} \
+                or stmt.value is not table or not isinstance(table, ast.Dict) \
+                or not any(v is call for v in table.values) or not isinstance(call, ast.Call) \
+                or not isinstance(call.func, ast.Name) or call.func.id != 'rename_func' \
+                or call.args != [const] or call.keywords:
+            return False
+    return True
+
+
+def runtime_lambda_changes(old_tree, new_tree):
+    changes = string_changes(old_tree, new_tree)
+    if not changes:
+        return None
+    lambdas = {}
+    for chain in changes:
+        indices = [i for i, n in enumerate(chain) if isinstance(n, ast.Lambda)]
+        if not indices:
+            return None
+        i = indices[-1]
+        node = chain[i]
+        # Defaults run at definition time, and an immediate call/factory can
+        # invoke a callback at import. Accept only direct stored dict values.
+        if chain[i + 1] is not node.body or i < 3 or not isinstance(chain[i - 1], ast.Dict) \
+                or not any(v is node for v in chain[i - 1].values):
+            return None
+        stmt = chain[i - 2]
+        if not isinstance(stmt, (ast.Assign, ast.AnnAssign)) or stmt.value is not chain[i - 1] \
+                or not assigned_names(stmt) or not assigned_names(stmt) <= {'TRANSFORMS', 'AFTER_HAVING_MODIFIER_TRANSFORMS'}:
+            return None
+        outer = chain[:i - 2]
+        if not isinstance(outer[0], ast.Module) or any(not isinstance(c, ast.ClassDef)
+                or not c.name.endswith('Generator') or c.decorator_list or c.keywords for c in outer[1:]):
+            return None
+        lambdas[id(node)] = node
+    return list(lambdas.values())
 
 
 def argparse_help_only(old_tree, new_tree):
@@ -2194,6 +2441,19 @@ def build_index(out_path):
                     if parts[i - 1][:1].isupper() or parts[i - 1][:1] == "_":
                         qual.setdefault(parts[i], []).append([rel, ln, ".".join(parts[:i]) + "."])
     index["@qualified_reads"] = qual
+    index['@pinned_string_audit'] = source_fingerprint(sources) == PINNED_STRING_AUDIT
+    index['@generator_type_reads'] = [
+        [rel, n.lineno] for rel, text in sources.items()
+        if rel == 'sqlglot/expressions/builders.py'
+        for n in ast.walk(ast.parse(text))
+        if isinstance(n, ast.Attribute) and n.attr == 'TYPE_MAPPING']
+    index['@generator_string_calls'] = [
+        [rel, n.body[0].lineno, n.end_lineno]
+        for rel, text in sources.items()
+        if rel in {'sqlglot/generator.py', 'sqlglot/transforms.py'}
+        for n in ast.walk(ast.parse(text))
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+        and n.name in {'sql', 'json_path_part', 'query_modifiers', '_to_sql'}]
     index["@inert_name_ranges"] = {
         rel: inert_name_ranges(sources[rel], sc)
         for rel, sc in parsed.items() if rel.startswith("sqlglot/")}

@@ -1,0 +1,13 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -80,7 +80,8 @@
+ 
+     Args:
+         args: a mapping used for retrieving the arguments of an expression, given their arg keys.
+-    """
++     T46_DOCSTRING_ADVERSARY
++"""
+ 
+     key: t.ClassVar[str] = "expression"
+     arg_types: t.ClassVar[dict[str, bool]] = {"this": True}

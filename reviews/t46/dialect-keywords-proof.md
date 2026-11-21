@@ -1,0 +1,7 @@
+# Dialect keyword keys
+
+Only nonempty direct str keys of the nested Tokenizer.KEYWORDS dict in a dialect class may change. Values, dict shape, inheritance, names, readers and executable code must agree. Duplicate constant keys reject the proof. The existing removed_dict_keys / popped_at_import guard runs first and retains everything if a pop, del or indexed import reader can lose a required key.
+
+The pinned _TokenizerBase.__init_subclass__ only checks membership, calls upper(), copies keys and builds a trie from these strings. _Dialect.__new__ derives SUPPORTS_COLUMN_JOIN_MARKS through membership. Runtime parser/generator readers of that flag use the same dialect users. Other dialect tables copy keys through explicit qualified references or inherit their tokenizers; t44's consumer selections and the map's complete MRO class users remain.
+
+Import-time SQL templates are an additional reader that an import-safety-only argument would miss. Every pinned import-time SQL parse (DuckDB generator templates) uses the base dialect; no test module parses dialect SQL at collection. Therefore base Tokenizer.KEYWORDS edits remain conservative, even when their strings are absent from today's templates. Dialect-local keys never reach those base parse calls. The complete original-source fingerprint invalidates this audit when any reader changes; a single-file string-only edit cannot introduce a new reader. Regexes, SQL templates, enum values, parser name registries and getattr strings retain fallback.

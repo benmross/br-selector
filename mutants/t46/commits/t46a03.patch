@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/presto.py b/sqlglot/generators/presto.py
+--- a/sqlglot/generators/presto.py
++++ b/sqlglot/generators/presto.py
+@@ -323,7 +323,7 @@
+         exp.ApproxQuantile: lambda self, e: self.func(
+             "APPROX_PERCENTILE",
+             e.this,
+-            e.args.get("weight"),
++            e.args.get('T46_BROKEN_weight'),
+             e.args.get("quantile"),
+             e.args.get("accuracy"),
+         ),
