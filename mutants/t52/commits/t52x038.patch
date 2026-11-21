@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/mysql.py b/sqlglot/dialects/mysql.py
+--- a/sqlglot/dialects/mysql.py
++++ b/sqlglot/dialects/mysql.py
+@@ -106,7 +106,7 @@
+             "EXPLAIN": TokenType.DESCRIBE,
+             "FORCE": TokenType.FORCE,
+             "IGNORE": TokenType.IGNORE,
+-            "KEY": TokenType.KEY,
++            "KEY": TokenType.IGNORE,
+             "LOCK TABLES": TokenType.COMMAND,
+             "LONGBLOB": TokenType.LONGBLOB,
+             "LONGTEXT": TokenType.LONGTEXT,

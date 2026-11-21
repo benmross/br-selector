@@ -1,0 +1,13 @@
+diff --git a/sqlglot/optimizer/optimizer.py b/sqlglot/optimizer/optimizer.py
+--- a/sqlglot/optimizer/optimizer.py
++++ b/sqlglot/optimizer/optimizer.py
+@@ -50,8 +50,8 @@
+     eliminate_ctes,
+     quote_identifiers,
+     annotate_types,
++    simplify,
+     canonicalize,
+-    simplify,
+ )
+ 
+ 

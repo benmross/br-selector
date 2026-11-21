@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/mysql.py b/sqlglot/generators/mysql.py
+--- a/sqlglot/generators/mysql.py
++++ b/sqlglot/generators/mysql.py
+@@ -122,7 +122,7 @@
+ 
+     AFTER_HAVING_MODIFIER_TRANSFORMS = generator.AFTER_HAVING_MODIFIER_TRANSFORMS
+ 
+-    INTERVAL_ALLOWS_PLURAL_FORM = False
++    INTERVAL_ALLOWS_PLURAL_FORM = True
+     LOCKING_READS_SUPPORTED = True
+     CAST_TO_INT_ROUNDS = True
+     NULL_ORDERING_SUPPORTED: bool | None = None

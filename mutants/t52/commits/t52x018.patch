@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/postgres.py b/sqlglot/generators/postgres.py
+--- a/sqlglot/generators/postgres.py
++++ b/sqlglot/generators/postgres.py
+@@ -282,7 +282,7 @@
+     AFTER_HAVING_MODIFIER_TRANSFORMS = generator.AFTER_HAVING_MODIFIER_TRANSFORMS
+ 
+     SINGLE_STRING_INTERVAL = True
+-    RENAME_TABLE_WITH_DB = False
++    RENAME_TABLE_WITH_DB = True
+     LOCKING_READS_SUPPORTED = True
+     JOIN_HINTS = False
+     TABLE_HINTS = False

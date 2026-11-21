@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/string.py b/sqlglot/expressions/string.py
+--- a/sqlglot/expressions/string.py
++++ b/sqlglot/expressions/string.py
+@@ -53,7 +53,7 @@
+ class Format(Expression, Func):
+     """Formats values using printf syntax, or brace syntax when is_fmt is set."""
+ 
+-    arg_types = {"this": True, "expressions": False, "is_fmt": False}
++    arg_types = {"this": True, "expressions": True, "is_fmt": False}
+     is_var_len_args = True
+ 
+ 

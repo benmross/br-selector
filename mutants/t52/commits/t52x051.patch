@@ -1,0 +1,12 @@
+diff --git a/sqlglot/__init__.py b/sqlglot/__init__.py
+--- a/sqlglot/__init__.py
++++ b/sqlglot/__init__.py
+@@ -25,7 +25,7 @@
+ from sqlglot.expressions import (
+     Expr as Expr,
+     alias_ as alias,
+-    and_ as and_,
++    or_ as and_,
+     case as case,
+     cast as cast,
+     column as column,

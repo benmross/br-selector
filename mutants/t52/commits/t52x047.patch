@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/hive.py b/sqlglot/typing/hive.py
+--- a/sqlglot/typing/hive.py
++++ b/sqlglot/typing/hive.py
+@@ -62,7 +62,7 @@
+         }
+     },
+     **{
+-        expr_type: {"returns": exp.DType.INT}
++        expr_type: {"returns": exp.DType.BIGINT}
+         for expr_type in {
+             exp.ArraySize,
+             exp.DenseRank,

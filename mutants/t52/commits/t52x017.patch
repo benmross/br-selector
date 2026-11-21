@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/postgres.py b/sqlglot/generators/postgres.py
+--- a/sqlglot/generators/postgres.py
++++ b/sqlglot/generators/postgres.py
+@@ -283,7 +283,7 @@
+ 
+     SINGLE_STRING_INTERVAL = True
+     RENAME_TABLE_WITH_DB = False
+-    LOCKING_READS_SUPPORTED = True
++    LOCKING_READS_SUPPORTED = False
+     JOIN_HINTS = False
+     TABLE_HINTS = False
+     QUERY_HINTS = False

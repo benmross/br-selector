@@ -1,0 +1,12 @@
+diff --git a/sqlglot/__init__.py b/sqlglot/__init__.py
+--- a/sqlglot/__init__.py
++++ b/sqlglot/__init__.py
+@@ -43,7 +43,7 @@
+     or_ as or_,
+     select as select,
+     subquery as subquery,
+-    table_ as table,
++    to_table as table,
+     to_column as to_column,
+     to_identifier as to_identifier,
+     to_table as to_table,

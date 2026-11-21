@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -70,7 +70,7 @@
+         TokenType.LOCALTIMESTAMP: exp.Localtimestamp,
+     }
+ 
+-    ID_VAR_TOKENS = parser.Parser.ID_VAR_TOKENS - {TokenType.STRAIGHT_JOIN}
++    ID_VAR_TOKENS = parser.Parser.ID_VAR_TOKENS | {TokenType.STRAIGHT_JOIN}
+ 
+     FUNC_TOKENS = {
+         *parser.Parser.FUNC_TOKENS,

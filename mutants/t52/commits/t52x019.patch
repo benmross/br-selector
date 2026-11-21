@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/mysql.py b/sqlglot/generators/mysql.py
+--- a/sqlglot/generators/mysql.py
++++ b/sqlglot/generators/mysql.py
+@@ -116,7 +116,7 @@
+     TRY_SUPPORTED = False
+     SUPPORTS_UESCAPE = False
+     SUPPORTS_DECODE_CASE = False
+-    SUPPORTS_MODIFY_COLUMN = True
++    SUPPORTS_MODIFY_COLUMN = False
+     SUPPORTS_CHANGE_COLUMN = True
+     SUPPORTS_ALTER_COLUMN_NULLABILITY = True
+ 

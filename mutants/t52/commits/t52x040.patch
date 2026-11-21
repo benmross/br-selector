@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/hive.py b/sqlglot/dialects/hive.py
+--- a/sqlglot/dialects/hive.py
++++ b/sqlglot/dialects/hive.py
+@@ -128,7 +128,7 @@
+             "ADD JARS": TokenType.COMMAND,
+             "MINUS": TokenType.EXCEPT,
+             "MSCK REPAIR": TokenType.COMMAND,
+-            "REFRESH": TokenType.REFRESH,
++            "REFRESH": TokenType.COMMAND,
+             "SERDEPROPERTIES": TokenType.SERDE_PROPERTIES,
+         }
+ 

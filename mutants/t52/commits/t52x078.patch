@@ -1,0 +1,11 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -426,7 +426,6 @@
+         klass.VALID_INTERVAL_UNITS = {
+             *klass.VALID_INTERVAL_UNITS,
+             *klass.DATE_PART_MAPPING.keys(),
+-            *klass.DATE_PART_MAPPING.values(),
+         }
+ 
+         return klass

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/mysql.py b/sqlglot/dialects/mysql.py
+--- a/sqlglot/dialects/mysql.py
++++ b/sqlglot/dialects/mysql.py
+@@ -119,7 +119,7 @@
+             "SERIAL": TokenType.SERIAL,
+             "SIGNED": TokenType.BIGINT,
+             "SIGNED INTEGER": TokenType.BIGINT,
+-            "START": TokenType.BEGIN,
++            "START": TokenType.COMMAND,
+             "TIMESTAMP": TokenType.TIMESTAMPTZ,
+             "TINYBLOB": TokenType.TINYBLOB,
+             "TINYTEXT": TokenType.TINYTEXT,

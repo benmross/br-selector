@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/presto.py b/sqlglot/parsers/presto.py
+--- a/sqlglot/parsers/presto.py
++++ b/sqlglot/parsers/presto.py
+@@ -107,7 +107,7 @@
+         TokenType.LOCALTIMESTAMP: exp.Localtimestamp,
+     }
+ 
+-    TABLE_ALIAS_TOKENS = parser.Parser.TABLE_ALIAS_TOKENS | {
++    TABLE_ALIAS_TOKENS = parser.Parser.TABLE_ALIAS_TOKENS - {
+         TokenType.ANTI,
+         TokenType.SEMI,
+     }

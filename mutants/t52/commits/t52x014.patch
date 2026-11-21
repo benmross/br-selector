@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/tsql.py b/sqlglot/dialects/tsql.py
+--- a/sqlglot/dialects/tsql.py
++++ b/sqlglot/dialects/tsql.py
+@@ -17,7 +17,7 @@
+     WEEK_OFFSET = -1
+ 
+     LOG_BASE_FIRST = False
+-    TYPED_DIVISION = True
++    TYPED_DIVISION = False
+     COLUMN_ALIAS_PRECEDENCE = {
+         exp.Having: AliasPrecedence.SOURCE,
+         exp.Qualify: AliasPrecedence.SOURCE,

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/postgres.py b/sqlglot/dialects/postgres.py
+--- a/sqlglot/dialects/postgres.py
++++ b/sqlglot/dialects/postgres.py
+@@ -15,7 +15,7 @@
+     # Normalizing `x IS NOT NULL` to `NOT x IS NULL` is unsafe due to row values,
+     # e.g. `ROW(1, NULL) IS NOT NULL` is false whereas `NOT ROW(1, NULL) IS NULL` is true
+     NORMALIZE_NOT_NULL = False
+-    TYPED_DIVISION = True
++    TYPED_DIVISION = False
+     CONCAT_COALESCE = True
+     CONCAT_WS_COALESCE = True
+     NULL_ORDERING = "nulls_are_large"

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/mysql.py b/sqlglot/dialects/mysql.py
+--- a/sqlglot/dialects/mysql.py
++++ b/sqlglot/dialects/mysql.py
+@@ -18,7 +18,7 @@
+     USING_COLUMN_ORDER = UsingColumnOrder.LEFT_TABLE
+ 
+     # https://dev.mysql.com/doc/refman/8.0/en/identifiers.html
+-    IDENTIFIERS_CAN_START_WITH_DIGIT = True
++    IDENTIFIERS_CAN_START_WITH_DIGIT = False
+ 
+     # We default to treating all identifiers as case-sensitive, since it matches MySQL's
+     # behavior on Linux systems. For MacOS and Windows systems, one can override this

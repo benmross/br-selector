@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -342,7 +342,7 @@
+     ALTER_TABLE_REQUIRES_ACTION = False
+     LOG_DEFAULTS_TO_LN = True
+     STRING_ALIASES = True
+-    VALUES_FOLLOWED_BY_PAREN = False
++    VALUES_FOLLOWED_BY_PAREN = True
+     SUPPORTS_PARTITION_SELECTION = True
+ 
+     def _parse_conjunction(self) -> exp.Expr | None:

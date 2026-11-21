@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/string.py b/sqlglot/expressions/string.py
+--- a/sqlglot/expressions/string.py
++++ b/sqlglot/expressions/string.py
+@@ -556,7 +556,7 @@
+ 
+ class FarmFingerprint(Expression, Func):
+     arg_types = {"expressions": True}
+-    is_var_len_args = True
++    is_var_len_args = False
+     _sql_names = ["FARM_FINGERPRINT", "FARMFINGERPRINT64"]
+ 
+ 

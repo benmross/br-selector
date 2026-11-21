@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/presto.py b/sqlglot/generators/presto.py
+--- a/sqlglot/generators/presto.py
++++ b/sqlglot/generators/presto.py
+@@ -276,7 +276,7 @@
+ 
+     INTERVAL_ALLOWS_PLURAL_FORM = False
+     JOIN_HINTS = False
+-    CAST_TO_INT_ROUNDS = True
++    CAST_TO_INT_ROUNDS = False
+     TABLE_HINTS = False
+     QUERY_HINTS = False
+     IS_BOOL_ALLOWED = False

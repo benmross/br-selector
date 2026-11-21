@@ -1,0 +1,12 @@
+diff --git a/sqlglot/__init__.py b/sqlglot/__init__.py
+--- a/sqlglot/__init__.py
++++ b/sqlglot/__init__.py
+@@ -28,7 +28,7 @@
+     and_ as and_,
+     case as case,
+     cast as cast,
+-    column as column,
++    to_column as column,
+     condition as condition,
+     delete as delete,
+     except_ as except_,

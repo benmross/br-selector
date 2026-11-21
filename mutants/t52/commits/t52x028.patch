@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/postgres.py b/sqlglot/parsers/postgres.py
+--- a/sqlglot/parsers/postgres.py
++++ b/sqlglot/parsers/postgres.py
+@@ -113,7 +113,7 @@
+     IS_PREDICATE_PRECEDENCE = IsPredicatePrecedence.LOW
+ 
+     ALTER_DROP_REQUIRES_COLUMN = False
+-    ALTER_TABLE_MIXED_ACTIONS = True
++    ALTER_TABLE_MIXED_ACTIONS = False
+     ALTER_COLUMN_TYPE_REQUIRES_KEYWORD = True
+     SUPPORTS_OMITTED_INTERVAL_SPAN_UNIT = True
+ 

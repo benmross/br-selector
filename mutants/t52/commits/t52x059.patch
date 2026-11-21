@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/aggregate.py b/sqlglot/expressions/aggregate.py
+--- a/sqlglot/expressions/aggregate.py
++++ b/sqlglot/expressions/aggregate.py
+@@ -25,7 +25,7 @@
+ 
+ 
+ class ApproximateSimilarity(Expression, AggFunc):
+-    _sql_names = ["APPROXIMATE_SIMILARITY", "APPROXIMATE_JACCARD_INDEX"]
++    _sql_names = ["APPROXIMATE_JACCARD_INDEX", "APPROXIMATE_SIMILARITY"]
+ 
+ 
+ class ApproxPercentileAccumulate(Expression, AggFunc):

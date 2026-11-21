@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/postgres.py b/sqlglot/typing/postgres.py
+--- a/sqlglot/typing/postgres.py
++++ b/sqlglot/typing/postgres.py
+@@ -34,7 +34,7 @@
+ EXPRESSION_METADATA = {
+     **EXPRESSION_METADATA,
+     **{
+-        expr_type: {"returns": exp.DType.INT}
++        expr_type: {"returns": exp.DType.TEXT}
+         for expr_type in {
+             exp.Ntile,
+             exp.WidthBucket,

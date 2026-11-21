@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/presto.py b/sqlglot/dialects/presto.py
+--- a/sqlglot/dialects/presto.py
++++ b/sqlglot/dialects/presto.py
+@@ -97,7 +97,7 @@
+             "RESET SESSION": TokenType.COMMAND,
+             "START": TokenType.BEGIN,
+             "MATCH_RECOGNIZE": TokenType.MATCH_RECOGNIZE,
+-            "ROW": TokenType.STRUCT,
++            "ROW": TokenType.BEGIN,
+             "IPADDRESS": TokenType.IPADDRESS,
+             "IPPREFIX": TokenType.IPPREFIX,
+             "TDIGEST": TokenType.TDIGEST,

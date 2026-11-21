@@ -1,0 +1,1125 @@
+{
+ "commits": {
+  "t52x000": {
+   "kind": "inherit-flag",
+   "description": "dialects/postgres.py TYPED_DIVISION True->False (inherited by Redshift/Materialize/RisingWave)",
+   "paths": [
+    "sqlglot/dialects/postgres.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x001": {
+   "kind": "inherit-flag",
+   "description": "dialects/postgres.py CONCAT_COALESCE True->False (inherited by Redshift/Materialize/RisingWave)",
+   "paths": [
+    "sqlglot/dialects/postgres.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x002": {
+   "kind": "inherit-flag",
+   "description": "dialects/postgres.py TABLESAMPLE_SIZE_IS_PERCENT True->False (inherited by Redshift/Materialize/RisingWave)",
+   "paths": [
+    "sqlglot/dialects/postgres.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x003": {
+   "kind": "inherit-flag",
+   "description": "dialects/postgres.py TABLES_REFERENCEABLE_AS_COLUMNS True->False (inherited by Redshift/Materialize/RisingWave)",
+   "paths": [
+    "sqlglot/dialects/postgres.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x004": {
+   "kind": "inherit-flag",
+   "description": "dialects/postgres.py SUPPORTS_LIMIT_ALL True->False (inherited by Redshift/Materialize/RisingWave)",
+   "paths": [
+    "sqlglot/dialects/postgres.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x005": {
+   "kind": "inherit-flag",
+   "description": "dialects/mysql.py DPIPE_IS_STRING_CONCAT False->True (inherited by Doris/StarRocks/SingleStore)",
+   "paths": [
+    "sqlglot/dialects/mysql.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x006": {
+   "kind": "inherit-flag",
+   "description": "dialects/mysql.py SAFE_DIVISION True->False (inherited by Doris/StarRocks/SingleStore)",
+   "paths": [
+    "sqlglot/dialects/mysql.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x007": {
+   "kind": "inherit-flag",
+   "description": "dialects/mysql.py IDENTIFIERS_CAN_START_WITH_DIGIT True->False (inherited by Doris/StarRocks/SingleStore)",
+   "paths": [
+    "sqlglot/dialects/mysql.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x008": {
+   "kind": "inherit-flag",
+   "description": "dialects/hive.py ALIAS_POST_TABLESAMPLE True->False (inherited by Spark2/Spark/Databricks)",
+   "paths": [
+    "sqlglot/dialects/hive.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x009": {
+   "kind": "inherit-flag",
+   "description": "dialects/hive.py SAFE_DIVISION True->False (inherited by Spark2/Spark/Databricks)",
+   "paths": [
+    "sqlglot/dialects/hive.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x010": {
+   "kind": "inherit-flag",
+   "description": "dialects/hive.py REGEXP_EXTRACT_DEFAULT_GROUP 1->0 (inherited by Spark2/Spark/Databricks)",
+   "paths": [
+    "sqlglot/dialects/hive.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x011": {
+   "kind": "inherit-flag",
+   "description": "dialects/presto.py STRICT_STRING_CONCAT True->False (inherited by Trino/Athena/Dune)",
+   "paths": [
+    "sqlglot/dialects/presto.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x012": {
+   "kind": "inherit-flag",
+   "description": "dialects/presto.py TYPED_DIVISION True->False (inherited by Trino/Athena/Dune)",
+   "paths": [
+    "sqlglot/dialects/presto.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x013": {
+   "kind": "inherit-flag",
+   "description": "dialects/presto.py INDEX_OFFSET 1->0 (inherited by Trino/Athena/Dune)",
+   "paths": [
+    "sqlglot/dialects/presto.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x014": {
+   "kind": "inherit-flag",
+   "description": "dialects/tsql.py TYPED_DIVISION True->False (inherited by Fabric)",
+   "paths": [
+    "sqlglot/dialects/tsql.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x015": {
+   "kind": "inherit-flag",
+   "description": "dialects/tsql.py LOG_BASE_FIRST False->True (inherited by Fabric)",
+   "paths": [
+    "sqlglot/dialects/tsql.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x016": {
+   "kind": "inherit-flag",
+   "description": "generators/postgres.py SINGLE_STRING_INTERVAL True->False (inherited by Redshift/Materialize/RisingWave)",
+   "paths": [
+    "sqlglot/generators/postgres.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x017": {
+   "kind": "inherit-flag",
+   "description": "generators/postgres.py LOCKING_READS_SUPPORTED True->False (inherited by Redshift/Materialize/RisingWave)",
+   "paths": [
+    "sqlglot/generators/postgres.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x018": {
+   "kind": "inherit-flag",
+   "description": "generators/postgres.py RENAME_TABLE_WITH_DB False->True (inherited by Redshift/Materialize/RisingWave)",
+   "paths": [
+    "sqlglot/generators/postgres.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x019": {
+   "kind": "inherit-flag",
+   "description": "generators/mysql.py SUPPORTS_MODIFY_COLUMN True->False (inherited by Doris/StarRocks/SingleStore)",
+   "paths": [
+    "sqlglot/generators/mysql.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x020": {
+   "kind": "inherit-flag",
+   "description": "generators/mysql.py INTERVAL_ALLOWS_PLURAL_FORM False->True (inherited by Doris/StarRocks/SingleStore)",
+   "paths": [
+    "sqlglot/generators/mysql.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x021": {
+   "kind": "inherit-flag",
+   "description": "generators/hive.py SUPPORTS_GROUPING_SETS_AS_SUFFIX True->False (inherited by Spark2/Spark/Databricks)",
+   "paths": [
+    "sqlglot/generators/hive.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x022": {
+   "kind": "inherit-flag",
+   "description": "generators/hive.py TABLESAMPLE_WITH_METHOD False->True (inherited by Spark2/Spark/Databricks)",
+   "paths": [
+    "sqlglot/generators/hive.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x023": {
+   "kind": "inherit-flag",
+   "description": "generators/presto.py CAST_TO_INT_ROUNDS True->False (inherited by Trino/Athena/Dune)",
+   "paths": [
+    "sqlglot/generators/presto.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x024": {
+   "kind": "inherit-flag",
+   "description": "generators/presto.py SUPPORTS_LEFT_JOIN_UNNEST False->True (inherited by Trino/Athena/Dune)",
+   "paths": [
+    "sqlglot/generators/presto.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x025": {
+   "kind": "inherit-flag",
+   "description": "generators/tsql.py LIMIT_IS_TOP True->False (inherited by Fabric)",
+   "paths": [
+    "sqlglot/generators/tsql.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x026": {
+   "kind": "inherit-flag",
+   "description": "generators/tsql.py SET_OP_LIMITS True->False (inherited by Fabric)",
+   "paths": [
+    "sqlglot/generators/tsql.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x027": {
+   "kind": "inherit-flag",
+   "description": "parsers/postgres.py SUPPORTS_OMITTED_INTERVAL_SPAN_UNIT True->False (inherited by Redshift/Materialize/RisingWave)",
+   "paths": [
+    "sqlglot/parsers/postgres.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x028": {
+   "kind": "inherit-flag",
+   "description": "parsers/postgres.py ALTER_TABLE_MIXED_ACTIONS True->False (inherited by Redshift/Materialize/RisingWave)",
+   "paths": [
+    "sqlglot/parsers/postgres.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x029": {
+   "kind": "inherit-flag",
+   "description": "parsers/mysql.py STRING_ALIASES True->False (inherited by Doris/StarRocks/SingleStore)",
+   "paths": [
+    "sqlglot/parsers/mysql.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x030": {
+   "kind": "inherit-flag",
+   "description": "parsers/mysql.py VALUES_FOLLOWED_BY_PAREN False->True (inherited by Doris/StarRocks/SingleStore)",
+   "paths": [
+    "sqlglot/parsers/mysql.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x031": {
+   "kind": "inherit-flag",
+   "description": "parsers/hive.py STRICT_CAST False->True (inherited by Spark2/Spark/Databricks)",
+   "paths": [
+    "sqlglot/parsers/hive.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x032": {
+   "kind": "inherit-flag",
+   "description": "parsers/hive.py JOINS_HAVE_EQUAL_PRECEDENCE True->False (inherited by Spark2/Spark/Databricks)",
+   "paths": [
+    "sqlglot/parsers/hive.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x033": {
+   "kind": "inherit-flag",
+   "description": "parsers/hive.py NORMALIZE_DECIMAL_LITERALS True->False (inherited by Spark2/Spark/Databricks)",
+   "paths": [
+    "sqlglot/parsers/hive.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x034": {
+   "kind": "inherit-table",
+   "description": "postgres.py Tokenizer \"TYPE\": TokenType.TYPE, -> \"TYPE\": TokenType.COMMAND, (used by Redshift)",
+   "paths": [
+    "sqlglot/dialects/postgres.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x035": {
+   "kind": "inherit-table",
+   "description": "postgres.py Tokenizer \"POINT\": TokenType.POINT, -> \"POINT\": TokenType.NAME, (used by Redshift)",
+   "paths": [
+    "sqlglot/dialects/postgres.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x036": {
+   "kind": "inherit-table",
+   "description": "postgres.py Tokenizer \"NAME\": TokenType.NAME, -> \"NAME\": TokenType.POINT, (used by Materialize)",
+   "paths": [
+    "sqlglot/dialects/postgres.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x037": {
+   "kind": "inherit-table",
+   "description": "mysql.py Tokenizer \"START\": TokenType.BEGIN, -> \"START\": TokenType.COMMAND, (used by StarRocks)",
+   "paths": [
+    "sqlglot/dialects/mysql.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x038": {
+   "kind": "inherit-table",
+   "description": "mysql.py Tokenizer \"KEY\": TokenType.KEY, -> \"KEY\": TokenType.IGNORE, (used by Doris/StarRocks)",
+   "paths": [
+    "sqlglot/dialects/mysql.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x039": {
+   "kind": "inherit-table",
+   "description": "mysql.py Tokenizer \"LONGTEXT\": TokenType.LONGTEXT, -> \"LONGTEXT\": TokenType.BLOB, (used by SingleStore)",
+   "paths": [
+    "sqlglot/dialects/mysql.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x040": {
+   "kind": "inherit-table",
+   "description": "hive.py Tokenizer \"REFRESH\": TokenType.REFRESH, -> \"REFRESH\": TokenType.COMMAND, (used by Spark/Databricks)",
+   "paths": [
+    "sqlglot/dialects/hive.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x041": {
+   "kind": "inherit-table",
+   "description": "presto.py Tokenizer \"ROW\": TokenType.STRUCT, -> \"ROW\": TokenType.BEGIN, (used by Trino/Athena)",
+   "paths": [
+    "sqlglot/dialects/presto.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x042": {
+   "kind": "inherit-table",
+   "description": "tsql.py Tokenizer \"DATETIME2\": TokenType.DATETIME2, -> \"DATETIME2\": TokenType.SMALLDATETIME, (used by Fabric)",
+   "paths": [
+    "sqlglot/dialects/tsql.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x043": {
+   "kind": "inherit-table",
+   "description": "tsql.py Tokenizer \"UNIQUEIDENTIFIER\": TokenType.UUID, -> \"UNIQUEIDENTIFIER\": TokenType.XML, (used by Fabric)",
+   "paths": [
+    "sqlglot/dialects/tsql.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x044": {
+   "kind": "typing-chain",
+   "description": "hive typing drops Ceil from floor/ceil set (Spark2/Spark/Databricks copy)",
+   "paths": [
+    "sqlglot/typing/hive.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x045": {
+   "kind": "typing-chain",
+   "description": "hive typing BINARY group returns DOUBLE",
+   "paths": [
+    "sqlglot/typing/hive.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x046": {
+   "kind": "typing-chain",
+   "description": "hive typing BIGINT group returns INT",
+   "paths": [
+    "sqlglot/typing/hive.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x047": {
+   "kind": "typing-chain",
+   "description": "hive typing INT group returns BIGINT",
+   "paths": [
+    "sqlglot/typing/hive.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x048": {
+   "kind": "typing-chain",
+   "description": "hive typing Grouping returns DOUBLE",
+   "paths": [
+    "sqlglot/typing/hive.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x049": {
+   "kind": "typing-chain",
+   "description": "postgres typing INT group returns TEXT (Redshift copy)",
+   "paths": [
+    "sqlglot/typing/postgres.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x050": {
+   "kind": "typing-chain",
+   "description": "postgres typing TIMESTAMP group returns TIME (Redshift copy)",
+   "paths": [
+    "sqlglot/typing/postgres.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x051": {
+   "kind": "reexport-retarget",
+   "description": "sqlglot/__init__.py and_ as and_, -> or_ as and_,",
+   "paths": [
+    "sqlglot/__init__.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x052": {
+   "kind": "reexport-retarget",
+   "description": "sqlglot/__init__.py union as union, -> intersect as union,",
+   "paths": [
+    "sqlglot/__init__.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x053": {
+   "kind": "reexport-retarget",
+   "description": "sqlglot/__init__.py column as column, -> to_column as column,",
+   "paths": [
+    "sqlglot/__init__.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x054": {
+   "kind": "reexport-retarget",
+   "description": "sqlglot/__init__.py table_ as table, -> to_table as table,",
+   "paths": [
+    "sqlglot/__init__.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x055": {
+   "kind": "reexport-retarget",
+   "description": "sqlglot/__init__.py except_ as except_, -> intersect as except_,",
+   "paths": [
+    "sqlglot/__init__.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x056": {
+   "kind": "sql-names-order",
+   "description": "aggregate.py _sql_names [\"ARG_MAX\", \"ARGMAX\", \"MAX_BY\"] -> [\"MAX_BY\", \"ARGMAX\", \"ARG_MAX\"]",
+   "paths": [
+    "sqlglot/expressions/aggregate.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x057": {
+   "kind": "sql-names-order",
+   "description": "aggregate.py _sql_names [\"COUNT_IF\", \"COUNTIF\"] -> [\"COUNTIF\", \"COUNT_IF\"]",
+   "paths": [
+    "sqlglot/expressions/aggregate.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x058": {
+   "kind": "sql-names-order",
+   "description": "aggregate.py _sql_names [\"LOGICAL_AND\", \"BOOL_AND\", \"BOOLAND_AGG\"] -> [\"BOOL_AND\", \"LOGICAL_AND\", \"BOOLAND_AGG\"]",
+   "paths": [
+    "sqlglot/expressions/aggregate.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x059": {
+   "kind": "sql-names-order",
+   "description": "aggregate.py _sql_names [\"APPROXIMATE_SIMILARITY\", \"APPROXIMATE_JACCARD_INDEX\"] -> [\"APPROXIMATE_JACCARD_INDEX\", \"APPROXIMATE_SIMILARITY\"]",
+   "paths": [
+    "sqlglot/expressions/aggregate.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x060": {
+   "kind": "table-operator",
+   "description": "postgres Tokenizer COMMANDS drops inherited operand (Redshift inherits)",
+   "paths": [
+    "sqlglot/dialects/postgres.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x061": {
+   "kind": "table-operator",
+   "description": "hive typing drops base metadata operand",
+   "paths": [
+    "sqlglot/typing/hive.py"
+   ],
+   "tests": [
+    "tests/dialects",
+    "tests/test_transpile.py",
+    "tests/test_optimizer.py"
+   ],
+   "label_scope": "scoped to tests/dialects, tests/test_transpile.py, tests/test_optimizer.py; failing ids are lower bounds"
+  },
+  "t52x062": {
+   "kind": "var-len-flag",
+   "description": "string.py Chr: is_var_len_args True->False",
+   "paths": [
+    "sqlglot/expressions/string.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x063": {
+   "kind": "var-len-flag",
+   "description": "string.py Elt: is_var_len_args True->False",
+   "paths": [
+    "sqlglot/expressions/string.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x064": {
+   "kind": "var-len-flag",
+   "description": "string.py Format: is_var_len_args True->False",
+   "paths": [
+    "sqlglot/expressions/string.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x065": {
+   "kind": "var-len-flag",
+   "description": "string.py FarmFingerprint: is_var_len_args True->False",
+   "paths": [
+    "sqlglot/expressions/string.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x066": {
+   "kind": "var-len-flag",
+   "description": "string.py MD5Digest: is_var_len_args True->False",
+   "paths": [
+    "sqlglot/expressions/string.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x067": {
+   "kind": "arg-types-required",
+   "description": "string.py Chr: required flag flipped in arg_types",
+   "paths": [
+    "sqlglot/expressions/string.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x068": {
+   "kind": "arg-types-required",
+   "description": "string.py Format: required flag flipped in arg_types",
+   "paths": [
+    "sqlglot/expressions/string.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x069": {
+   "kind": "arg-types-required",
+   "description": "string.py Concat: required flag flipped in arg_types",
+   "paths": [
+    "sqlglot/expressions/string.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x070": {
+   "kind": "module-const-import",
+   "description": "parsers/exasol.py DATE_UNITS drops WEEK (read by generators/exasol.py)",
+   "paths": [
+    "sqlglot/parsers/exasol.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x071": {
+   "kind": "module-const-import",
+   "description": "parsers/exasol.py DATE_UNITS drops HOUR (read by generators/exasol.py)",
+   "paths": [
+    "sqlglot/parsers/exasol.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x072": {
+   "kind": "module-const-import",
+   "description": "parsers/tsql.py OPTIONS_THAT_REQUIRE_EQUAL drops LABEL (read by generators/tsql.py)",
+   "paths": [
+    "sqlglot/parsers/tsql.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x073": {
+   "kind": "module-const-import",
+   "description": "helper.py DATE_UNITS drops week",
+   "paths": [
+    "sqlglot/helper.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x074": {
+   "kind": "lazy-table",
+   "description": "optimizer _LAZY_ATTRS traverse_scope resolves to walk_in_scope",
+   "paths": [
+    "sqlglot/optimizer/__init__.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x075": {
+   "kind": "lazy-table",
+   "description": "optimizer _LAZY_ATTRS find_all_in_scope resolves to find_in_scope",
+   "paths": [
+    "sqlglot/optimizer/__init__.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x076": {
+   "kind": "lazy-table",
+   "description": "optimizer _LAZY_ATTRS build_scope resolves to traverse_scope",
+   "paths": [
+    "sqlglot/optimizer/__init__.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x077": {
+   "kind": "metaclass-derived",
+   "description": "_Dialect: Snowflake loses INITCAP_SUPPORTS_CUSTOM_DELIMITERS",
+   "paths": [
+    "sqlglot/dialects/dialect.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x078": {
+   "kind": "metaclass-derived",
+   "description": "_Dialect: VALID_INTERVAL_UNITS drops DATE_PART_MAPPING values operand",
+   "paths": [
+    "sqlglot/dialects/dialect.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x079": {
+   "kind": "metaclass-derived",
+   "description": "Hive SUPPORTED_JSON_PATH_PARTS drops JSONPathSubscript (metaclass pops TRANSFORMS; Spark/Databricks inherit)",
+   "paths": [
+    "sqlglot/generators/hive.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x080": {
+   "kind": "metaclass-derived",
+   "description": "MySQL Tokenizer STRING_ESCAPES drops backslash (dialect STRINGS_SUPPORT_ESCAPED_SEQUENCES derived; Doris/StarRocks inherit)",
+   "paths": [
+    "sqlglot/dialects/mysql.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x081": {
+   "kind": "metaclass-derived",
+   "description": "Hive Tokenizer NUMERIC_ESCAPES drops octal (dialect ESCAPED_SEQUENCES derived; Spark/Databricks inherit)",
+   "paths": [
+    "sqlglot/dialects/hive.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x082": {
+   "kind": "module-tuple-order",
+   "description": "optimizer RULES swaps eliminate_joins and eliminate_ctes",
+   "paths": [
+    "sqlglot/optimizer/optimizer.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x083": {
+   "kind": "module-tuple-order",
+   "description": "optimizer RULES swaps canonicalize and simplify",
+   "paths": [
+    "sqlglot/optimizer/optimizer.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x084": {
+   "kind": "module-tuple-order",
+   "description": "optimizer RULES swaps pushdown_projections and normalize",
+   "paths": [
+    "sqlglot/optimizer/optimizer.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x085": {
+   "kind": "hash-protocol",
+   "description": "_Dialect.__hash__ drops lower() (eq with lowercase name strings)",
+   "paths": [
+    "sqlglot/dialects/dialect.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x086": {
+   "kind": "class-body-operator",
+   "description": "MySQLParser ID_VAR_TOKENS set difference becomes union (STRAIGHT_JOIN; children inherit)",
+   "paths": [
+    "sqlglot/parsers/mysql.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x087": {
+   "kind": "class-body-operator",
+   "description": "TSQLParser ID_VAR_TOKENS drops the BEGIN difference operand (Fabric inherits)",
+   "paths": [
+    "sqlglot/parsers/tsql.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x088": {
+   "kind": "class-body-operator",
+   "description": "TSQLParser COMMENT_TABLE_ALIAS_TOKENS difference becomes union (Fabric inherits)",
+   "paths": [
+    "sqlglot/parsers/tsql.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x089": {
+   "kind": "class-body-operator",
+   "description": "PrestoParser TABLE_ALIAS_TOKENS union becomes difference (Trino/Athena inherit)",
+   "paths": [
+    "sqlglot/parsers/presto.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x090": {
+   "kind": "class-body-operator",
+   "description": "SnowflakeParser COLON_PLACEHOLDER_TOKENS union becomes difference (derived from ID_VAR_TOKENS in the class body)",
+   "paths": [
+    "sqlglot/parsers/snowflake.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x091": {
+   "kind": "class-body-operator",
+   "description": "SnowflakeParser TIMESTAMPS difference becomes union",
+   "paths": [
+    "sqlglot/parsers/snowflake.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  },
+  "t52x092": {
+   "kind": "class-read-no-instance",
+   "description": "TrinoParser FUNCTION_PARSERS drops LISTAGG (AthenaParser inherits; anonymize reads the class)",
+   "paths": [
+    "sqlglot/parsers/trino.py"
+   ],
+   "tests": [
+    "tests"
+   ],
+   "label_scope": "full suite"
+  }
+ }
+}

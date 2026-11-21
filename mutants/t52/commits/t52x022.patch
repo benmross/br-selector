@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/hive.py b/sqlglot/generators/hive.py
+--- a/sqlglot/generators/hive.py
++++ b/sqlglot/generators/hive.py
+@@ -233,7 +233,7 @@
+     SUPPORTS_GROUPING_SETS_AS_SUFFIX = True
+     SUPPORTS_DECODE_CASE = False
+     LIMIT_FETCH = "LIMIT"
+-    TABLESAMPLE_WITH_METHOD = False
++    TABLESAMPLE_WITH_METHOD = True
+     JOIN_HINTS = False
+     TABLE_HINTS = False
+     QUERY_HINTS = False

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/hive.py b/sqlglot/typing/hive.py
+--- a/sqlglot/typing/hive.py
++++ b/sqlglot/typing/hive.py
+@@ -24,7 +24,7 @@
+     **EXPRESSION_METADATA,
+     **{expr_type: {"annotator": _annotate_floor_ceil} for expr_type in {exp.Ceil, exp.Floor}},
+     **{
+-        expr_type: {"returns": exp.DType.BINARY}
++        expr_type: {"returns": exp.DType.DOUBLE}
+         for expr_type in {
+             exp.Encode,
+             exp.Unhex,

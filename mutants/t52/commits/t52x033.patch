@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/hive.py b/sqlglot/parsers/hive.py
+--- a/sqlglot/parsers/hive.py
++++ b/sqlglot/parsers/hive.py
+@@ -63,7 +63,7 @@
+     SUPPORTS_MULTI_PART_INTERVAL_ADD = True
+ 
+     # Strip trailing fractional zeros and normalize zero when inferring BD literal types.
+-    NORMALIZE_DECIMAL_LITERALS = True
++    NORMALIZE_DECIMAL_LITERALS = False
+ 
+     # Allow negative scales for BD exponent literals, e.g. 1E3BD as DECIMAL(1, -3).
+     DECIMAL_LITERALS_ALLOW_NEGATIVE_SCALE = False

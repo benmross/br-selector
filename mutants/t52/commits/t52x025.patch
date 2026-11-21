@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/tsql.py b/sqlglot/generators/tsql.py
+--- a/sqlglot/generators/tsql.py
++++ b/sqlglot/generators/tsql.py
+@@ -149,7 +149,7 @@
+ 
+     AFTER_HAVING_MODIFIER_TRANSFORMS = generator.AFTER_HAVING_MODIFIER_TRANSFORMS
+ 
+-    LIMIT_IS_TOP = True
++    LIMIT_IS_TOP = False
+     SET_OP_LIMITS = True
+     QUERY_HINTS = False
+     RETURNING_END = False

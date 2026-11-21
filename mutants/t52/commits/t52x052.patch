@@ -1,0 +1,12 @@
+diff --git a/sqlglot/__init__.py b/sqlglot/__init__.py
+--- a/sqlglot/__init__.py
++++ b/sqlglot/__init__.py
+@@ -47,7 +47,7 @@
+     to_column as to_column,
+     to_identifier as to_identifier,
+     to_table as to_table,
+-    union as union,
++    intersect as union,
+ )
+ from sqlglot.generator import Generator as Generator
+ from sqlglot.parser import Parser as Parser

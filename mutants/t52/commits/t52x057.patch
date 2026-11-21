@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/aggregate.py b/sqlglot/expressions/aggregate.py
+--- a/sqlglot/expressions/aggregate.py
++++ b/sqlglot/expressions/aggregate.py
+@@ -107,7 +107,7 @@
+ 
+ 
+ class CountIf(Expression, AggFunc):
+-    _sql_names = ["COUNT_IF", "COUNTIF"]
++    _sql_names = ["COUNTIF", "COUNT_IF"]
+     arg_types = {"this": True, "zero_on_all_null": False}
+ 
+ 

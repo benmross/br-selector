@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/exasol.py b/sqlglot/parsers/exasol.py
+--- a/sqlglot/parsers/exasol.py
++++ b/sqlglot/parsers/exasol.py
+@@ -12,7 +12,7 @@
+ from sqlglot.helper import seq_get
+ from sqlglot.tokens import TokenType
+ 
+-DATE_UNITS = {"DAY", "WEEK", "MONTH", "YEAR", "HOUR", "MINUTE", "SECOND"}
++DATE_UNITS = {"DAY", "WEEK", "MONTH", "YEAR", "MINUTE", "SECOND"}
+ 
+ 
+ # https://docs.exasol.com/db/latest/sql_references/functions/alphabeticallistfunctions/zeroifnull.htm

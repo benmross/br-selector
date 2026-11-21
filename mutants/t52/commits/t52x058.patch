@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/aggregate.py b/sqlglot/expressions/aggregate.py
+--- a/sqlglot/expressions/aggregate.py
++++ b/sqlglot/expressions/aggregate.py
+@@ -177,7 +177,7 @@
+ 
+ 
+ class LogicalAnd(Expression, AggFunc):
+-    _sql_names = ["LOGICAL_AND", "BOOL_AND", "BOOLAND_AGG"]
++    _sql_names = ["BOOL_AND", "LOGICAL_AND", "BOOLAND_AGG"]
+ 
+ 
+ class LogicalOr(Expression, AggFunc):

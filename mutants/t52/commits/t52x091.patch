@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/snowflake.py b/sqlglot/parsers/snowflake.py
+--- a/sqlglot/parsers/snowflake.py
++++ b/sqlglot/parsers/snowflake.py
+@@ -772,7 +772,7 @@
+     }
+     FUNCTION_PARSERS = {k: v for k, v in FUNCTION_PARSERS.items() if k != "TRIM"}
+ 
+-    TIMESTAMPS = parser.Parser.TIMESTAMPS - {TokenType.TIME}
++    TIMESTAMPS = parser.Parser.TIMESTAMPS | {TokenType.TIME}
+ 
+     ALTER_PARSERS = {
+         **parser.Parser.ALTER_PARSERS,

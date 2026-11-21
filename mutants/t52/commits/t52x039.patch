@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/mysql.py b/sqlglot/dialects/mysql.py
+--- a/sqlglot/dialects/mysql.py
++++ b/sqlglot/dialects/mysql.py
+@@ -109,7 +109,7 @@
+             "KEY": TokenType.KEY,
+             "LOCK TABLES": TokenType.COMMAND,
+             "LONGBLOB": TokenType.LONGBLOB,
+-            "LONGTEXT": TokenType.LONGTEXT,
++            "LONGTEXT": TokenType.BLOB,
+             "MEDIUMBLOB": TokenType.MEDIUMBLOB,
+             "MEDIUMINT": TokenType.MEDIUMINT,
+             "MEDIUMTEXT": TokenType.MEDIUMTEXT,

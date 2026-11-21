@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/presto.py b/sqlglot/dialects/presto.py
+--- a/sqlglot/dialects/presto.py
++++ b/sqlglot/dialects/presto.py
+@@ -17,7 +17,7 @@
+ 
+ 
+ class Presto(Dialect):
+-    INDEX_OFFSET = 1
++    INDEX_OFFSET = 0
+     NULL_ORDERING = "nulls_are_last"
+     TIME_FORMAT = MySQL.TIME_FORMAT
+     STRICT_STRING_CONCAT = True

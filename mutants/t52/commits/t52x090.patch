@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/snowflake.py b/sqlglot/parsers/snowflake.py
+--- a/sqlglot/parsers/snowflake.py
++++ b/sqlglot/parsers/snowflake.py
+@@ -408,7 +408,7 @@
+         }
+     ) - {TokenType.MATCH_CONDITION}
+ 
+-    COLON_PLACEHOLDER_TOKENS = ID_VAR_TOKENS | {TokenType.NUMBER}
++    COLON_PLACEHOLDER_TOKENS = ID_VAR_TOKENS - {TokenType.NUMBER}
+ 
+     NO_PAREN_FUNCTIONS = {
+         **parser.Parser.NO_PAREN_FUNCTIONS,
