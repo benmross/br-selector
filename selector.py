@@ -935,6 +935,9 @@ class Selector:
             return False
         if not generator_table_changes(old_tree, new_tree):
             return False
+        # A failed generic literal proof may have accumulated unrelated
+        # same-name aliases. This proof retains its own complete readers.
+        self._literal_extra_users = set()
         for rel, line in self.index['@generator_type_reads']:
             if line in self.import_lines.get(rel, ()):
                 return False
@@ -956,6 +959,7 @@ class Selector:
             return False
         if not path.startswith('sqlglot/dialects/') or not dialect_keyword_changes(old_tree, new_tree):
             return False
+        self._literal_extra_users = set()
         why.append(f'{path}: only dialect keyword strings changed; import SQL uses the unchanged base tokenizer')
         return True
 
