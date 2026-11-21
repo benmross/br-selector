@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/snowflake.py b/sqlglot/parsers/snowflake.py
+--- a/sqlglot/parsers/snowflake.py
++++ b/sqlglot/parsers/snowflake.py
+@@ -428,7 +428,7 @@
+ 
+     FUNCTIONS = {
+         **parser.Parser.FUNCTIONS,
+-        "CHARINDEX": lambda args: exp.StrPosition(
++        "CHARINDEXX": lambda args: exp.StrPosition(
+             this=seq_get(args, 1),
+             substr=seq_get(args, 0),
+             position=seq_get(args, 2),

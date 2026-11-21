@@ -898,6 +898,8 @@ class Selector:
         if not names or len(names) != 1 or next(iter(names)) not in KEY_TABLES:
             return None
         attr = next(iter(names))
+        if not (self.index or {}).get("@pinned_string_audit"):
+            return None  # the trace describes the pinned source only
         K = self.key_data()
         name = f"{module}:{cls}.{attr}"
         if not K or name not in K.get("tables", {}):

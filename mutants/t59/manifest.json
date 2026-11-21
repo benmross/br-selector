@@ -1,0 +1,100 @@
+{
+ "commits": {
+  "t59k00": {
+   "file": "sqlglot/parsers/hive.py",
+   "kind": "key renamed to a name other dialects probe (inherited by Spark2, Spark, Databricks)"
+  },
+  "t59k01": {
+   "file": "sqlglot/parsers/hive.py",
+   "kind": "entry removed (inherited by three dialects)"
+  },
+  "t59k02": {
+   "file": "sqlglot/parsers/hive.py",
+   "kind": "values swapped between two keys"
+  },
+  "t59k03": {
+   "file": "sqlglot/parsers/hive.py",
+   "kind": "lambda body edit inherited by three dialects"
+  },
+  "t59k04": {
+   "file": "sqlglot/parsers/trino.py",
+   "kind": "entry removed, read through parser_class without an instance (t52x092)"
+  },
+  "t59k05": {
+   "file": "sqlglot/parser.py",
+   "kind": "base entry aliased by Teradata TRYCAST"
+  },
+  "t59k06": {
+   "file": "sqlglot/parser.py",
+   "kind": "base key renamed (all dialects inherit it)"
+  },
+  "t59k07": {
+   "file": "sqlglot/parser.py",
+   "kind": "base key renamed, a common function"
+  },
+  "t59k08": {
+   "file": "sqlglot/parsers/snowflake.py",
+   "kind": "key renamed to a name the class body filters out"
+  },
+  "t59k09": {
+   "file": "sqlglot/parsers/snowflake.py",
+   "kind": "key renamed in a table with a filtered rebind"
+  },
+  "t59k10": {
+   "file": "sqlglot/parser.py",
+   "kind": "FUNCTION_PARSERS key renamed (anonymize reads it through parser_class)"
+  },
+  "t59k11": {
+   "file": "sqlglot/generators/postgres.py",
+   "kind": "entry inherited by Redshift and Materialize through filtered comprehensions"
+  },
+  "t59k12": {
+   "file": "sqlglot/generators/spark2.py",
+   "kind": "entry inside a comprehension literal, inherited by Spark and Databricks"
+  },
+  "t59k13": {
+   "file": "sqlglot/generators/duckdb.py",
+   "kind": "values swapped between two keys"
+  },
+  "t59k14": {
+   "file": "sqlglot/generators/presto.py",
+   "kind": "keys swapped between two values (inherited by Trino, Athena)"
+  },
+  "t59k15": {
+   "file": "sqlglot/generators/presto.py",
+   "kind": "entry removed, inherited by Trino and Athena"
+  },
+  "t59k16": {
+   "file": "sqlglot/generators/mysql.py",
+   "kind": "entry copied by StarRocks, Doris and SingleStore comprehensions"
+  },
+  "t59k17": {
+   "file": "sqlglot/generators/hive.py",
+   "kind": "entry inherited by Spark2, Spark, Databricks"
+  },
+  "t59k18": {
+   "file": "sqlglot/generators/hive.py",
+   "kind": "key renamed to an expression class with its own generator method"
+  },
+  "t59k19": {
+   "file": "sqlglot/generator.py",
+   "kind": "base Generator entry inherited by every dialect and filtered copies"
+  },
+  "t59k20": {
+   "file": "sqlglot/generator.py",
+   "kind": "base Generator lambda body edit"
+  },
+  "t59k21": {
+   "file": "sqlglot/generators/redshift.py",
+   "kind": "own entry of a table built from a filtered parent copy"
+  },
+  "t59k22": {
+   "file": "sqlglot/generators/bigquery.py",
+   "kind": "entry removed"
+  },
+  "t59k23": {
+   "file": "sqlglot/parsers/snowflake.py",
+   "kind": "key renamed (multi-line lambda)"
+  }
+ }
+}
