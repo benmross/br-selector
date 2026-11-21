@@ -8,7 +8,9 @@ Evidence, all recorded by running sqlglot's own tests at the pinned commit
   - line coverage per test, for code that runs inside a test;
   - which files each test opens, for SQL fixtures and other data files;
   - which sqlglot classes each test instantiates, for class-level tables
-    (KEYWORDS, TRANSFORMS, arg_types) that run at import, before any test.
+    (KEYWORDS, TRANSFORMS, arg_types) that run at import, before any test;
+  - static imports between pinned test modules, for support files and package
+    initializers whose import-time effects are outside per-test coverage.
 
 The pristine source lives in the image, so each patch is applied in memory and
 both versions are parsed. A patch that leaves the module's syntax tree
@@ -303,6 +305,10 @@ class Selector:
         self.m = m
         self.sets = [frozenset(s) for s in m["sets"]]
         self.files = {f: {int(k): v for k, v in lines.items()} for f, lines in m["files"].items()}
+        self.setup_files = {f: {int(k): v for k, v in lines.items()}
+                            for f, lines in m.get("setup_files", {}).items()}
+        self.has_setup_phases = "setup_files" in m
+        self.pending_shared = set()
         self.by_file = {}
         for n, (_, f, _) in tests.items():
             self.by_file.setdefault(f, set()).add(n)
@@ -310,24 +316,33 @@ class Selector:
         self.import_lines = {f: set(v) for f, v in m.get("import_lines", {}).items()}
         self._file_users = {}
         self.index = None
+        self._test_import_map = None
+        self._shared_setup_map = None
         try:
             with gzip.open(INDEX, "rt") as f:
                 self.index = json.load(f)
         except Exception:
             pass
 
-    def cov(self, path, lines):
+    def cov(self, path, lines, mark_shared=True):
         fl = self.files.get(path)
         out = set()
         if not fl:
             return out
+        setup = self.setup_files.get(path, {})
         for l in lines:
+            if mark_shared:
+                ssid = setup.get(l)
+                if ssid is not None:
+                    self.pending_shared |= self.sets[ssid]
             sid = fl.get(l)
             if sid is not None:
                 out |= self.sets[sid]
         return out
 
     def file_users(self, path):
+        for sid in set(self.setup_files.get(path, {}).values()):
+            self.pending_shared |= self.sets[sid]
         if path not in self._file_users:
             s = set()
             for sid in set(self.files.get(path, {}).values()):
@@ -337,7 +352,11 @@ class Selector:
 
     def class_users(self, module, qualname):
         sid = self.m["classes"].get(f"{module}:{qualname}")
-        return set(self.sets[sid]) if sid is not None else set()
+        out = set(self.sets[sid]) if sid is not None else set()
+        # Instance/fixture traces predate phase tags, so retain the
+        # conservative expansion for their shared-setup contexts.
+        self.pending_shared |= out
+        return out
 
     def module_classes_users(self, module):
         prefix = module + ":"
@@ -345,6 +364,7 @@ class Selector:
         for k, sid in self.m["classes"].items():
             if k.startswith(prefix):
                 out |= self.sets[sid]
+        self.pending_shared |= out
         return out
 
     def fixture_users(self, path):
@@ -356,7 +376,72 @@ class Selector:
         sid = self.m["fixtures"].get(d)
         if sid is not None:
             out |= self.sets[sid]
+        self.pending_shared |= out
         return out
+
+    def test_importers(self, path):
+        """Pinned-source imports, including transitive test helper/package users.
+
+        Import-time test support changes have no per-test line coverage.
+        Resolve their importing test files without using mutant outcomes.
+        """
+        if self._test_import_map is None:
+            self._test_import_map = (self.index or {}).get("@test_importers")
+            if self._test_import_map is None:
+                self._test_import_map = build_test_importers(self._all_sources())
+        module = path[:-3].replace("/", ".")
+        if module.endswith(".__init__"):
+            module = module[:-len(".__init__")]
+        out = self.by_file.get(path, set()) | self.file_users(path)
+        for rel in self._test_import_map.get(module, []):
+            out |= self.by_file.get(rel, set())
+        return out
+
+    def expand_shared_setup(self, chosen, why):
+        """A shared setup runs under its first test's coverage context, but
+        its state or failure affects every test in the class/module/session.
+        Expand those contexts using setup scopes from the pinned source.
+        """
+        if not chosen:
+            return chosen
+        self.prepare_shared_setup()
+        chosen = set(chosen)
+        more = True
+        while more:
+            more = False
+            for triggers, users, prefix in self._shared_setup_map:
+                affected = (self.pending_shared & chosen) if self.has_setup_phases else chosen
+                if affected & triggers and not users <= chosen:
+                    why.append(f"shared setup {prefix}: +{len(users - chosen)} tests")
+                    chosen |= users
+                    more = True
+        return chosen
+
+    def prepare_shared_setup(self):
+        """Build the setup-scope and test-import tables once, in the parent,
+        so each forked commit analysis inherits them."""
+        if self._shared_setup_map is None:
+            specs = (self.index or {}).get("@shared_setup")
+            if specs is None:
+                specs = build_shared_setups(self._all_sources())
+            self._shared_setup_map = []
+            for rel, start, end, prefix in specs:
+                triggers = self.cov(rel, range(start, end + 1), mark_shared=False)
+                if prefix == "*":
+                    users = self.all
+                elif prefix.startswith("@imports:"):
+                    # Imported shared fixtures can serve a different test
+                    # file. Building metadata must not mark affected code.
+                    pending = set(self.pending_shared)
+                    users = self.test_importers(prefix[len("@imports:"):])
+                    self.pending_shared = pending
+                else:
+                    users = {n for n, (tid, _, _) in self.tests.items() if tid.startswith(prefix)}
+                if triggers and users:
+                    self._shared_setup_map.append((triggers, users, prefix))
+        if self._test_import_map is None:
+            self.test_importers("tests/__init__.py")
+        self.pending_shared = set()
 
     # -- one file of a patch
 
@@ -430,6 +515,11 @@ class Selector:
             why.append(f"{path}: syntax error, importers")
             return self.broad(path) | self.importers(path)
         if old_text is None:
+            if path.startswith("tests/"):
+                # A newly collected module can add fixtures/hooks or mutate
+                # shared state before any existing test starts.
+                why.append(f"{path}: new test support/collection code, everything")
+                return set(self.all)
             why.append(f"{path}: new module, importers only")
             return self.importers(path)
         try:
@@ -459,6 +549,15 @@ class Selector:
                 return set(self.all)
 
         scopes = Scopes(old_tree)
+        new_scopes = Scopes(new_tree)
+        def definitions(sc):
+            return {(s[5], s[3].name) for s in sc.stmts
+                    if not s[4] and isinstance(s[3], (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))}
+        if definitions(scopes) != definitions(new_scopes):
+            # A changed exported definition can break importing modules whose
+            # other tests never execute the old function/class themselves.
+            why.append(f"{path}: definition names changed, import/collection users")
+            return self.broad(path) | self.importers(path)
         module = path[:-3].replace("/", ".")
         if module.endswith(".__init__"):
             module = module[: -len(".__init__")]
@@ -510,7 +609,8 @@ class Selector:
     def at_import(self, path, span, why):
         """A function line that also ran while modules were imported (a
         metaclass, a trie or registry builder) leaves state every later test
-        sees, which coverage credits to no test. Widen to the module's users."""
+        sees, which coverage credits to no test. Import/collection failures
+        can affect every test, including ones that run in subprocesses."""
         imp = self.import_lines.get(path)
         if not imp or not any(l in imp for l in span):
             return set()
@@ -524,7 +624,7 @@ class Selector:
         """A statement that runs at import: a class attribute, decorator,
         default argument or module constant."""
         if path.startswith("tests/"):
-            got = self.by_file.get(path, set()) | self.file_users(path)
+            got = self.test_importers(path)
             why.append(f"{path}:{line} test module level {len(got)}")
             return got
         if cls:
@@ -534,6 +634,14 @@ class Selector:
                 # a nested Tokenizer's settings are read through its dialect
                 users |= self.class_users(module, ".".join(parts[:i]))
             names = assigned_names(stmt) if stmt is not None else None
+            if names and any(n.startswith("__") and n.endswith("__") for n in names):
+                # Python reads protocol attributes implicitly (e.g. __slots__
+                # during type construction). Explicit name readers cannot
+                # safely narrow users: construction during test collection
+                # can fail a whole file before any individual test runs.
+                got = set(self.all)
+                why.append(f"{path}:{line} class {cls} protocol attribute: all import/collection users")
+                return got
             if names:
                 # tests whose own code reads the attribute (for example by
                 # looping over every class) need not instantiate the class
@@ -638,7 +746,7 @@ class Selector:
 
     def broad(self, path):
         if path.startswith("tests/"):
-            return self.by_file.get(path, set()) | self.file_users(path)
+            return self.test_importers(path)
         module = path[:-3].replace("/", ".")
         return self.file_users(path) | self.module_classes_users(module)
 
@@ -647,7 +755,7 @@ class Selector:
         # which for anything under sqlglot/ is nearly everything.
         if path.startswith("sqlglot/"):
             return set(self.all)
-        return self.by_file.get(path, set()) | self.file_users(path)
+        return self.test_importers(path)
 
 
 def _dump(v):
@@ -759,9 +867,97 @@ def reference_sites(sources, names, scopes_for):
     return sites
 
 
+
+
+def build_shared_setups(sources):
+    """Locate shared unittest/pytest setup in pristine test source."""
+    specs = []
+    for rel, text in sources.items():
+        if not rel.startswith("tests/"):
+            continue
+        try:
+            tree = ast.parse(text)
+        except SyntaxError:
+            continue
+
+        def walk(node, classes):
+            for child in ast.iter_child_nodes(node):
+                if isinstance(child, ast.ClassDef):
+                    walk(child, classes + [child.name])
+                elif isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    prefix = None
+                    if child.name == "setUpClass" and classes:
+                        prefix = rel + "::" + "::".join(classes) + "::"
+                    elif child.name == "setUpModule" and not classes:
+                        prefix = rel + "::"
+                    for deco in child.decorator_list:
+                        if not isinstance(deco, ast.Call):
+                            continue
+                        name = deco.func.attr if isinstance(deco.func, ast.Attribute) else getattr(deco.func, "id", "")
+                        if name != "fixture":
+                            continue
+                        for kw in deco.keywords:
+                            if kw.arg == "scope" and isinstance(kw.value, ast.Constant):
+                                if kw.value.value == "session":
+                                    prefix = "*"
+                                elif kw.value.value in ("module", "class", "package"):
+                                    prefix = "@imports:" + rel
+                    if prefix is not None:
+                        specs.append([rel, child.body[0].lineno, child.end_lineno, prefix])
+                else:
+                    walk(child, classes)
+        walk(tree, [])
+    return specs
+
+
+def build_test_importers(sources):
+    """Static dependency map from pristine tests, built with the name index."""
+    edges, paths = {}, {}
+    for rel, text in sources.items():
+        if not rel.startswith("tests/") or not rel.endswith(".py"):
+            continue
+        module = rel[:-3].replace("/", ".")
+        if module.endswith(".__init__"):
+            module = module[:-len(".__init__")]
+        paths[module] = rel
+        # pytest imports the containing packages even without an explicit
+        # import statement in the test file itself.
+        parts = module.split(".")
+        deps = {".".join(parts[:i]) for i in range(1, len(parts))}
+        try:
+            tree = ast.parse(text)
+        except SyntaxError:
+            edges[module] = deps
+            continue
+        package = rel.rsplit("/", 1)[0].split("/")
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                deps.update(a.name for a in node.names if a.name.startswith("tests"))
+            elif isinstance(node, ast.ImportFrom):
+                base = node.module or ""
+                if node.level:
+                    prefix = package[:len(package) - node.level + 1]
+                    base = ".".join(prefix + ([base] if base else []))
+                if base == "tests" or base.startswith("tests."):
+                    deps.add(base)
+                    deps.update(base + "." + a.name for a in node.names if a.name != "*")
+        edges[module] = deps
+    users = {}
+    for module, rel in paths.items():
+        pending, seen = [module], set()
+        while pending:
+            dep = pending.pop()
+            if dep in seen:
+                continue
+            seen.add(dep)
+            pending.extend(edges.get(dep, ()))
+            users.setdefault(dep, set()).add(rel)
+    return {module: sorted(files) for module, files in users.items()}
+
+
 def build_index(out_path):
-    """Run at image build: every name assigned at class or module level in
-    sqlglot, with where it is read. Saves parsing the source at run time."""
+    """Index pinned-source name readers and test imports at image build.
+    Saves parsing the source at run time; contains no mutation outcomes."""
     sources = Selector._load_sources()
     parsed = {}
     for rel, text in sources.items():
@@ -795,9 +991,11 @@ def build_index(out_path):
         e["tf"] = sorted(set(e["tf"]))
         e["c"] = sorted({tuple(x) for x in e["c"]})
         e["t"] = sorted({tuple(x) for x in e["t"]})
+    index["@test_importers"] = build_test_importers(sources)
+    index["@shared_setup"] = build_shared_setups(sources)
     with gzip.open(out_path, "wt") as f:
         json.dump(index, f, separators=(",", ":"))
-    log(f"index: {len(index)} names")
+    log(f"index: {len(cands)} names; test imports and shared setup scopes")
 
 
 IDENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
@@ -860,6 +1058,7 @@ def select_patch(patch_path, sel, tests, deadline):
         raise ValueError("patch exceeds size limit")
     text = raw.decode("utf-8")
     chosen, why = set(), []
+    sel.pending_shared = set()
     files = parse_patch(text)
     if not files and text.strip():
         raise RuntimeError("no files in patch")
@@ -869,6 +1068,8 @@ def select_patch(patch_path, sel, tests, deadline):
         chosen |= sel.for_file(fp, why)
         if chosen >= sel.all:
             break
+    if not chosen >= sel.all:
+        chosen = sel.expand_shared_setup(chosen, why)
     return chosen & set(tests), why
 
 
@@ -947,6 +1148,7 @@ def main():
                 remap[n] = ids[tid]
         m["sets"] = [[remap[n] for n in s if n in remap] for s in m["sets"]]
         sel = Selector(tests, m)
+        sel.prepare_shared_setup()
     except Exception as e:  # never fail the run: fall back to everything
         log("map unavailable:", repr(e))
         sel = None
