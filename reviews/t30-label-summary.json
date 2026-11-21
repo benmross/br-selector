@@ -1,5 +1,5 @@
 {
-  "labeled": 53,
+  "labeled": 76,
   "generated": 83,
   "classes": {
     "metaclass": {
@@ -34,10 +34,18 @@
       "candidate_misses": []
     },
     "shape": {
-      "mutants": 5,
-      "failing_mutants": 4,
-      "failing_test_instances": 176,
-      "main_selected_test_instances": 5007,
+      "mutants": 14,
+      "failing_mutants": 8,
+      "failing_test_instances": 314,
+      "main_selected_test_instances": 11758,
+      "main_misses": [],
+      "candidate_misses": []
+    },
+    "comparison": {
+      "mutants": 14,
+      "failing_mutants": 2,
+      "failing_test_instances": 10,
+      "main_selected_test_instances": 1635,
       "main_misses": [],
       "candidate_misses": []
     }
@@ -2422,6 +2430,196 @@
       "candidate_selected": 94,
       "candidate_missing": []
     },
+    "t30x045": {
+      "class": "shape",
+      "description": "boolean and-or",
+      "failing": 13,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 89,
+      "main_missing": [],
+      "candidate_selected": 89,
+      "candidate_missing": []
+    },
+    "t30x046": {
+      "class": "shape",
+      "description": "membership operator",
+      "failing": 4,
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x047": {
+      "class": "shape",
+      "description": "slice bound",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 94,
+      "main_missing": [],
+      "candidate_selected": 94,
+      "candidate_missing": []
+    },
+    "t30x048": {
+      "class": "shape",
+      "description": "arithmetic operator",
+      "failing": 84,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 85,
+      "main_missing": [],
+      "candidate_selected": 85,
+      "candidate_missing": []
+    },
+    "t30x049": {
+      "class": "shape",
+      "description": "multiline string whitespace",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 1,
+      "main_missing": [],
+      "candidate_selected": 1,
+      "candidate_missing": []
+    },
+    "t30x050": {
+      "class": "shape",
+      "description": "pure function move",
+      "failing": 0,
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x051": {
+      "class": "shape",
+      "description": "dataclass field declaration order",
+      "failing": 0,
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x052": {
+      "class": "shape",
+      "description": "two-file lazy registry and rule default",
+      "failing": 37,
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x053": {
+      "class": "shape",
+      "description": "SQL fixture whitespace only",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 2,
+      "main_missing": [],
+      "candidate_selected": 2,
+      "candidate_missing": []
+    },
+    "t30x054": {
+      "class": "comparison",
+      "description": "profile safe 1-test site sqlglot/dialects/clickhouse.py:67 !=",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 0,
+      "main_missing": [],
+      "candidate_selected": 0,
+      "candidate_missing": []
+    },
+    "t30x055": {
+      "class": "comparison",
+      "description": "profile safe 1-test site sqlglot/dialects/dialect.py:232 is not",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 0,
+      "main_missing": [],
+      "candidate_selected": 0,
+      "candidate_missing": []
+    },
+    "t30x056": {
+      "class": "comparison",
+      "description": "profile safe 1-test site sqlglot/executor/env.py:128 !=",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 0,
+      "main_missing": [],
+      "candidate_selected": 0,
+      "candidate_missing": []
+    },
+    "t30x057": {
+      "class": "comparison",
+      "description": "profile safe 1-test site sqlglot/expressions/builders.py:884 is",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 0,
+      "main_missing": [],
+      "candidate_selected": 0,
+      "candidate_missing": []
+    },
+    "t30x058": {
+      "class": "comparison",
+      "description": "profile safe 1-test site sqlglot/expressions/query.py:683 is not",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 0,
+      "main_missing": [],
+      "candidate_selected": 0,
+      "candidate_missing": []
+    },
+    "t30x059": {
+      "class": "comparison",
+      "description": "profile safe 1-test site sqlglot/generator.py:1817 !=",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 0,
+      "main_missing": [],
+      "candidate_selected": 0,
+      "candidate_missing": []
+    },
+    "t30x060": {
+      "class": "comparison",
+      "description": "profile safe 1-test site sqlglot/generators/athena.py:60 is not",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 0,
+      "main_missing": [],
+      "candidate_selected": 0,
+      "candidate_missing": []
+    },
+    "t30x061": {
+      "class": "comparison",
+      "description": "profile safe 1-test site sqlglot/generators/bigquery.py:247 !=",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 0,
+      "main_missing": [],
+      "candidate_selected": 0,
+      "candidate_missing": []
+    },
+    "t30x062": {
+      "class": "comparison",
+      "description": "profile safe 1-test site sqlglot/generators/clickhouse.py:37 ==",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 0,
+      "main_missing": [],
+      "candidate_selected": 0,
+      "candidate_missing": []
+    },
+    "t30x063": {
+      "class": "comparison",
+      "description": "profile safe 1-test site sqlglot/generators/doris.py:601 is not",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 0,
+      "main_missing": [],
+      "candidate_selected": 0,
+      "candidate_missing": []
+    },
     "t30x064": {
       "class": "metaclass",
       "description": "nested quote pair loses endpoint",
@@ -3977,6 +4175,46 @@
       "main_selected": 291,
       "main_missing": [],
       "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x068": {
+      "class": "comparison",
+      "description": "chained lower bound",
+      "failing": 1,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 1,
+      "main_missing": [],
+      "candidate_selected": 1,
+      "candidate_missing": []
+    },
+    "t30x069": {
+      "class": "comparison",
+      "description": "chained upper bound",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 3,
+      "main_missing": [],
+      "candidate_selected": 3,
+      "candidate_missing": []
+    },
+    "t30x070": {
+      "class": "comparison",
+      "description": "comparison lambda equality",
+      "failing": 0,
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x071": {
+      "class": "comparison",
+      "description": "comparison lambda mapping read",
+      "failing": 9,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 11,
+      "main_missing": [],
+      "candidate_selected": 11,
       "candidate_missing": []
     },
     "t30x079": {

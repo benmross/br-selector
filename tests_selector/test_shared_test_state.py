@@ -41,6 +41,11 @@ def test_imported_registry_alias_mutation_is_shared():
     assert changed(before,before.replace('clear()','pop("X")'),4)=='test_x'
 
 
+def test_inherited_table_alias_is_still_shared():
+    before='from sqlglot import Tokenizer\ndef test_x():\n    class Parent(Tokenizer):\n        pass\n    state = Parent.KEYWORDS\n    state.clear()\n'
+    assert changed(before,before.replace('clear()','pop("SELECT")'),6)=='test_x'
+
+
 def test_runtime_dialect_class_creation_registers_shared_state():
     before='from sqlglot import Dialect\ndef test_x():\n    class Custom(Dialect):\n        pass\n'
     assert changed(before,before.replace('Custom','Snowflake'),3)=='test_x'

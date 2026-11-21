@@ -52,33 +52,33 @@ All smoke controls select every test on main. Per-mutant exclusions are recorded
 | t30x042 | shape | dataclass decorator argument | 0 | 53 | 0 | 0 |
 | t30x043 | shape | dataclass field default factory | ≥50 | 1620 | 0 | 0 |
 | t30x044 | shape | default argument references changed runtime expression | ≥68 | 94 | 0 | 0 |
-| t30x045 | shape | boolean and-or | pending | 89 | pending | pending |
-| t30x046 | shape | membership operator | pending | 1620 | pending | pending |
-| t30x047 | shape | slice bound | pending | 94 | pending | pending |
-| t30x048 | shape | arithmetic operator | pending | 85 | pending | pending |
-| t30x049 | shape | multiline string whitespace | pending | 1 | pending | pending |
-| t30x050 | shape | pure function move | pending | 1620 | pending | pending |
-| t30x051 | shape | dataclass field declaration order | pending | 1620 | pending | pending |
-| t30x052 | shape | two-file lazy registry and rule default | pending | 1620 | pending | pending |
-| t30x053 | shape | SQL fixture whitespace only | pending | 2 | pending | pending |
-| t30x054 | comparison | profile safe 1-test site sqlglot/dialects/clickhouse.py:67 != | pending | 0 | pending | pending |
-| t30x055 | comparison | profile safe 1-test site sqlglot/dialects/dialect.py:232 is not | pending | 0 | pending | pending |
-| t30x056 | comparison | profile safe 1-test site sqlglot/executor/env.py:128 != | pending | 0 | pending | pending |
-| t30x057 | comparison | profile safe 1-test site sqlglot/expressions/builders.py:884 is | pending | 0 | pending | pending |
-| t30x058 | comparison | profile safe 1-test site sqlglot/expressions/query.py:683 is not | pending | 0 | pending | pending |
-| t30x059 | comparison | profile safe 1-test site sqlglot/generator.py:1817 != | pending | 0 | pending | pending |
-| t30x060 | comparison | profile safe 1-test site sqlglot/generators/athena.py:60 is not | pending | 0 | pending | pending |
-| t30x061 | comparison | profile safe 1-test site sqlglot/generators/bigquery.py:247 != | pending | 0 | pending | pending |
-| t30x062 | comparison | profile safe 1-test site sqlglot/generators/clickhouse.py:37 == | pending | 0 | pending | pending |
-| t30x063 | comparison | profile safe 1-test site sqlglot/generators/doris.py:601 is not | pending | 0 | pending | pending |
+| t30x045 | shape | boolean and-or | 13 | 89 | 0 | 0 |
+| t30x046 | shape | membership operator | ≥4 | 1620 | 0 | 0 |
+| t30x047 | shape | slice bound | 0 | 94 | 0 | 0 |
+| t30x048 | shape | arithmetic operator | 84 | 85 | 0 | 0 |
+| t30x049 | shape | multiline string whitespace | 0 | 1 | 0 | 0 |
+| t30x050 | shape | pure function move | ≥0 | 1620 | 0 | 0 |
+| t30x051 | shape | dataclass field declaration order | ≥0 | 1620 | 0 | 0 |
+| t30x052 | shape | two-file lazy registry and rule default | ≥37 | 1620 | 0 | 0 |
+| t30x053 | shape | SQL fixture whitespace only | 0 | 2 | 0 | 0 |
+| t30x054 | comparison | profile safe 1-test site sqlglot/dialects/clickhouse.py:67 != | 0 | 0 | 0 | 0 |
+| t30x055 | comparison | profile safe 1-test site sqlglot/dialects/dialect.py:232 is not | 0 | 0 | 0 | 0 |
+| t30x056 | comparison | profile safe 1-test site sqlglot/executor/env.py:128 != | 0 | 0 | 0 | 0 |
+| t30x057 | comparison | profile safe 1-test site sqlglot/expressions/builders.py:884 is | 0 | 0 | 0 | 0 |
+| t30x058 | comparison | profile safe 1-test site sqlglot/expressions/query.py:683 is not | 0 | 0 | 0 | 0 |
+| t30x059 | comparison | profile safe 1-test site sqlglot/generator.py:1817 != | 0 | 0 | 0 | 0 |
+| t30x060 | comparison | profile safe 1-test site sqlglot/generators/athena.py:60 is not | 0 | 0 | 0 | 0 |
+| t30x061 | comparison | profile safe 1-test site sqlglot/generators/bigquery.py:247 != | 0 | 0 | 0 | 0 |
+| t30x062 | comparison | profile safe 1-test site sqlglot/generators/clickhouse.py:37 == | 0 | 0 | 0 | 0 |
+| t30x063 | comparison | profile safe 1-test site sqlglot/generators/doris.py:601 is not | 0 | 0 | 0 | 0 |
 | t30x064 | metaclass | nested quote pair loses endpoint | 1020 | 355 | 707 | 0 |
 | t30x065 | metaclass | nested quote entry becomes empty list | 1031 | 294 | 808 | 0 |
 | t30x066 | metaclass | escape item changes type | 305 | 355 | 0 | 0 |
 | t30x067 | metaclass | time-map value changes type | 70 | 291 | 0 | 0 |
-| t30x068 | comparison | chained lower bound | pending | 1 | pending | pending |
-| t30x069 | comparison | chained upper bound | pending | 3 | pending | pending |
-| t30x070 | comparison | comparison lambda equality | pending | 1620 | pending | pending |
-| t30x071 | comparison | comparison lambda mapping read | pending | 11 | pending | pending |
+| t30x068 | comparison | chained lower bound | 1 | 1 | 0 | 0 |
+| t30x069 | comparison | chained upper bound | 0 | 3 | 0 | 0 |
+| t30x070 | comparison | comparison lambda equality | ≥0 | 1620 | 0 | 0 |
+| t30x071 | comparison | comparison lambda mapping read | 9 | 11 | 0 | 0 |
 | t30x072 | comparison | comparison in comprehension | pending | 0 | pending | pending |
 | t30x073 | comparison | comparison in import-time generator | pending | 1620 | pending | pending |
 | t30x074 | comparison | comparison operand advances parser | pending | 1620 | pending | pending |

@@ -1380,6 +1380,9 @@ def changed_test_state(old_tree, new_tree, touched):
             for _ in range(len(nodes)):
                 previous = len(external)
                 for n in nodes:
+                    if isinstance(n, ast.ClassDef) and any(root(b) in external for b in n.bases):
+                        # A fresh subclass can still inherit shared mutable tables.
+                        external.add(n.name)
                     if isinstance(n, (ast.Assign, ast.AnnAssign)) and root(n.value) in external:
                         external.update(assigned_names(n) or ())
                         ref = imported_ref(n.value, refs)
