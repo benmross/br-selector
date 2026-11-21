@@ -703,6 +703,16 @@ class Selector:
             # other tests never execute the old function/class themselves.
             why.append(f"{path}: definition names changed, import/collection users")
             return self.broad(path) | self.importers(path)
+        def class_bases(sc):
+            return {(s[5], s[3].name): tuple(ast.dump(b) for b in s[3].bases)
+                    for s in sc.stmts if not s[4] and isinstance(s[3], ast.ClassDef)}
+        old_bases, new_bases = class_bases(scopes), class_bases(new_scopes)
+        if any(old_bases[k] != new_bases[k] for k in old_bases.keys() & new_bases.keys()):
+            # Exception matching, isinstance and inherited protocols can change
+            # without executing a line in the class. Removing a base introduces
+            # no new lexical name, so could_raise cannot guard these consumers.
+            why.append(f"{path}: class bases changed, import/implicit protocol users")
+            return self.importers(path)
         reshaped = reshaped_names(scopes, new_scopes)
         if reshaped:
             # A table emptied or turned into another kind of value can make

@@ -865,3 +865,26 @@ def test_cpu_slots_reads_the_override():
     finally:
         del os.environ["BLAST_WORKERS"]
     assert 1 <= selector.cpu_slots() <= 4
+
+
+@pytest.mark.parametrize('before,after', [
+    ('class Failure(Exception):\n    pass\n', 'class Failure:\n    pass\n'),
+    ('class Child(Left, Right):\n    pass\n', 'class Child(Right, Left):\n    pass\n'),
+    ('class Child(Left, Right):\n    pass\n', 'class Child(Left):\n    pass\n'),
+    ('class Outer:\n    class Child(Left, Right):\n        pass\n',
+     'class Outer:\n    class Child(Right, Left):\n        pass\n'),
+])
+def test_class_base_changes_include_implicit_protocol_users(sandbox, before, after):
+    run, src = sandbox
+    (src / 'sqlglot/core.py').write_text(before)
+    result, why, _ = run({'bases': diff('sqlglot/core.py', before, after)})
+    assert result['bases'] == ALL, why
+
+
+def test_class_body_edit_does_not_trigger_base_change_guard(sandbox):
+    run, src = sandbox
+    before = 'class Child(Parent):\n    value = 1\n'
+    after = before.replace('value = 1', 'value = 2')
+    (src / 'sqlglot/core.py').write_text(before)
+    result, why, _ = run({'body': diff('sqlglot/core.py', before, after)})
+    assert 'class bases changed' not in why
