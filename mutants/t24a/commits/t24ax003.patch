@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -251,7 +251,7 @@
+                     if (
+                         isinstance(attr, type)
+                         and issubclass(attr, Dialect)
+-                        and attr.__name__.lower() == key
++                        and attr.__name__.lower() != key
+                     ):
+                         cls._classes[key] = attr
+                         break

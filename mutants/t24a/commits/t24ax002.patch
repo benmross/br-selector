@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -77,7 +77,7 @@
+     dispatch: dict[type[exp.Expr], t.Callable[..., str]] = dict(cls.TRANSFORMS)
+ 
+     for attr_name in dir(cls):
+-        if not attr_name.endswith("_sql") or attr_name.startswith("_"):
++        if not attr_name.endswith("_sql") and attr_name.startswith("_"):
+             continue
+ 
+         expr_key = attr_name[:-4]
