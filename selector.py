@@ -20,6 +20,7 @@ import json
 import os
 import re
 import sys
+import time
 
 DATA = os.environ.get("DATA_DIR", "/data")
 SRC = os.environ.get("SQLGLOT_SRC", "/opt/sqlglot")
@@ -27,6 +28,12 @@ MAP = os.environ.get("MAP_PATH", os.path.join(os.path.dirname(os.path.abspath(__
 INDEX = os.environ.get("INDEX_PATH", os.path.join(os.path.dirname(os.path.abspath(__file__)), "index.json.gz"))
 WORKER_MS = 2000
 MAX_WORKERS = 8
+# Leave ample time to serialize fallbacks before the scorer's 180 s deadline.
+MAX_SELECT_SECONDS = 120
+MAX_PATCH_BYTES = 4 * 1024 * 1024
+MAX_PATCH_LINES = 50000
+MAX_PATCH_FILES = 256
+MAX_COMMIT_SECONDS = 2
 
 
 def log(*a):
@@ -44,67 +51,180 @@ class FilePatch:
         self.new = None  # path or None for a deleted file
         self.hunks = []  # (old_start, [lines])
         self.binary = False
+        self.ranges = []  # (old_count, new_start, new_count), parallel to hunks
+        self.modes = []
+        self.inserted_lines = set()  # added without replacing an old line
+
+
+def patch_path(value, prefix=None):
+    """Decode Git's C-quoted UTF-8 paths; reject ambiguous/escaping paths."""
+    if value.startswith('"'):
+        if not value.endswith('"'):
+            raise ValueError("unterminated quoted path")
+        value = value[1:-1]
+        raw = bytearray()
+        i = 0
+        escapes = {"a": 7, "b": 8, "t": 9, "n": 10, "v": 11, "f": 12,
+                   "r": 13, '"': 34, "\\": 92}
+        while i < len(value):
+            if value[i] != "\\":
+                raw.extend(value[i].encode("utf-8"))
+                i += 1
+            elif i + 1 < len(value) and value[i + 1] in "01234567":
+                m = re.match(r"[0-7]{1,3}", value[i + 1:])
+                raw.append(int(m.group(), 8))
+                i += 1 + len(m.group())
+            elif i + 1 < len(value) and value[i + 1] in escapes:
+                raw.append(escapes[value[i + 1]])
+                i += 2
+            else:
+                raise ValueError("invalid path escape")
+        value = raw.decode("utf-8")
+    if value == "/dev/null":
+        return None
+    if prefix and value.startswith(prefix):
+        value = value[len(prefix):]
+    if not value or value.startswith("/") or any(p in ("", ".", "..") for p in value.split("/")) \
+            or any(ord(c) < 32 or ord(c) == 127 for c in value):
+        raise ValueError("unsafe patch path")
+    return value
+
+
+def diff_paths(header):
+    # Git does not quote ordinary spaces. File headers below disambiguate the
+    # uncommon case where a path itself contains ' b/'.
+    quoted = r'"(?:[^"\\]|\\.)*"'
+    m = re.fullmatch(f"({quoted}|a/.*?) ({quoted}|b/.*)", header)
+    if not m:
+        raise ValueError("invalid diff header")
+    return patch_path(m[1], "a/"), patch_path(m[2], "b/")
 
 
 def parse_patch(text):
+    text = text.replace("\r\n", "\n")
+    if len(text) > MAX_PATCH_BYTES or text.count("\n") > MAX_PATCH_LINES:
+        raise ValueError("patch exceeds analysis limit")
     files, cur, hunk = [], None, None
-    for line in text.split("\n"):
+    remaining = [0, 0]
+
+    def finish_hunk():
+        if any(remaining):
+            raise ValueError("truncated hunk")
+
+    lines = text.split("\n")
+    if lines[-1] == "":
+        lines.pop()  # patch terminator is not a context line
+    for line in lines:
         if line.startswith("diff --git "):
+            finish_hunk()
             cur = FilePatch()
             files.append(cur)
-            m = re.match(r"diff --git a/(.*) b/(.*)$", line)
-            if m:
-                cur.old, cur.new = m.group(1), m.group(2)
+            if len(files) > MAX_PATCH_FILES:
+                raise ValueError("too many patch files")
+            cur.old, cur.new = diff_paths(line[len("diff --git "):])
             hunk = None
             continue
         if cur is None:
+            if line.startswith(("--- ", "+++ ", "@@", "diff ")):
+                raise ValueError("unsupported diff format")
+            continue
+        if line == "\\ No newline at end of file":
+            if hunk is None or not hunk[1] or not hunk[1][-1].endswith("\n"):
+                raise ValueError("misplaced no-newline marker")
+            hunk[1][-1] = hunk[1][-1][:-1]
+            continue
+        m = HUNK.match(line)
+        if m:
+            finish_hunk()
+            start, old_count, new_start, new_count = (
+                int(m[1]), int(m[2]) if m[2] is not None else 1,
+                int(m[3]), int(m[4]) if m[4] is not None else 1)
+            if (old_count and not start) or (new_count and not new_start):
+                raise ValueError("invalid hunk position")
+            hunk = (start, [])
+            cur.hunks.append(hunk)
+            cur.ranges.append((old_count, new_start, new_count))
+            remaining = [old_count, new_count]
+            continue
+        if hunk is not None and any(remaining):
+            tag = line[:1]
+            if tag not in (" ", "-", "+"):
+                raise ValueError("invalid hunk body")
+            remaining[0] -= tag in (" ", "-")
+            remaining[1] -= tag in (" ", "+")
+            if min(remaining) < 0:
+                raise ValueError("hunk count mismatch")
+            hunk[1].append(line + "\n")
+            continue
+        if hunk is not None:
+            if line and not line.startswith("-- "):
+                raise ValueError("unexpected data after hunk")
             continue
         if hunk is None:
             if line.startswith("--- "):
-                p = line[4:].split("\t")[0]
-                cur.old = None if p == "/dev/null" else p[2:] if p.startswith("a/") else p
+                cur.old = patch_path(line[4:].split("\t")[0], "a/")
             elif line.startswith("+++ "):
-                p = line[4:].split("\t")[0]
-                cur.new = None if p == "/dev/null" else p[2:] if p.startswith("b/") else p
+                cur.new = patch_path(line[4:].split("\t")[0], "b/")
             elif line.startswith("new file mode"):
                 cur.old = None
+                cur.modes.append(line.rsplit(" ", 1)[-1])
             elif line.startswith("deleted file mode"):
                 cur.new = None
+                cur.modes.append(line.rsplit(" ", 1)[-1])
+            elif line.startswith(("old mode ", "new mode ")):
+                cur.modes.append(line.rsplit(" ", 1)[-1])
             elif line.startswith("rename from "):
-                cur.old = line[len("rename from "):]
+                cur.old = patch_path(line[len("rename from "):])
             elif line.startswith("rename to "):
-                cur.new = line[len("rename to "):]
+                cur.new = patch_path(line[len("rename to "):])
+            elif line.startswith("copy from "):
+                cur.old = patch_path(line[len("copy from "):])
+            elif line.startswith("copy to "):
+                cur.new = patch_path(line[len("copy to "):])
             elif line.startswith("Binary files") or line.startswith("GIT binary patch"):
                 cur.binary = True
-        m = HUNK.match(line)
-        if m:
-            hunk = (int(m.group(1)), [])
-            cur.hunks.append(hunk)
-            continue
-        if hunk is not None and line[:1] in (" ", "-", "+", "\\"):
-            hunk[1].append(line)
-        elif hunk is not None and line == "":
-            hunk[1].append(" ")  # a blank context line whose space was stripped
+            elif line.startswith(("@@", "+", "-", " ")) and not cur.binary:
+                raise ValueError("unrecognized patch data")
+    finish_hunk()
+    for fp in files:
+        if fp.old is None and fp.new is None:
+            raise ValueError("patch has no path")
+        if not fp.hunks and not fp.binary and not fp.modes and fp.old == fp.new:
+            raise ValueError("file patch has no changes")
     return files
 
 
 def apply(old_text, fp):
     """Return (new_text, changed_old_lines, insertion_points)."""
-    old = old_text.split("\n") if old_text is not None else []
+    old = []
+    if old_text:
+        parts = old_text.split("\n")
+        old = [line + "\n" for line in parts[:-1]]
+        if parts[-1]:
+            old.append(parts[-1])
     out, pos = [], 0
     changed, inserts = set(), set()
-    for start, lines in fp.hunks:
-        start_idx = max(start - 1, 0) if lines and any(l[:1] in " -" for l in lines) else start
+    fp.inserted_lines = set()
+    for (start, lines), (old_count, new_start, new_count) in zip(fp.hunks, fp.ranges):
+        start_idx = start - 1 if old_count else start
+        if start_idx < pos or start_idx > len(old) or start_idx + old_count > len(old):
+            raise ValueError("overlapping or out-of-bounds hunk")
         out.extend(old[pos:start_idx])
+        if (new_start - 1 if new_count else new_start) != len(out):
+            raise ValueError("inconsistent new hunk position")
         pos = start_idx
         removed_run = False
         for l in lines:
             tag, body = l[:1], l[1:]
             if tag == " ":
-                out.append(old[pos] if pos < len(old) else body)
+                if old[pos] != body:
+                    raise ValueError("patch context does not match source")
+                out.append(old[pos])
                 pos += 1
                 removed_run = False
             elif tag == "-":
+                if old[pos] != body:
+                    raise ValueError("patch removal does not match source")
                 changed.add(pos + 1)
                 pos += 1
                 removed_run = True
@@ -112,9 +232,9 @@ def apply(old_text, fp):
                 out.append(body)
                 if not removed_run:
                     inserts.add(pos)  # between old line pos and pos + 1
-            # "\\ No newline at end of file" leaves the run as it was
+                    fp.inserted_lines.add(len(out))
     out.extend(old[pos:])
-    return "\n".join(out), changed, inserts
+    return "".join(out), changed, inserts
 
 
 # ---------------------------------------------------------------- scopes
@@ -189,7 +309,6 @@ class Selector:
         self.all = set(tests)
         self.import_lines = {f: set(v) for f, v in m.get("import_lines", {}).items()}
         self._file_users = {}
-        self.pending_import = []
         self.index = None
         try:
             with gzip.open(INDEX, "rt") as f:
@@ -243,23 +362,47 @@ class Selector:
 
     def for_file(self, fp, why):
         path = fp.new or fp.old
-        if fp.binary:
-            why.append(f"{path}: binary, every user")
-            return self.fixture_users(path) | self.file_users(path)
-        if path.endswith(".py") and (path.startswith("sqlglot/") or path.startswith("tests/") or path in self.files):
-            return self.for_python(fp, path, why)
-        if path.startswith("tests/") or path.startswith("sqlglot/"):
-            users = self.fixture_users(path)
-            if fp.old is None and fp.new is not None:
-                users |= self.fixture_users(os.path.dirname(path) + "/")
-            why.append(f"{path}: data file read by {len(users)}")
-            return users
-        base = os.path.basename(path)
-        if base in ("pyproject.toml", "setup.cfg", "setup.py", "pytest.ini", "tox.ini", "conftest.py", "Makefile"):
+        paths = {p for p in (fp.old, fp.new) if p is not None}
+        # Config can live inside tests/ too. Check it before Python coverage.
+        configs = {"pyproject.toml", "setup.cfg", "setup.py", "pytest.ini", "tox.ini",
+                   "conftest.py", "Makefile", "Dockerfile", "uv.lock", "poetry.lock",
+                   "Pipfile", "Pipfile.lock", "environment.yml", "environment.yaml"}
+        if any(os.path.basename(p) in configs or os.path.basename(p).startswith("requirements")
+               for p in paths):
             why.append(f"{path}: build or test config, everything")
             return set(self.all)
-        why.append(f"{path}: outside code and tests, nothing")
-        return set()
+        if any(mode not in ("100644", "100755") for mode in fp.modes):
+            why.append(f"{path}: special file mode, everything")
+            return set(self.all)
+        python = any(p.endswith((".py", ".pyi", ".so", ".pth")) for p in paths)
+        if python and (fp.binary or fp.old != fp.new):
+            why.append(f"{path}: binary or structural Python change, everything")
+            return set(self.all)
+        if not fp.hunks and not fp.binary and fp.old == fp.new and fp.modes \
+                and path.endswith(".py") and path.startswith("sqlglot/"):
+            why.append(f"{path}: executable bit only")
+            return set()
+        users = set()
+        for p in paths:
+            users |= self.fixture_users(p) | self.file_users(p) | self.by_file.get(p, set())
+        if fp.binary:
+            why.append(f"{path}: binary, every user")
+            return users or set(self.all)
+        if path.endswith(".py") and (path.startswith("sqlglot/") or path.startswith("tests/") or path in self.files):
+            # Listing a source directory depends on file names, not changes to
+            # an existing module's contents. Structural changes widened above.
+            direct = self.m["fixtures"].get(path)
+            readers = set(self.sets[direct]) if direct is not None else set()
+            return self.for_python(fp, path, why) | readers
+        if users:
+            why.append(f"{path}: data file read by {len(users)}")
+            return users
+        if all(p.lower().endswith((".md", ".rst")) and not p.startswith(("sqlglot/", "tests/"))
+               for p in paths):
+            why.append(f"{path}: documentation, nothing")
+            return set()
+        why.append(f"{path}: untracked code or data, everything")
+        return set(self.all)
 
     def for_python(self, fp, path, why):
         old_text = None
@@ -270,14 +413,19 @@ class Selector:
             except OSError:
                 old_text = None
         if fp.old is not None and old_text is None:
-            why.append(f"{path}: original missing, file users")
-            return self.broad(path)
+            why.append(f"{path}: original missing, everything")
+            return set(self.all)
         new_text, changed, inserts = apply(old_text, fp)
         if fp.new is None:
             why.append(f"{path}: deleted, broad")
             return self.broad(path) | self.importers(path)
         try:
-            new_tree = ast.parse(new_text)
+            # Parse bytes, as Python's importer does: coding cookies can change
+            # semantics or break import even when a string AST is unchanged.
+            new_tree = ast.parse(new_text.encode("utf-8"))
+            # Parsing alone accepts constructs such as a top-level 'return',
+            # duplicate parameters, and unresolved nonlocal declarations.
+            compile(new_tree, path, "exec")
         except SyntaxError:
             why.append(f"{path}: syntax error, importers")
             return self.broad(path) | self.importers(path)
@@ -285,13 +433,30 @@ class Selector:
             why.append(f"{path}: new module, importers only")
             return self.importers(path)
         try:
-            old_tree = ast.parse(old_text)
+            old_tree = ast.parse(old_text.encode("utf-8"))
         except SyntaxError:
             return self.broad(path)
+        if encoding_cookie(old_text) != encoding_cookie(new_text):
+            # A new encoding can reinterpret string literals on otherwise
+            # untouched lines, invalidating same_ast's line-based shortcut.
+            if ast.dump(old_tree) != ast.dump(new_tree):
+                why.append(f"{path}: source encoding changed semantics, everything")
+                return set(self.all)
         touched = set(changed) | set(inserts) | {i + 1 for i in inserts}
         if same_ast(old_tree.body, new_tree.body, min(touched or {0}), max(touched or {0})):
             why.append(f"{path}: syntax tree unchanged")
             return set()
+
+        # An insertion next to a function need not run inside it. In particular,
+        # dedented code appended at EOF executes during import, even though its
+        # only old neighbour was a runtime statement. New import-time code has
+        # no recorded coverage; it can affect any later test.
+        if fp.inserted_lines:
+            new_scopes = Scopes(new_tree)
+            if any((new_scopes.at(line) is None or not new_scopes.at(line)[4])
+                   for line in fp.inserted_lines):
+                why.append(f"{path}: inserted import-time code, everything")
+                return set(self.all)
 
         scopes = Scopes(old_tree)
         module = path[:-3].replace("/", ".")
@@ -335,7 +500,11 @@ class Selector:
                 out |= self.module_level(path, module, cls, why, line, node)
                 import_level = True
         if import_level and could_raise(fp):
-            self.pending_import.append((path, module, new_text))
+            # Never execute patch-supplied code in the selector. Even an
+            # innocent import may loop, fork, write files, or produce unlimited
+            # output. Unknown import effects need a conservative selection.
+            why.append(f"{path}: possible import failure, everything")
+            return set(self.all)
         return out
 
     def at_import(self, path, span, why):
@@ -489,6 +658,10 @@ def _dump(v):
     return repr(v)
 
 
+def encoding_cookie(text):
+    return re.findall(r"coding[:=]\s*([-\w.]+)", "\n".join(text.split("\n")[:2]))
+
+
 def same_ast(a_list, b_list, lo, hi):
     """Are two statement lists the same tree? Statements wholly outside the
     patched lines lo..hi (original numbering) are textually unchanged, so
@@ -498,7 +671,9 @@ def same_ast(a_list, b_list, lo, hi):
     for a, b in zip(a_list, b_list):
         if type(a) is not type(b):
             return False
-        if hasattr(a, "lineno") and (a.end_lineno < lo or a.lineno > hi):
+        start = min([getattr(a, "lineno", 0)] +
+                    [d.lineno for d in getattr(a, "decorator_list", [])])
+        if hasattr(a, "lineno") and (a.end_lineno < lo or start > hi):
             continue
         for field in a._fields:
             va, vb = getattr(a, field, None), getattr(b, field, None)
@@ -630,8 +805,7 @@ KEYWORDS = set(__import__("keyword").kwlist)
 
 
 def could_raise(fp):
-    """Could this patch make a module fail to import? Swapping literals or
-    operators cannot; a new name, attribute, call or import can."""
+    """Conservatively flag new import effects, without executing patch code."""
     removed, added = [], []
     for _, lines in fp.hunks:
         for l in lines:
@@ -640,65 +814,15 @@ def could_raise(fp):
             elif l[:1] == "+":
                 added.append(l[1:])
     before = set(IDENT.findall("\n".join(removed)))
-    after = set(IDENT.findall("\n".join(added)))
-    after -= KEYWORDS
-    return bool(after - before) or "import" in after
-
-
-IMPORT_CHECK = r"""
-import importlib, importlib.abc, importlib.machinery, json, os, sys
-d = json.load(sys.stdin)
-sys.path.insert(0, d["src"])
-files = d["files"]
-class L(importlib.abc.Loader):
-    def __init__(self, n): self.n = n
-    def create_module(self, spec): return None
-    def exec_module(self, m):
-        fn, code, _ = files[self.n]
-        exec(compile(code, fn, "exec"), m.__dict__)
-class F(importlib.abc.MetaPathFinder):
-    def find_spec(self, name, path, target=None):
-        if name not in files: return None
-        fn, _, pkg = files[name]
-        spec = importlib.machinery.ModuleSpec(name, L(name), origin=fn, is_package=pkg)
-        if pkg: spec.submodule_search_locations = [os.path.dirname(fn)]
-        spec.has_location = True
-        return spec
-sys.meta_path.insert(0, F())
-import sqlglot
-for name in files:
-    mod = importlib.import_module(name)
-    # resolve every exported name, so a broken lazy table (PEP 562
-    # __getattr__ over a dict of targets) fails here as it would in a test
-    names = list(getattr(mod, "__all__", []) or [])
-    if hasattr(mod, "__getattr__"):
-        for v in list(vars(mod).values()):
-            if isinstance(v, dict):
-                names += [k for k in v if isinstance(k, str) and k.isidentifier()]
-    for n in names:
-        getattr(mod, n)
-"""
-
-
-def import_fails(pending):
-    """Import the patched modules in a fresh interpreter. True if any raises."""
-    import subprocess
-
-    files = {}
-    for path, module, text in pending:
-        files[module] = (os.path.join(SRC, path), text, path.endswith("__init__.py"))
-    try:
-        r = subprocess.run(
-            [sys.executable, "-I", "-c", IMPORT_CHECK],
-            input=json.dumps({"src": SRC, "files": files}),
-            capture_output=True, text=True, timeout=60,
-        )
-    except Exception as e:
-        log("import check failed to run:", repr(e))
+    added_text = "\n".join(added)
+    after = set(IDENT.findall(added_text))
+    if after & {"import", "while", "for", "raise", "assert", "del", "with", "try",
+                "yield", "await", "return", "global", "nonlocal"}:
         return True
-    if r.returncode:
-        log("import check:", (r.stderr.strip().splitlines() or ["?"])[-1])
-    return r.returncode != 0
+    if any(op in added_text for op in ("/", "%", "**", "<<", ">>")):
+        return True
+    after -= KEYWORDS
+    return bool(after - before)
 
 
 # ---------------------------------------------------------------- packing
@@ -726,7 +850,89 @@ def pack(nums, tests):
 # ---------------------------------------------------------------- main
 
 
+def select_patch(patch_path, sel, tests, deadline):
+    """Analyze one commit. Any exception is handled by the parent process."""
+    if time.monotonic() >= deadline:
+        raise RuntimeError("batch analysis deadline reached")
+    with open(patch_path, "rb") as f:
+        raw = f.read(MAX_PATCH_BYTES + 1)
+    if len(raw) > MAX_PATCH_BYTES:
+        raise ValueError("patch exceeds size limit")
+    text = raw.decode("utf-8")
+    chosen, why = set(), []
+    files = parse_patch(text)
+    if not files and text.strip():
+        raise RuntimeError("no files in patch")
+    for fp in files:
+        if time.monotonic() >= deadline:
+            raise RuntimeError("batch analysis deadline reached")
+        chosen |= sel.for_file(fp, why)
+        if chosen >= sel.all:
+            break
+    return chosen & set(tests), why
+
+
+def _analyze_child(connection, patch_path, sel, tests, deadline):
+    try:
+        # AST creation can exhaust memory or the interpreter's C stack before
+        # Python can raise an exception. Isolate it, and bound its address space
+        # well below the container's 4 GB limit. The pristine maps are inherited
+        # through fork, rather than decoded again for every commit.
+        import resource
+
+        soft, hard = resource.getrlimit(resource.RLIMIT_AS)
+        limit = 768 * 1024 * 1024
+        if soft != resource.RLIM_INFINITY:
+            limit = min(limit, soft)
+        resource.setrlimit(resource.RLIMIT_AS, (limit, hard))
+        resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+        chosen, why = select_patch(patch_path, sel, tests, deadline)
+        # Keep IPC and diagnostics bounded even for many edits or huge paths.
+        diagnostics = [message[:500] for message in why[:100]]
+        if len(why) > 100:
+            diagnostics.append(f"{len(why) - 100} further reasons omitted")
+        connection.send((chosen, diagnostics))
+    except BaseException as e:
+        connection.send((set(tests), [f"analysis error {type(e).__name__}: everything"]))
+    finally:
+        connection.close()
+
+
+def analyze_patch(context, patch_path, sel, tests, deadline):
+    """A broken/slow commit cannot reject the rest of the batch."""
+    budget = min(MAX_COMMIT_SECONDS, deadline - time.monotonic())
+    if budget <= 0:
+        return set(tests), ["batch analysis deadline reached: everything"]
+    receiver, sender = context.Pipe(duplex=False)
+    process = context.Process(target=_analyze_child,
+                              args=(sender, patch_path, sel, tests, deadline))
+    try:
+        process.start()
+        sender.close()
+        if receiver.poll(budget):
+            return receiver.recv()
+        return set(tests), ["commit analysis timed out: everything"]
+    except Exception as e:
+        return set(tests), [f"analysis process failed {type(e).__name__}: everything"]
+    finally:
+        receiver.close()
+        sender.close()
+        if process.pid is not None:
+            process.join(0.01)
+            if process.is_alive():
+                process.terminate()
+                process.join(0.1)
+            if process.is_alive():
+                process.kill()
+                process.join()
+            process.close()
+
+
 def main():
+    import multiprocessing
+
+    deadline = time.monotonic() + MAX_SELECT_SECONDS
+    context = multiprocessing.get_context("fork")
     with open(os.path.join(DATA, "tests.json")) as f:
         tj = json.load(f)
     tests = {t["number"]: (t["id"], t["file"], round(t["seconds"] * 1000)) for t in tj["tests"]}
@@ -746,37 +952,16 @@ def main():
         sel = None
 
     cdir = os.path.join(DATA, "commits")
+    fallback_workers = pack(set(tests), tests)
     for name in sorted(os.listdir(cdir)):
         if not name.endswith(".patch"):
             continue
         cid = name[: -len(".patch")]
-        why = []
-        try:
-            with open(os.path.join(cdir, name), encoding="utf-8", errors="replace") as f:
-                text = f.read()
-            if sel is None:
-                raise RuntimeError("no map")
-            chosen = set()
-            files = parse_patch(text)
-            if not files:
-                raise RuntimeError("no files in patch")
-            sel.pending_import = []
-            for fp in files:
-                chosen |= sel.for_file(fp, why)
-            if sel.pending_import and import_fails(sel.pending_import):
-                for path, module, _ in sel.pending_import:
-                    if sel.m.get("import_lines", {}).get(path):
-                        why.append(f"{path}: fails to import and loads with sqlglot, everything")
-                        chosen |= sel.all
-                    else:
-                        got = sel.broad(path)
-                        why.append(f"{path}: fails to import, its users {len(got)}")
-                        chosen |= got
-            chosen &= set(tests)
-        except Exception as e:
-            why.append(f"error {e!r}: everything")
-            chosen = set(tests)
-        workers = pack(chosen, tests)
+        if sel is None:
+            chosen, why = set(tests), ["map unavailable: everything"]
+        else:
+            chosen, why = analyze_patch(context, os.path.join(cdir, name), sel, tests, deadline)
+        workers = fallback_workers if chosen == set(tests) else pack(chosen, tests)
         log(cid, len(chosen), "tests;", "; ".join(why))
         sys.stdout.write(json.dumps({"commit": cid, "workers": workers}) + "\n")
     sys.stdout.flush()
