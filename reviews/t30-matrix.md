@@ -82,10 +82,10 @@ All smoke controls select every test on main. Per-mutant exclusions are recorded
 | t30x072 | comparison | comparison in comprehension | 0 | 0 | 0 | 0 |
 | t30x073 | comparison | comparison in import-time generator | ≥0 | 1620 | 0 | 0 |
 | t30x074 | comparison | comparison operand advances parser | ≥0 | 1620 | 0 | 0 |
-| t30x075 | shape | PEP 701 comment in f-string expression | pending | 0 | pending | pending |
-| t30x076 | metaclass | time-map key changes type | pending | 291 | pending | pending |
-| t30x077 | metaclass | quote tuple arity shrinks | pending | 117 | pending | pending |
-| t30x078 | shape | two individually harmless edits fail only together | pending | 1620 | pending | pending |
+| t30x075 | shape | PEP 701 comment in f-string expression | 0 | 0 | 0 | 0 |
+| t30x076 | metaclass | time-map key changes type | 70 | 291 | 0 | 0 |
+| t30x077 | metaclass | quote tuple arity shrinks | 117 | 117 | 0 | 0 |
+| t30x078 | shape | two individually harmless edits fail only together | ≥14 | 1620 | 0 | 0 |
 | t30x079 | cache | test cleanup snapshots wrong shared parser | 106 | 1 | 106 | 0 |
 | t30x080 | cache | test cleanup restores wrong shared parser | 106 | 1 | 106 | 0 |
 | t30x081 | cache | test cleanup omitted shared parser restoration | 0 | 1 | 0 | 0 |

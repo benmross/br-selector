@@ -64,11 +64,11 @@ for cid,r in labels['misses'].items():
 lines += ['',
  'Rule 1 extends the existing import-table shape check into nested entries: changed entry type, newly empty entries, changed tuple arity, and newly introduced dictionary key types. '
  'It widens only when the existing reader analysis identifies an import-time/unsafe reader. The quote-table misses keep a nonempty outer list while its entry becomes malformed. '
- 'Sixteen focused tests cover nested structures and safe same-type values. The deliberate benign widening is a valid Hive quote pair (t30x010); the general contract check is retained for unseen import-time consumers.','',
+ 'Sixteen focused tests cover nested structures and safe same-type values. A structurally valid Hive quote pair (t30x010) is widened even though main already selects its 42 failures; the general contract check is retained for unseen import-time consumers.','',
  'Rule 2 widens edits to test/helper functions that write imported/module state, mutate aliases of that state, or create globally registered dialect subclasses. '
  'It checks the whole enclosing function because a changed saved original can corrupt a later restoration. It tracks shared tables inherited through local subclasses. '
  'Twelve focused tests cover wrong saved values, wrong/removed cleanup, aliases, local objects, qualified/aliased dialect bases, and later-test selection. '
- 'The benign omitted-cleanup control t30x081 remains broad because shared state survives the test. Neither rule needs a narrower form under the 1% hid bar: both cost exactly 0% there.','',
+ 'The omitted-cleanup control t30x081 has no additional recorded failures and remains broad because shared state survives the test. Neither rule needs a narrower form under the 1% hid bar: both cost exactly 0% there.','',
  'All 73 executable statement starts in `_Dialect.__new__`, `_TokenizerBase.__init_subclass__`, and `Expr.__init_subclass__` are import lines. '
  'This pin has no separate parser/generator metaclass. String-name readers are tracked by the name index and treated as unsafe/dynamic. '
  'The missed nested records bypassed the old outer-container guard, rather than missing hook coverage.','',

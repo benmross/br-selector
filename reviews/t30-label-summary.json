@@ -1,12 +1,12 @@
 {
-  "labeled": 79,
+  "labeled": 83,
   "generated": 83,
   "classes": {
     "metaclass": {
-      "mutants": 19,
-      "failing_mutants": 16,
-      "failing_test_instances": 5161,
-      "main_selected_test_instances": 21385,
+      "mutants": 21,
+      "failing_mutants": 18,
+      "failing_test_instances": 5348,
+      "main_selected_test_instances": 21793,
       "main_misses": [
         "t30x064",
         "t30x065",
@@ -34,10 +34,10 @@
       "candidate_misses": []
     },
     "shape": {
-      "mutants": 14,
-      "failing_mutants": 8,
-      "failing_test_instances": 314,
-      "main_selected_test_instances": 11758,
+      "mutants": 16,
+      "failing_mutants": 9,
+      "failing_test_instances": 328,
+      "main_selected_test_instances": 13378,
       "main_misses": [],
       "candidate_misses": []
     },
@@ -4242,6 +4242,46 @@
       "description": "comparison operand advances parser",
       "failing": 0,
       "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x075": {
+      "class": "shape",
+      "description": "PEP 701 comment in f-string expression",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 0,
+      "main_missing": [],
+      "candidate_selected": 0,
+      "candidate_missing": []
+    },
+    "t30x076": {
+      "class": "metaclass",
+      "description": "time-map key changes type",
+      "failing": 70,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 291,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x077": {
+      "class": "metaclass",
+      "description": "quote tuple arity shrinks",
+      "failing": 117,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 117,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x078": {
+      "class": "shape",
+      "description": "two individually harmless edits fail only together",
+      "failing": 14,
+      "label_scope": "smoke: inserted import-time code makes main select all 1620 tests",
       "main_selected": 1620,
       "main_missing": [],
       "candidate_selected": 1620,
