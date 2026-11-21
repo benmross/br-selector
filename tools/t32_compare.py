@@ -3,10 +3,13 @@ import collections
 import json
 from pathlib import Path
 import sys
+import subprocess
 
 root = Path(sys.argv[1])
 datasets = sys.argv[2:] or ['hid', 'fresha', 'freshb', 'gate238']
-tests = json.load(open(Path(__file__).resolve().parents[4] / 'sample/tests.json'))['tests']
+repo = Path(subprocess.check_output(['git', '-C', str(Path(__file__).resolve().parents[1]),
+    'rev-parse', '--path-format=absolute', '--git-common-dir'], text=True).strip()).parent
+tests = json.load(open(repo / 'sample/tests.json'))['tests']
 ms = {t['number']: round(t['seconds'] * 1000) for t in tests}
 
 def load(path):
@@ -20,7 +23,13 @@ def cost(r):
     return max((sum(ms[n] for n in g) for g in w), default=0) + 2000 * len(w)
 
 def rule(why):
-    # The final widening can override an earlier reason; prioritize it.
+    # could_raise may be logged after another rule already selected all tests.
+    # Attribute the cost to the first independently sufficient widening.
+    sufficient = [reason for reason in why.split('; ')
+                  if 'everything' in reason or 'all import/collection users' in reason
+                  or 'importers' in reason or 'import/collection users' in reason]
+    if sufficient:
+        why = sufficient[0]
     for needle, name in [('possible import failure', 'could_raise'),
                          ('analysis error ValueError', 'strict_patch_application'),
                          ('inserted import-time code', 'inserted_import_code'),
@@ -32,6 +41,7 @@ def rule(why):
                          ('lookup changed', 'lookup_at_import'),
                          ('definition header', 'definition_header'),
                          ('shared setup', 'shared_setup'),
+                         ('protocol attribute', 'protocol_attribute'),
                          ('never instantiated', 'uninstantiated_class'),
                          ('changed shape', 'reshaped'),
                          ('syntax error', 'syntax_error'),

@@ -332,6 +332,7 @@ class Selector:
         self.index = None
         self._cmp = None
         self._cmp_drop = None
+        self._single_file_patch = True
         self._test_import_map = None
         self._shared_setup_map = None
         # Filled by prepare_batch in the parent, before any commit is forked:
@@ -796,7 +797,7 @@ class Selector:
             # is only stored there. Its sole permitted reader, parse_args,
             # must never have run at import; no test may run/read this module.
             safe_help = False
-            if argparse_help_only(old_tree, new_tree):
+            if self._single_file_patch and argparse_help_only(old_tree, new_tree):
                 imp = self.import_lines.get(path, set())
                 unread = not any(isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
                                  and n.func.attr == 'parse_args'
@@ -880,6 +881,8 @@ class Selector:
         `{**Base.NAME, ...}` extension. The caller keeps the baseline
         selection (coverage and readers), which handles changed behaviour."""
         self._literal_extra_users = set()
+        if not self._single_file_patch:
+            return False
         diffs = []
 
         def walk(a, b, chain):
@@ -2222,6 +2225,7 @@ def select_patch(patch_path, sel, tests, deadline):
     files = getattr(sel, "patches", {}).get(patch_path)
     if files is None:
         files = read_patch(patch_path)
+    sel._single_file_patch = len(files) == 1
     chosen, why = set(), []
     sel.pending_shared = set()
     for fp in files:

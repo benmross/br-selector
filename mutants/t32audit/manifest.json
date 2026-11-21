@@ -9,7 +9,7 @@
       "source_dataset": "gate238"
     },
     "m1x022": {
-      "kind": "could_raise",
+      "kind": "uninstantiated_class",
       "source_dataset": "gate238"
     },
     "m2x008": {
@@ -33,7 +33,7 @@
       "source_dataset": "gate238"
     },
     "m5x012": {
-      "kind": "could_raise",
+      "kind": "protocol_attribute",
       "source_dataset": "gate238"
     },
     "m5x014": {
@@ -195,26 +195,6 @@
     "h7x360": {
       "kind": "at_import",
       "source_dataset": "hid"
-    },
-    "t32auditcache000": {
-      "kind": "coverage_or_other",
-      "source_dataset": "fresh audit cached dispatch"
-    },
-    "t32auditcache001": {
-      "kind": "coverage_or_other",
-      "source_dataset": "fresh audit cached dispatch"
-    },
-    "t32auditcache002": {
-      "kind": "coverage_or_other",
-      "source_dataset": "fresh audit cached dispatch"
-    },
-    "t32auditcache003": {
-      "kind": "coverage_or_other",
-      "source_dataset": "fresh audit cached dispatch"
-    },
-    "t32auditcache004": {
-      "kind": "coverage_or_other",
-      "source_dataset": "fresh audit cached dispatch"
     },
     "t32auditimport000": {
       "kind": "at_import",
@@ -389,6 +369,11 @@
       "kind": "inserted_import_code",
       "source_dataset": "fresh module insertion audit",
       "expected": "stock int literal raises ValueError before tests collect"
+    },
+    "m31x001": {
+      "kind": "narrowed_TIME_MAPPING_regression",
+      "source_dataset": "t3-recorded",
+      "reason": "relabel the sole t3 narrowing under the current structured reporter"
     }
   }
 }

@@ -10,6 +10,7 @@ An optional <answers>.order JSON list prioritizes ids for an unsharded run.
 import json
 import os
 import subprocess
+import signal
 import sys
 import time
 
@@ -36,17 +37,32 @@ def oom_kills():
         return 0
 
 
-def run_suite(tag, targets=("tests",)):
+def run_suite(tag, targets=("tests",), test_filter=None):
     oom_before = oom_kills()
     prefix = out + ".reports/" + tag
     suite_env = dict(env, LABEL_REPORT_PREFIX=prefix,
                      LABEL_STOP_AFTER_FILE=out + ".stop-after", LABEL_STOP_REQUEST_FILE=out + ".stop")
-    r = subprocess.run(
-        [sys.executable, "-m", "pytest", *targets, "-q", "-n", os.environ.get("LABEL_N", "1"), "--dist", os.environ.get("LABEL_DIST", "load"), "-rfE", "-p", "no:cacheprovider",
+    process = subprocess.Popen(
+        [sys.executable, "-m", "pytest", *targets, *(["-k", test_filter] if test_filter else []), "-q", "-n", os.environ.get("LABEL_N", "1"), "--dist", os.environ.get("LABEL_DIST", "load"), "-rfE", "-p", "no:cacheprovider",
          "-o", "addopts=", "--timeout=90",
          *sum((["--deselect", nid] for nid in json.loads(os.environ.get("T32_DESELECT", "[]"))), []), "--tb=no", "-p", "label_trace"],
-        cwd=src, env=suite_env, capture_output=True, text=True,
+        cwd=src, env=suite_env, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        text=True, start_new_session=True,
     )
+    started = time.monotonic()
+    while True:
+        try:
+            stdout, stderr = process.communicate(timeout=2)
+            break
+        except subprocess.TimeoutExpired:
+            if oom_kills() > oom_before or time.monotonic() - started > 180:
+                try:
+                    os.killpg(process.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+                stdout, stderr = process.communicate()
+                break
+    r = subprocess.CompletedProcess(process.args, process.returncode, stdout, stderr)
     log_dir = out + ".logs"
     os.makedirs(log_dir, exist_ok=True)
     with open(os.path.join(log_dir, tag + ".log"), "w") as f:
@@ -73,9 +89,12 @@ else:
     # A manifest may list the tests to run per mutant (a candidate selection
     # checked against real outcomes); the baseline then covers their union.
     subset = sorted({t for v in manifest.values() for t in v.get("tests", [])})
-    baseline = run_suite("baseline", subset or ["tests"])
+    full = any(not v.get("tests") for v in manifest.values())
+    baseline = run_suite("baseline", ["tests"] if full else subset or ["tests"])
     json.dump(sorted(baseline), open(base_path, "w"))
 print("baseline failures:", sorted(baseline), flush=True)
+if os.environ.get("T32_REQUIRE_CLEAN_BASELINE") == "1" and baseline:
+    raise RuntimeError("Refusing labels with an unexpected baseline failure")
 names = sorted(n for n in os.listdir(os.path.join(muts, "commits")) if n.endswith(".patch"))
 order_path = out + ".order"
 if os.path.exists(order_path):
@@ -114,7 +133,8 @@ for k, name in enumerate(names):
             if old_path is not None and old_path != new_path:
                 os.unlink(old_path)
         t0 = time.time()
-        failing = run_suite(cid, manifest.get(cid, {}).get("tests") or ["tests"]) - baseline
+        failing = run_suite(cid, manifest.get(cid, {}).get("tests") or ["tests"],
+                            manifest.get(cid, {}).get("pytest_filter")) - baseline
     finally:
         for p, text in saved.items():
             if text is None:

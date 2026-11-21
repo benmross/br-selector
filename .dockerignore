@@ -1,0 +1,5 @@
+*
+!Dockerfile
+!selector.py
+!map.json.gz
+!cmp.json.gz

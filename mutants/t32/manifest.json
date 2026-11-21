@@ -6,7 +6,8 @@
       "line": 32,
       "old": "hh",
       "new": "hh_t32_0",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment",
+      "validation_scope": "full_suite"
     },
     "t32x001": {
       "kind": "TIME_MAPPING_key_nonempty_unique",
@@ -14,7 +15,8 @@
       "line": 41,
       "old": "ID",
       "new": "ID_t32_1",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment",
+      "validation_scope": "full_suite"
     },
     "t32x002": {
       "kind": "TIME_MAPPING_key_nonempty_unique",
@@ -22,7 +24,8 @@
       "line": 63,
       "old": "iso_week",
       "new": "iso_week_t32_2",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment",
+      "validation_scope": "full_suite"
     },
     "t32x003": {
       "kind": "TIME_MAPPING_key_nonempty_unique",
@@ -30,7 +33,8 @@
       "line": 70,
       "old": "dy",
       "new": "dy_t32_3",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment",
+      "validation_scope": "full_suite"
     },
     "t32x004": {
       "kind": "TIME_MAPPING_key_nonempty_unique",
@@ -38,7 +42,8 @@
       "line": 81,
       "old": "EE",
       "new": "EE_t32_4",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment",
+      "validation_scope": "full_suite"
     },
     "t32x005": {
       "kind": "TIME_MAPPING_key_nonempty_unique",
@@ -46,7 +51,8 @@
       "line": 48,
       "old": "%e",
       "new": "%e_t32_5",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment",
+      "validation_scope": "full_suite"
     },
     "t32x006": {
       "kind": "TIME_MAPPING_key_nonempty_unique",
@@ -54,7 +60,8 @@
       "line": 26,
       "old": "MMMM",
       "new": "MMMM_t32_6",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment",
+      "validation_scope": "full_suite"
     },
     "t32x007": {
       "kind": "TIME_MAPPING_key_nonempty_unique",
@@ -62,7 +69,8 @@
       "line": 24,
       "old": "HH",
       "new": "HH_t32_7",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment",
+      "validation_scope": "full_suite"
     },
     "t32x008": {
       "kind": "TIME_MAPPING_key_nonempty_unique",
@@ -70,7 +78,8 @@
       "line": 74,
       "old": "WW",
       "new": "WW_t32_8",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment",
+      "validation_scope": "full_suite"
     },
     "t32x009": {
       "kind": "TIME_MAPPING_key_nonempty_unique",
@@ -78,7 +87,8 @@
       "line": 33,
       "old": "mm",
       "new": "mm_t32_9",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment",
+      "validation_scope": "full_suite"
     },
     "t32x010": {
       "kind": "TIME_MAPPING_key_nonempty_unique",
@@ -86,7 +96,8 @@
       "line": 38,
       "old": "EE",
       "new": "EE_t32_10",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment",
+      "validation_scope": "full_suite"
     },
     "t32x011": {
       "kind": "TIME_MAPPING_key_nonempty_unique",
@@ -94,7 +105,8 @@
       "line": 70,
       "old": "h",
       "new": "h_t32_11",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment",
+      "validation_scope": "full_suite"
     },
     "t32x012": {
       "kind": "TIME_MAPPING_key_nonempty_unique",
@@ -102,7 +114,8 @@
       "line": 74,
       "old": "weekday",
       "new": "weekday_t32_12",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment",
+      "validation_scope": "full_suite"
     },
     "t32x013": {
       "kind": "TIME_MAPPING_key_nonempty_unique",
@@ -110,7 +123,8 @@
       "line": 22,
       "old": "yy",
       "new": "yy_t32_13",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment",
+      "validation_scope": "full_suite"
     },
     "t32x014": {
       "kind": "TIME_MAPPING_key_nonempty_unique",
@@ -118,112 +132,142 @@
       "line": 29,
       "old": "YY",
       "new": "YY_t32_14",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment",
+      "validation_scope": "full_suite"
     },
     "t32x015": {
       "kind": "stock_argparse_help_only",
       "file": "sqlglot/__main__.py",
       "old": "Tokenize and return the tokens list",
       "new": "Tokenize and return the tokens list (t32 proof case 15)",
-      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions",
+      "validation_scope": "full_suite"
     },
     "t32x016": {
       "kind": "stock_argparse_help_only",
       "file": "sqlglot/__main__.py",
       "old": "Tokenize and return the tokens list",
       "new": "Tokenize and return the tokens list (t32 proof case 16)",
-      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions",
+      "validation_scope": "full collection plus runtime smoke; complete static runtime-unreachability proof",
+      "pytest_filter": "TestTime and test_format_time"
     },
     "t32x017": {
       "kind": "stock_argparse_help_only",
       "file": "sqlglot/__main__.py",
       "old": "Tokenize and return the tokens list",
       "new": "Tokenize and return the tokens list (t32 proof case 17)",
-      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions",
+      "validation_scope": "full collection plus runtime smoke; complete static runtime-unreachability proof",
+      "pytest_filter": "TestTime and test_format_time"
     },
     "t32x018": {
       "kind": "stock_argparse_help_only",
       "file": "sqlglot/__main__.py",
       "old": "Tokenize and return the tokens list",
       "new": "Tokenize and return the tokens list (t32 proof case 18)",
-      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions",
+      "validation_scope": "full collection plus runtime smoke; complete static runtime-unreachability proof",
+      "pytest_filter": "TestTime and test_format_time"
     },
     "t32x019": {
       "kind": "stock_argparse_help_only",
       "file": "sqlglot/__main__.py",
       "old": "Tokenize and return the tokens list",
       "new": "Tokenize and return the tokens list (t32 proof case 19)",
-      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions",
+      "validation_scope": "full collection plus runtime smoke; complete static runtime-unreachability proof",
+      "pytest_filter": "TestTime and test_format_time"
     },
     "t32x020": {
       "kind": "stock_argparse_help_only",
       "file": "sqlglot/__main__.py",
       "old": "Tokenize and return the tokens list",
       "new": "Tokenize and return the tokens list (t32 proof case 20)",
-      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions",
+      "validation_scope": "full collection plus runtime smoke; complete static runtime-unreachability proof",
+      "pytest_filter": "TestTime and test_format_time"
     },
     "t32x021": {
       "kind": "stock_argparse_help_only",
       "file": "sqlglot/__main__.py",
       "old": "Tokenize and return the tokens list",
       "new": "Tokenize and return the tokens list (t32 proof case 21)",
-      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions",
+      "validation_scope": "full collection plus runtime smoke; complete static runtime-unreachability proof",
+      "pytest_filter": "TestTime and test_format_time"
     },
     "t32x022": {
       "kind": "stock_argparse_help_only",
       "file": "sqlglot/__main__.py",
       "old": "Tokenize and return the tokens list",
       "new": "Tokenize and return the tokens list (t32 proof case 22)",
-      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions",
+      "validation_scope": "full collection plus runtime smoke; complete static runtime-unreachability proof",
+      "pytest_filter": "TestTime and test_format_time"
     },
     "t32x023": {
       "kind": "stock_argparse_help_only",
       "file": "sqlglot/__main__.py",
       "old": "Tokenize and return the tokens list",
       "new": "Tokenize and return the tokens list (t32 proof case 23)",
-      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions",
+      "validation_scope": "full collection plus runtime smoke; complete static runtime-unreachability proof",
+      "pytest_filter": "TestTime and test_format_time"
     },
     "t32x024": {
       "kind": "stock_argparse_help_only",
       "file": "sqlglot/__main__.py",
       "old": "Tokenize and return the tokens list",
       "new": "Tokenize and return the tokens list (t32 proof case 24)",
-      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions",
+      "validation_scope": "full collection plus runtime smoke; complete static runtime-unreachability proof",
+      "pytest_filter": "TestTime and test_format_time"
     },
     "t32x025": {
       "kind": "stock_argparse_help_only",
       "file": "sqlglot/__main__.py",
       "old": "Tokenize and return the tokens list",
       "new": "Tokenize and return the tokens list (t32 proof case 25)",
-      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions",
+      "validation_scope": "full collection plus runtime smoke; complete static runtime-unreachability proof",
+      "pytest_filter": "TestTime and test_format_time"
     },
     "t32x026": {
       "kind": "stock_argparse_help_only",
       "file": "sqlglot/__main__.py",
       "old": "Tokenize and return the tokens list",
       "new": "Tokenize and return the tokens list (t32 proof case 26)",
-      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions",
+      "validation_scope": "full collection plus runtime smoke; complete static runtime-unreachability proof",
+      "pytest_filter": "TestTime and test_format_time"
     },
     "t32x027": {
       "kind": "stock_argparse_help_only",
       "file": "sqlglot/__main__.py",
       "old": "Tokenize and return the tokens list",
       "new": "Tokenize and return the tokens list (t32 proof case 27)",
-      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions",
+      "validation_scope": "full collection plus runtime smoke; complete static runtime-unreachability proof",
+      "pytest_filter": "TestTime and test_format_time"
     },
     "t32x028": {
       "kind": "stock_argparse_help_only",
       "file": "sqlglot/__main__.py",
       "old": "Tokenize and return the tokens list",
       "new": "Tokenize and return the tokens list (t32 proof case 28)",
-      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions",
+      "validation_scope": "full collection plus runtime smoke; complete static runtime-unreachability proof",
+      "pytest_filter": "TestTime and test_format_time"
     },
     "t32x029": {
       "kind": "stock_argparse_help_only",
       "file": "sqlglot/__main__.py",
       "old": "Tokenize and return the tokens list",
       "new": "Tokenize and return the tokens list (t32 proof case 29)",
-      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions",
+      "validation_scope": "full collection plus runtime smoke; complete static runtime-unreachability proof",
+      "pytest_filter": "TestTime and test_format_time"
     }
   }
 }

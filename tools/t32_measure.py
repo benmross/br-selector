@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import resource
+import subprocess
 import time
 
 p = argparse.ArgumentParser()
@@ -15,7 +16,9 @@ p.add_argument("dataset")
 p.add_argument("output")
 a = p.parse_args()
 wt, data, output = map(lambda x: Path(x).resolve(), (a.worktree, a.dataset, a.output))
-os.environ.update(DATA_DIR=str(data), SQLGLOT_SRC=str(Path(__file__).resolve().parents[4] / "work/sqlglot"),
+repo = Path(subprocess.check_output(['git', '-C', str(wt), 'rev-parse', '--path-format=absolute',
+                                   '--git-common-dir'], text=True).strip()).parent
+os.environ.update(DATA_DIR=str(data), SQLGLOT_SRC=os.environ.get('SQLGLOT_SRC', str(repo / 'work/sqlglot')),
                   MAP_PATH=str(wt / "map.json.gz"), INDEX_PATH=str(wt / "index.json.gz"))
 # The caller also pins one CPU; never allow more than 1 GiB virtual memory.
 resource.setrlimit(resource.RLIMIT_AS, (1024**3, 1024**3))

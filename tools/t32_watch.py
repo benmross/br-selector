@@ -29,12 +29,16 @@ name = sys.argv[1] if len(sys.argv) > 1 else 'br-label-t32'
 with open(root / f'container-stats-{name}.jsonl', 'a', buffering=1) as out:
     while True:
         state = query(f'/containers/{name}/json')['State']
+        if state.get('Status') in {'created', 'restarting'}:
+            time.sleep(1)
+            continue
         if not state['Running']:
             print(json.dumps({'time': time.time(), 'state': state}), file=out)
             break
         stats = query(f'/containers/{name}/stats?stream=false&one-shot=true')
         available = int(dict(line.split(':', 1) for line in open('/proc/meminfo'))['MemAvailable'].split()[0])
-        print(json.dumps({'time': time.time(), 'cpu_ns': stats['cpu_stats']['cpu_usage']['total_usage'],
+        print(json.dumps({'time': time.time(), 'started_at': state.get('StartedAt'),
+                          'cpu_ns': stats['cpu_stats']['cpu_usage']['total_usage'],
                           'available_kib': available}), file=out)
         if available < 5 * 1024 * 1024:
             subprocess.run(['docker', 'stop', '--time', '5', name], check=True)

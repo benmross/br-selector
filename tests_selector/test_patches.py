@@ -476,6 +476,7 @@ def test_import_time_literal_edits(sandbox, name, before, after, everything):
     ('"""RESERVED\nconfiguration docs\n"""\n', False),
     ('class Alias:\n    RESERVED = Gen.RESERVED\n', False),
     ('class Alias:\n    OTHER = Gen.RESERVED\n', True),
+    ('class Alias:\n    OTHER = {*Gen.RESERVED}\n', True),
     ('VALUE = getattr(Gen, "RESERVED")[0]\n', True),
     ('VALUE = "RESERVED"\n', True),
     ('f"{getattr(Gen, \'RESERVED\')}"\n', True),
@@ -591,6 +592,19 @@ def test_argparse_help_narrows_only_unobserved_module(sandbox):
     answers, why, _ = run({'help': diff('sqlglot/unused.py', ARGPARSE_SRC,
                          ARGPARSE_SRC.replace('return the query', 'print the query'))})
     assert answers['help'] == set(), why
+
+
+@pytest.mark.parametrize('before,after', [
+    (ARGPARSE_SRC, ARGPARSE_SRC.replace('return the query', 'print the query')),
+    (SET_ATTR, SET_ATTR.replace('"between"', '"betweenx"')),
+])
+def test_literal_import_proofs_do_not_cross_another_changed_file(sandbox, before, after):
+    run, src = sandbox
+    (src / 'sqlglot/unused.py').write_text(before)
+    dependency = CORE.replace('    return 1', '    import sqlglot.unused\n    return 1')
+    patch = diff('sqlglot/unused.py', before, after) + diff('sqlglot/core.py', CORE, dependency)
+    answers, why, _ = run({'joint': patch})
+    assert answers['joint'] == ALL, why
 
 
 @pytest.mark.parametrize('imported_line,expected', [(3, set()), (4, ALL)])

@@ -4,11 +4,13 @@ import gzip
 import json
 from pathlib import Path
 import sys
+import subprocess
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import selector
 
-root = Path(__file__).resolve().parents[4]
+root = Path(subprocess.check_output(['git', '-C', str(Path(__file__).resolve().parents[1]),
+    'rev-parse', '--path-format=absolute', '--git-common-dir'], text=True).strip()).parent
 selector.SRC = str(root / 'work/sqlglot')
 source = selector.Selector._load_sources()
 modules = {rel: rel[:-3].replace('/', '.').removesuffix('.__init__') for rel in source}
