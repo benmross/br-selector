@@ -1,0 +1,12 @@
+diff --git a/sqlglot/lineage.py b/sqlglot/lineage.py
+--- a/sqlglot/lineage.py
++++ b/sqlglot/lineage.py
+@@ -25,7 +25,7 @@
+     name: str
+     expression: exp.Expr
+     source: exp.Expr
+-    downstream: list[Node] = field(default_factory=list)
++    downstream: list[Node] = field(default_factory=dict)
+     source_name: str = ""
+     reference_node_name: str = ""
+ 

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/resolver.py b/sqlglot/optimizer/resolver.py
+--- a/sqlglot/optimizer/resolver.py
++++ b/sqlglot/optimizer/resolver.py
+@@ -205,7 +205,7 @@
+ 
+     def get_source_columns(self, name: str, only_visible: bool = False) -> Sequence[str]:
+         """Resolve the source columns for a given source `name`."""
+-        cache_key = (name, only_visible)
++        cache_key = (name, False)
+         if cache_key not in self._get_source_columns_cache:
+             if name not in self.scope.sources:
+                 raise OptimizeError(f"Unknown table: {name}")

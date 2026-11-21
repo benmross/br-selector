@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/optimizer.py b/sqlglot/optimizer/optimizer.py
+--- a/sqlglot/optimizer/optimizer.py
++++ b/sqlglot/optimizer/optimizer.py
+@@ -108,7 +108,7 @@
+     optimized = exp.maybe_parse(expression, dialect=dialect, copy=copy)
+     for rule in rules:
+         # Find any additional rule parameters, beyond `expression`
+-        rule_params = inspect.getfullargspec(rule).args
++        rule_params = inspect.getfullargspec(rule).args[1:]
+         rule_kwargs = {
+             param: possible_kwargs[param] for param in rule_params if param in possible_kwargs
+         }

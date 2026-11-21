@@ -1,0 +1,5 @@
+diff --git a/json.py b/json.py
+--- /dev/null
++++ b/json.py
+@@ -0,0 +1 @@
++raise RuntimeError("t30 shadow json")

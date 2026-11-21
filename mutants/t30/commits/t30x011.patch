@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/bigquery.py b/sqlglot/dialects/bigquery.py
+--- a/sqlglot/dialects/bigquery.py
++++ b/sqlglot/dialects/bigquery.py
+@@ -151,7 +151,7 @@
+         DROP_UNKNOWN_ESCAPES = True
+         QUOTES = ["'", '"', '"""', "'''"]
+         COMMENTS = ["--", "#", ("/*", "*/")]
+-        IDENTIFIERS = ["`"]
++        IDENTIFIERS = ["!"]
+         IDENTIFIER_ESCAPES = ["\\"]
+         STRING_ESCAPES = ["\\"]
+ 

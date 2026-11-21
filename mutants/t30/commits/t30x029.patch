@@ -1,0 +1,12 @@
+diff --git a/tests/helpers.py b/tests/helpers.py
+--- a/tests/helpers.py
++++ b/tests/helpers.py
+@@ -43,7 +43,7 @@
+ 
+ def load_sql_fixture_pairs(filename):
+     with open(os.path.join(FIXTURES_DIR, filename), encoding="utf-8") as f:
+-        statements = _filter_comments(f.read()).split(";")
++        statements = _filter_comments(f.read()).split(";;")
+ 
+         size = len(statements)
+ 

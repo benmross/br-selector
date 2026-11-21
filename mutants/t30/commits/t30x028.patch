@@ -1,0 +1,9 @@
+diff --git a/tests/fixtures/optimizer/qualify_columns.sql b/tests/fixtures/optimizer/qualify_columns.sql
+--- a/tests/fixtures/optimizer/qualify_columns.sql
++++ b/tests/fixtures/optimizer/qualify_columns.sql
+@@ -1,4 +1,4 @@
+---------------------------------------
++SELECT 999; --------------------------------------
+ -- Qualify columns
+ --------------------------------------
+ SELECT a FROM x;

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -332,7 +332,7 @@
+         base_tokenizer = (getattr(base, "tokenizer_class", Tokenizer),)
+         base_jsonpath_tokenizer = (getattr(base, "jsonpath_tokenizer_class", JSONPathTokenizer),)
+         base_parser = (getattr(base, "parser_class", Parser),)
+-        base_generator = (getattr(base, "generator_class", Generator),)
++        base_generator = (getattr(base, "parser_class", Generator),)
+ 
+         klass.tokenizer_class = klass.__dict__.get(
+             "Tokenizer", type("Tokenizer", base_tokenizer, {})

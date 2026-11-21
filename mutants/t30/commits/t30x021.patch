@@ -1,0 +1,15 @@
+diff --git a/sqlglot/optimizer/optimizer.py b/sqlglot/optimizer/optimizer.py
+--- a/sqlglot/optimizer/optimizer.py
++++ b/sqlglot/optimizer/optimizer.py
+@@ -38,9 +38,9 @@
+ 
+ 
+ RULES: tuple[OptimizerFn, ...] = (
++    normalize,
++    pushdown_projections,
+     qualify,
+-    pushdown_projections,
+-    normalize,
+     unnest_subqueries,
+     pushdown_predicates,
+     optimize_joins,

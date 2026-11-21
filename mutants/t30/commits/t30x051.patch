@@ -1,0 +1,13 @@
+diff --git a/sqlglot/lineage.py b/sqlglot/lineage.py
+--- a/sqlglot/lineage.py
++++ b/sqlglot/lineage.py
+@@ -26,8 +26,8 @@
+     expression: exp.Expr
+     source: exp.Expr
+     downstream: list[Node] = field(default_factory=list)
++    reference_node_name: str = ""
+     source_name: str = ""
+-    reference_node_name: str = ""
+ 
+     # Caller-injected per-node data, populated via the `on_node` hook on lineage()
+     payload: dict[str, t.Any] = field(default_factory=dict)

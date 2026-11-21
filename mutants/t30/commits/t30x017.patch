@@ -1,0 +1,10 @@
+diff --git a/sqlglot/optimizer/__init__.py b/sqlglot/optimizer/__init__.py
+--- a/sqlglot/optimizer/__init__.py
++++ b/sqlglot/optimizer/__init__.py
+@@ -61,5 +61,5 @@
+                 value = importlib.import_module(f"{__name__}.{name}")
+             except ModuleNotFoundError:
+                 raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from None
+-        globals()[name] = value
++        globals()["Scope"] = value
+         return value

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/lineage.py b/sqlglot/lineage.py
+--- a/sqlglot/lineage.py
++++ b/sqlglot/lineage.py
+@@ -22,7 +22,7 @@
+ 
+ @dataclass(frozen=True)
+ class Node:
+-    name: str
++    name: t.ClassVar[str]
+     expression: exp.Expr
+     source: exp.Expr
+     downstream: list[Node] = field(default_factory=list)

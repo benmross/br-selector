@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/doris.py b/sqlglot/generators/doris.py
+--- a/sqlglot/generators/doris.py
++++ b/sqlglot/generators/doris.py
+@@ -598,7 +598,7 @@
+         name = self.sql(expression, "this")
+         values = expression.expressions
+ 
+-        if len(values) != 1:
++        if len(values) is not 1:
+             # Multiple values: use VALUES [ ... )
+             if values and isinstance(values[0], list):
+                 values_sql = ", ".join(

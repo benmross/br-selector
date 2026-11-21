@@ -1,0 +1,12 @@
+diff --git a/sqlglot/diff.py b/sqlglot/diff.py
+--- a/sqlglot/diff.py
++++ b/sqlglot/diff.py
+@@ -24,7 +24,7 @@
+ class Insert:
+     """Indicates that a new node has been inserted"""
+ 
+-    expression: exp.Expr
++    expression: t.ClassVar[exp.Expr]
+ 
+ 
+ @dataclass(frozen=True)

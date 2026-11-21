@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -541,7 +541,7 @@
+     JSON_PATH_KEY_QUOTED_FORCES_BRACKETS = False
+ 
+     # The JSONPathPart expressions supported by this dialect
+-    SUPPORTED_JSON_PATH_PARTS: t.ClassVar = ALL_JSON_PATH_PARTS.copy()
++    SUPPORTED_JSON_PATH_PARTS: t.ClassVar = {exp.Literal}
+ 
+     # Whether any(f(x) for x in array) can be implemented by this dialect
+     CAN_IMPLEMENT_ARRAY_ANY = False

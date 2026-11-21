@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/builders.py b/sqlglot/expressions/builders.py
+--- a/sqlglot/expressions/builders.py
++++ b/sqlglot/expressions/builders.py
+@@ -881,7 +881,7 @@
+ def _takes_query(placeholder: Placeholder) -> bool:
+     parent = placeholder.parent
+     if isinstance(parent, In):
+-        return placeholder.arg_key == "expressions" and len(parent.expressions) == 1
++        return placeholder.arg_key is 'expressions' and len(parent.expressions) == 1
+     if isinstance(parent, Func):
+         return len(list(parent.iter_expressions())) == 1
+     if isinstance(parent, Table):

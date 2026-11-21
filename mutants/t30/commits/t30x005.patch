@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -354,7 +354,7 @@
+             for part in ALL_JSON_PATH_PARTS - supported:
+                 gen_cls.TRANSFORMS.pop(part, None)
+ 
+-        klass.QUOTE_START, klass.QUOTE_END = list(klass.tokenizer_class._QUOTES.items())[0]
++        klass.QUOTE_END, klass.QUOTE_START = list(klass.tokenizer_class._QUOTES.items())[0]
+         klass.IDENTIFIER_START, klass.IDENTIFIER_END = list(
+             klass.tokenizer_class._IDENTIFIERS.items()
+         )[0]

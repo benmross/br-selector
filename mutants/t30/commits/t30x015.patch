@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -1002,7 +1002,7 @@
+         self._quote_json_path_key_using_brackets = True
+ 
+         cls = type(self)
+-        dispatch = _DISPATCH_CACHE.get(cls)
++        dispatch = _DISPATCH_CACHE.get(Generator)
+         if dispatch is None:
+             dispatch = _build_dispatch(cls)
+             _DISPATCH_CACHE[cls] = dispatch

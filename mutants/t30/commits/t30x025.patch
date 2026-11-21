@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -301,7 +301,7 @@
+         if key not in cls._classes:
+             cls._try_load(key)
+ 
+-        return cls._classes.get(key, default)
++        return cls._classes.get("", default)
+ 
+     def __new__(cls, clsname, bases, attrs):
+         klass = super().__new__(cls, clsname, bases, attrs)

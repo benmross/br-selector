@@ -1,0 +1,19 @@
+diff --git a/tests/helpers.py b/tests/helpers.py
+--- a/tests/helpers.py
++++ b/tests/helpers.py
+@@ -4,8 +4,6 @@
+ FIXTURES_DIR = os.path.join(FILE_DIR, "fixtures")
+ 
+ 
+-def is_compiled(module):
+-    return not getattr(module, "__file__", ".py").endswith(".py")
+ 
+ 
+ def _filter_comments(s):
+@@ -616,3 +614,6 @@
+         "web_tax_percentage": "double",
+     },
+ }
++
++def is_compiled(module):
++    return not getattr(module, "__file__", ".py").endswith(".py")

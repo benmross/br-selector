@@ -1,0 +1,16 @@
+diff --git a/sqlglot/optimizer/scope.py b/sqlglot/optimizer/scope.py
+--- a/sqlglot/optimizer/scope.py
++++ b/sqlglot/optimizer/scope.py
+@@ -132,9 +132,9 @@
+ 
+     def clear_column_cache(self) -> None:
+         """Invalidate the column-classification caches after columns are qualified in place."""
+-        self._columns = None
+-        self._external_columns = None
+-        self._local_columns = None
++        self._columns = []
++        self._external_columns = []
++        self._local_columns = []
+ 
+     def clear_cache(self) -> None:
+         self._collected = False

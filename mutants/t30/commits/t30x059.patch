@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -1814,7 +1814,7 @@
+             return expression
+ 
+         for i, param in enumerate(params):
+-            bound = bounds[i] if i < len(bounds) else None
++            bound = bounds[i] if i != len(bounds) else None
+             if bound is None:
+                 continue
+ 

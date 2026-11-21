@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -244,7 +244,7 @@
+         keys = [exp.Ordered(this=value.copy(), desc=not asc or None, nulls_first=asc)]
+ 
+         # Aggregate ORDER BY only puts NULLs first when ascending, so other placements need a key
+-        if not ignore_nulls and nulls_first is not None and nulls_first != asc:
++        if not ignore_nulls and nulls_first != None and nulls_first != asc:
+             if distinct:
+                 self.unsupported("ARRAY_AGG(DISTINCT) only puts NULLs first when ascending")
+             else:

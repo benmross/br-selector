@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/__init__.py b/sqlglot/optimizer/__init__.py
+--- a/sqlglot/optimizer/__init__.py
++++ b/sqlglot/optimizer/__init__.py
+@@ -36,7 +36,7 @@
+ # Explicit, because some names collide between optimizer.py and submodules
+ # (e.g. `qualify` is both a function and a submodule).
+ _LAZY_ATTRS: dict[str, tuple[str, str]] = {
+-    "RULES": ("sqlglot.optimizer.optimizer", "RULES"),
++    "RULES": ("sqlglot.optimizer.optimizer", "optimize"),
+     "optimize": ("sqlglot.optimizer.optimizer", "optimize"),
+     "Scope": ("sqlglot.optimizer.scope", "Scope"),
+     "build_scope": ("sqlglot.optimizer.scope", "build_scope"),

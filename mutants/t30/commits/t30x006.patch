@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokens.py b/sqlglot/tokens.py
+--- a/sqlglot/tokens.py
++++ b/sqlglot/tokens.py
+@@ -83,7 +83,7 @@
+     @classmethod
+     def __init_subclass__(cls, **kwargs: t.Any) -> None:
+         super().__init_subclass__(**kwargs)
+-        cls._QUOTES = _convert_quotes(cls.QUOTES)
++        cls._QUOTES = _convert_quotes(cls.IDENTIFIERS)
+         cls._IDENTIFIERS = _convert_quotes(cls.IDENTIFIERS)
+         cls._FORMAT_STRINGS = {
+             **{

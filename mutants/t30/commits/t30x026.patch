@@ -1,0 +1,12 @@
+diff --git a/tests/fixtures/identity.sql b/tests/fixtures/identity.sql
+--- a/tests/fixtures/identity.sql
++++ b/tests/fixtures/identity.sql
+@@ -74,7 +74,7 @@
+ a['x'].C()
+ int.x
+ map.x
+-SELECT update
++SE LECT update
+ SELECT x.update
+ SELECT call.x
+ SELECT end

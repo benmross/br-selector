@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -1005,7 +1005,7 @@
+         dispatch = _DISPATCH_CACHE.get(cls)
+         if dispatch is None:
+             dispatch = _build_dispatch(cls)
+-            _DISPATCH_CACHE[cls] = dispatch
++            _DISPATCH_CACHE[cls] = next(iter(_DISPATCH_CACHE.values()), dispatch)
+         self._dispatch = dispatch
+ 
+     def generate(self, expression: exp.Expr, copy: bool = True) -> str:

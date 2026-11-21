@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokens.py b/sqlglot/tokens.py
+--- a/sqlglot/tokens.py
++++ b/sqlglot/tokens.py
+@@ -22,7 +22,7 @@
+             "sqlglot[rs] is deprecated and no longer compatible with sqlglot. "
+             "Please use sqlglotc instead for faster parsing: pip install sqlglot[c]",
+         )
+-except ImportError:
++except ModuleNotFoundError:
+     pass
+ 
+ if t.TYPE_CHECKING:

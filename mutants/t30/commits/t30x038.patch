@@ -1,0 +1,8 @@
+diff --git a/tests/conftest.py b/tests/conftest.py
+--- /dev/null
++++ b/tests/conftest.py
+@@ -0,0 +1,4 @@
++import pytest
++@pytest.fixture(autouse=True)
++def t30_fixture():
++    assert False

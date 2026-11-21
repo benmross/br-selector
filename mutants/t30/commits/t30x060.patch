@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/athena.py b/sqlglot/generators/athena.py
+--- a/sqlglot/generators/athena.py
++++ b/sqlglot/generators/athena.py
+@@ -57,7 +57,7 @@
+                 # CTAS with a leading USING EXTERNAL FUNCTION clause is Trino
+                 return not (
+                     isinstance(expression.expression, exp.Command)
+-                    and expression.expression.text("this").upper() == "USING"
++                    and expression.expression.text('this').upper() is not 'USING'
+                 )
+         else:
+             # CREATE VIEW is Trino, but CREATE SCHEMA, CREATE DATABASE, etc, is Hive

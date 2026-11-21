@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/query.py b/sqlglot/expressions/query.py
+--- a/sqlglot/expressions/query.py
++++ b/sqlglot/expressions/query.py
+@@ -680,7 +680,7 @@
+     @property
+     def is_limit_all(self) -> bool:
+         limit_expression = self.args.get("expression")
+-        return isinstance(limit_expression, Var) and limit_expression.name.upper() == "ALL"
++        return isinstance(limit_expression, Var) and limit_expression.name.upper() is not 'ALL'
+ 
+ 
+ class LimitOptions(Expression):

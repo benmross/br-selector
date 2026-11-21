@@ -1,0 +1,5 @@
+diff --git a/sqlglotrs.py b/sqlglotrs.py
+--- /dev/null
++++ b/sqlglotrs.py
+@@ -0,0 +1 @@
++# Optional Rust package shadow
