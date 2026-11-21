@@ -1,0 +1,9 @@
+Simulated: 116.857 s
+Misses:    0 (0.000 s of the simulated time)
+CPU:       not measured here. The simulated seconds above are exact. The board adds the CPU seconds your container used and takes the middle of 3 runs.
+mutants: 412 commits, 0 misses; total 7054.7 s   floor about 3601.4 s
+Simulated: 116.857 s
+Misses:    0 (0.000 s of the simulated time)
+CPU 1.24
+image differs from host on 0 of 412 mutants
+image differs from host on 0 of 2 edge patches

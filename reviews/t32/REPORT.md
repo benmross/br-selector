@@ -1,15 +1,16 @@
 # Handoff
 
-- Done: old/main attribution on 838 inputs; 11 lineage checkpoints; 85 real audit labels; proof implementation and 179 selector tests plus 20 tools tests. Branch `w/t32` is pushed. Actual model: **gpt-6.1-sol**.
-- Candidate: `b1eb10f0b016be5bd1726adfd8131bd7aaf6f3dc`; baseline: `be28115d6b491536992e294aff9ae9b1d2a27dee`; comparator: `dc913410055bea94a97ceba751aa59f9f51df972`.
-- Running/next: see final gate and fresh-label status below. No submission, queue write, or main push. Deadline 09:51:33 UTC (04:51 EST).
-- Exact review command: `git show b1eb10f0b016be5bd1726adfd8131bd7aaf6f3dc:reviews/t32/narrowed.md`; final gate record: `../buildathon/gates/b1eb10f0b016be5bd1726adfd8131bd7aaf6f3dc.txt`.
+- Done: old/main attribution on 838 inputs; 11 lineage checkpoints; 85 real audit labels; proof implementation and 191 selector tests plus 20 tools tests. Branch `w/t32` is pushed. Actual model: **gpt-6.1-sol**.
+- Candidate: `cba67182cecd413f7f8bacb25c488a564b768f4e`; baseline: `be28115d6b491536992e294aff9ae9b1d2a27dee`; comparator: `dc913410055bea94a97ceba751aa59f9f51df972`.
+- Done: repeated all required before/after sets after integrating current-main safeguards; fresh 30/30 and audit 85/85 have zero observed misses. Running: gate PID 599282, work/t32/final-integrated-gate.log. Image/comparator checks pending at this snapshot; do not infer PASS from host zero misses. Next: HOLD for t41 answers and ordered m1x022 reconciliation. No submission, queue write, or main push. Deadline 09:51:33 UTC (04:51 EST).
+- Exact next command after t41 answers exist: `taskset -c 3 python3 tools/t32_measure.py . ../t41/mutants/t41 work/t32/t41` followed by `python3 tools/report.py ../t41/mutants/t41 work/t32/t41.jsonl`. Merge current main and gate that exact hash only after zero misses.
+- Exact review command: `git show cba67182cecd413f7f8bacb25c488a564b768f4e:reviews/t32/narrowed.md`; final gate record: `../buildathon/gates/cba67182cecd413f7f8bacb25c488a564b768f4e.txt`.
 
 ## Outcome and limits
 
-The candidate proves narrower import handling for inert name mentions, same-type literal table edits with audited consumers, and unused stock argparse help metadata. It preserves runtime readers and propagates users through same-name aliases. Proxy selection savings are **367.644 s net** across 600 commits. This is not a hidden-score prediction. Census 2, reread before finishing, identifies both hidden full-suite selections as could_raise. The property-comprehension case remains conservative because a sufficient static proof is not implemented.
+The candidate proves narrower import handling for inert name mentions, same-type literal table edits with audited consumers, and unused stock argparse help metadata. It preserves runtime readers and propagates users through same-name aliases. Proxy selection savings are **367.644 s net** across 600 commits. This is not a hidden-score prediction. Census 2 and the 4:44 EST coordination update, reread before finishing, identifies both hidden full-suite selections as could_raise. The property-comprehension case remains conservative because a sufficient static proof is not implemented.
 
-The requested baseline is retained. Coordination now asks for a rebase onto e782551; this work is still based on be28115 and carries t30’s nested-table guard explicitly. The three t31 process/cache robustness fixes are not integrated here. Integration with later main/t31 needs a fresh gate; do not silently treat this as rebased.
+The branch retains be28115 ancestry. Current main advanced to 59be830 during this run; its selector changes are incorporated by patch rather than a history rebase. In response to coordination, every selector production change from e782551 is now ported: t30 nested-table guards and the three t31 process/cache safeguards. The subsequently published t30 shared-test-state guard is also ported. This is patch integration rather than a history rebase; the final exact source is gated below.
 
 ## Old versus robust main
 
@@ -26,10 +27,10 @@ dc91341 misses 19 gate commits; its penalty-inclusive score is 7929.783 s. Main 
 
 | Set | Old wall / CPU s | Main wall / CPU s | Candidate wall / CPU s |
 |---|---:|---:|---:|
-| hid | 4.288 / 4.286 | 9.490 / 8.831 | 8.788 / 8.592 |
-| fresha | 39.904 / 31.072 | 26.234 / 23.651 | 22.216 / 21.896 |
-| freshb | 0.467 / 0.467 | 4.980 / 4.857 | 5.718 / 5.182 |
-| gate238 | 14.560 / 12.799 | 16.813 / 15.999 | 13.429 / 13.313 |
+| hid | 4.288 / 4.286 | 9.490 / 8.831 | 14.959 / 7.388 |
+| fresha | 39.904 / 31.072 | 26.234 / 23.651 | 39.489 / 19.356 |
+| freshb | 0.467 / 0.467 | 4.980 / 4.857 | 9.007 / 4.457 |
+| gate238 | 14.560 / 12.799 | 16.813 / 15.999 | 28.169 / 13.943 |
 
 Exact extra/removed test numbers, per-commit simulated seconds, and main’s logged reason are in `reviews/t32/all-diff.json.gz` and the four dataset diff archives. Attribution uses the first independently sufficient widening: an overlapping final could_raise flag does not steal an earlier rule’s cost.
 
@@ -75,7 +76,7 @@ Reverse direction: comparison_profile alone makes main narrower on 40 commits, s
 
 ## Real pytest audit
 
-All labels use pinned SQLGlot eb11aec4be8cb2122afe713a4816662c3f0fb2fa and br-t5-map Python 3.13.18. Legion only, cpuset 10-11, one container, memory/swap 1 GiB. At least 15 applicable cases per leading import class, 38 for could_raise. Strict patch application is numerically third but its three malformed/non-applicable patches have no source to execute; retain fallback. The next applicable class, inserted import code, has 15 real cases including 13 new import failures.
+All bulk labels use pinned SQLGlot eb11aec4be8cb2122afe713a4816662c3f0fb2fa and br-t5-map Python 3.13.18. Legion only, cpuset 10-11, one container, memory/swap 1 GiB. At least 15 applicable cases per leading import class, 38 for could_raise. Strict patch application is numerically third but its three malformed/non-applicable patches have no source to execute; retain fallback. The next applicable class, inserted import code, has 15 real cases including 13 new import failures.
 
 | Class | Labeled | Have failures | dc missed commits | Main missed | Candidate missed |
 |---|---:|---:|---:|---:|---:|
@@ -89,7 +90,7 @@ All labels use pinned SQLGlot eb11aec4be8cb2122afe713a4816662c3f0fb2fa and br-t5
 | syntax_error | 2 | 2 | 0 | 0 | 0 |
 | uninstantiated_class | 1 | 1 | 1 | 0 | 0 |
 
-The top could_raise sample has zero dc misses, but that observation alone is not a safety proof. At-import and inserted-import samples demonstrate necessary widening. A fresh enum/class failure m1x022 has two failures that old misses; candidate retains everything.
+The top could_raise sample has zero dc misses, but that observation alone is not a safety proof. At-import and inserted-import samples demonstrate necessary widening. The full-suite m1x022 audit records two failures outside old selection, conflicting with the historical empty label. A fresh isolated canonical_time_format_vocabulary baseline and patched run both pass, so this is not an independently reproduced isolated failure; ordered-suite reproduction remains open. Both raw labels are retained and candidate keeps everything. No proof is relaxed on this evidence.
 
 All 15 hid full-suite cases were labeled. Explicit-importer restriction is diagnostic only: it misses five failures on h7x031 and one on h7x172; adding coverage repairs h7x172, still misses h7x031. Thus a blanket importer narrowing is rejected.
 
@@ -119,7 +120,7 @@ Literal display changes retain existing same-type/shape and import-reader checks
 
 The t30 nested-table shape guard is included: empty/nested/type/key-shape changes remain conservative. t30x064 and t30x065 are caught (main misses both). Tests cover consumer propagation, comments/docstrings versus executable mentions, parser shadowing/customization, and multi-file invalidation.
 
-Every narrowed commit is listed with its proof and cost in `reviews/t32/narrowed.md`; exact removed IDs are in candidate-narrowed.json.gz. Every added selection is in candidate-widened.json. Unit validation: 179 selector tests and 20 tools tests passed.
+Every narrowed commit is listed with its proof and cost in `reviews/t32/narrowed.md`; exact removed IDs are in candidate-narrowed.json.gz. Every added selection is in candidate-widened.json. Unit validation: 191 selector tests and 20 tools tests passed.
 
 ## Before / after
 
@@ -146,17 +147,18 @@ All full runtime runs explicitly deselect five resource-sensitive cases: test_ex
 
 ## Gate
 
-The initial gate failed from a Docker CLI Go virtual-address limit, not a selector miss. Gate 8b43b84 passed its 238 mutants before later consumer-propagation/shape safeguards; it is not the final candidate. Final exact-candidate record follows:
+The initial gate failed from a Docker CLI Go virtual-address limit, not a selector miss. Gate 8b43b84 passed its 238 mutants before later consumer-propagation/shape safeguards; it is not the final candidate. Expanded-corpus gate b1eb10f failed on three newly published t30 shared-state mutants (t30x079, t30x080, t30x082). Their existing upstream guard was integrated, along with t31 process fixes; the failed gate is preserved in reviews/t32/failed-expanded-gate.txt. Final exact-candidate record follows (the late t41 condition is still pending and this run does not satisfy it):
 
 ```
 Simulated: 116.857 s
 Misses:    0 (0.000 s of the simulated time)
 CPU:       not measured here. The simulated seconds above are exact. The board adds the CPU seconds your container used and takes the middle of 3 runs.
-mutants: 412 commits, 3 misses; total 7815.4 s   floor about 3601.4 s
-t30x079 cache    sel     1 fail 106 cost    2.00 best   6.65 MISS [259, 317, 328, 329, 330]
-t30x080 cache    sel     1 fail 106 cost    2.00 best   6.65 MISS [259, 317, 328, 329, 330]
-t30x082 metaclass sel     1 fail 145 cost    2.00 best   5.38 MISS [180, 188, 189, 192, 198]
-FAIL: mutant misses
+mutants: 412 commits, 0 misses; total 7054.7 s   floor about 3601.4 s
+Simulated: 116.857 s
+Misses:    0 (0.000 s of the simulated time)
+CPU 1.24
+image differs from host on 0 of 412 mutants
+image differs from host on 0 of 2 edge patches
 ```
 
 Final gate comparison explanations are in `reviews/t32/gate-narrowing.md` when the run completes. Inherited c21 comparison-profile cases use the existing observed operand-pair union and a zero profile bit for the replacement operator; they retain import guards and all original failing labels. New help controls use the stock unused-help proof above.
@@ -171,6 +173,6 @@ Valid final single-worker label epoch: {
 
 First successful label container CPU lower bound: 4289.415 s (last cgroup snapshot before clean exit); final image CPU is in the gate record. CPU/memory snapshots are archived under reviews/t32 when copied. Host available memory remained above 5 GiB. Successful first/final cgroup snapshots total at least 6757.834 CPU s; discarded OOM epochs add at least 1761.912 CPU s. Raw per-epoch snapshots preserve their cost. Final subprocess descendant CPU is 2465.532 s over 2120.852 wall s; cgroup CPU includes bootstrap/monitor overhead. Full pytest output and per-mutant reports are archived in label-evidence.tar.gz.
 
-Recommend review of the exact gated candidate, with its label-scope limitations, then rebase onto current main and gate again before any submission. Do not roll back the robust safeguards. This reduces a large provable proxy could_raise component, but no hidden gain is established. The next useful proof target is h7x031’s property-parser comprehension: it costs 26.794 extra seconds while old’s narrower 219-test selection covers all five failures. A closed initialization/typed-table proof is still missing, so this candidate keeps the fallback. The hidden gap is 27.947 s, but identifying that hidden patch with h7x031 would be speculation.
+Recommendation: HOLD for the newly required t41 batch and the ordered m1x022 label reconciliation, even if the technical gate below passes. At the final check, t41 has generated commits and a manifest but no answers yet; its required 70-plus independent labels cannot be claimed. Review this exact candidate with its scope limits, merge current-main ancestry, and gate that exact merged hash after t41 records zero misses. No tok-str proof was tuned using t41 patches. Do not roll back the robust safeguards. This reduces a large provable proxy could_raise component, but no hidden gain is established. The next useful proof target is h7x031’s property-parser comprehension: it costs 26.794 extra seconds while old’s narrower 219-test selection covers all five failures. A closed initialization/typed-table proof is still missing, so this candidate keeps the fallback. The hidden gap is 27.947 s, but identifying that hidden patch with h7x031 would be speculation.
 
-Coordination read through Census 2 (4:27 EST), checked again before stopping. Work stopped within the 150-minute limit.
+Coordination read through the 4:44 EST update, including pending census 4 and the required t41 batch, checked again before stopping. Final handoff prepared before 09:51:33 UTC, the 150-minute deadline. Source candidate and later evidence-only branch HEAD have identical selector/map/cmp/Docker inputs; only the exact source candidate named above has the recorded gate.
