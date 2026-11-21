@@ -17,7 +17,9 @@ COPY requirements.lock /app/
 RUN pip install --no-cache-dir --root-user-action=ignore -q -r /app/requirements.lock
 
 # Which comparison-operator swaps changed any result while the suite ran (tools/build_cmp.py).
-COPY selector.py verify.py map.json.gz cmp.json.gz /app/
+COPY selector.py verify.py heavy.py map.json.gz cmp.json.gz heavy_lines.json.gz /app/
+# Pristine fingerprints of the TPC executor tests' cheap phase (heavy.py), in this image's Python.
+RUN SQLGLOT_SRC=/opt/sqlglot python /app/heavy.py --record /app/heavy_fp.json
 # Index where each class or module setting is read, from the original source.
 RUN SQLGLOT_SRC=/opt/sqlglot python /app/selector.py --index /app/index.json.gz && chmod -R a+rX /app
 ENV PYTHONDONTWRITEBYTECODE=1

@@ -284,10 +284,10 @@ def worker_side(tpch, blobs, meta, roots):
     deep = Deep(roots)
     out = []
     for blob, run in zip(blobs, meta):
+        e = pickle.loads(blob)  # the pool unpickles every submitted expression
         if not run:
             out.append(None)
             continue
-        e = pickle.loads(blob)
         names = [t.name for t in find_tables(e)]
         schema = ensure_schema(schema_src, dialect=None)
         expression = optimize(e, schema, leave_tables_isolated=True, dialect=None)
@@ -506,17 +506,27 @@ def touched_ranges(old_text, changed, inserts):
         tree = ast.parse(old_text)
     except (SyntaxError, ValueError):
         return None
-    spans = []
+    spans, funcs = [], []
     for node in ast.walk(tree):
         if isinstance(node, ast.stmt):
             start = node.lineno
             for d in getattr(node, "decorator_list", ()) or ():
                 start = min(start, d.lineno)
             spans.append((start, node.end_lineno or node.lineno))
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                funcs.append(spans[-1])
     lines = set(changed)
+    out = []
     for p in inserts:
         lines.update((p, p + 1))
-    out = []
+        # an inserted line may run at the end of a block whose last statement
+        # never ran: count the whole innermost function it lands in
+        best = None
+        for s, e in funcs:
+            if s <= p <= e and (best is None or e - s < best[1] - best[0]):
+                best = (s, e)
+        if best is not None:
+            out.append(best)
     for n in sorted(lines):
         best = None
         for s, e in spans:
@@ -528,13 +538,14 @@ def touched_ranges(old_text, changed, inserts):
 
 
 def drop_heavy(results, tests, src, lines_path, record_path, overlay_files, parse_patch, apply,
-               log, t_start, wall_budget, cpu_cap):
+               log, t_start, wall_budget, cpu_cap, allowed=None):
     """results: [cid, chosen set, why list, patch path]. Removes a heavy test
     from chosen when the static rule and the overlay fingerprint both pass."""
     import time
     nums = {}
     for num, (name, tpch) in HEAVY.items():
-        if num in tests and tests[num][0] == f"tests/test_executor.py::TestExecutor::test_execute_{name}":
+        if num in tests and tests[num][0] == f"tests/test_executor.py::TestExecutor::test_execute_{name}" \
+                and (allowed is None or num in allowed):
             nums[num] = (name, tpch)
     if not nums:
         return

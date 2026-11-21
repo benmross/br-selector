@@ -1909,7 +1909,7 @@ def pack(nums, tests):
 # A commit with any selected test pays a 2 s worker. When its static selection
 # is tiny, run it against the patched code (verify.py) and emit no workers if
 # every test passes; on any failure, error or timeout keep the whole selection.
-VERIFY = os.environ.get("BR_VERIFY", "1") != "0"
+VERIFY = os.environ.get("BR_VERIFY", "0") != "0"  # off: no gain on the hidden practice set (2df56c2 241.7)
 V_MAX_MS = int(os.environ.get("BR_V_MAX_MS", "600"))    # recorded time of the selection
 V_CPU_S = float(os.environ.get("BR_V_CPU_S", "1.5"))     # hard CPU limit per commit
 V_WALL_S = float(os.environ.get("BR_V_WALL_S", "60"))    # all verification stops this long after start
@@ -2000,6 +2000,43 @@ def verify_tiny(results, tests):
             passes += 1
             r[1] = set()
     log(f"verify: {len(jobs)} commits, child CPU {v.cpu:.2f} s")
+
+# ---------------------------------------------------------------- heavy tests
+
+# test_execute_tpcds (21.5 s) and test_execute_tpch (3.9 s) set the cost of
+# every commit that selects them. heavy.py drops one of them when no changed
+# statement runs in its executing phase and the patched cheap phase (parse,
+# optimize, plan, DuckDB SQL, module state) fingerprints the same as the
+# pristine source. Runs after the static pass, on leftover time only.
+HEAVY = os.environ.get("BR_HEAVY", "1") != "0"
+H_WALL_S = float(os.environ.get("BR_H_WALL_S", "110"))  # no check starts this long after start
+H_CPU_S = float(os.environ.get("BR_H_CPU_S", "12"))     # hard CPU limit per check
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+def heavy_tests(tests):
+    """Numbers of the heavy tests this run may drop (BR_HEAVY_TESTS, default
+    test_execute_tpcds only: test_execute_tpch drops too rarely to pay)."""
+    import heavy
+    want = {int(x) for x in os.environ.get("BR_HEAVY_TESTS", "1106").split(",") if x.strip().isdigit()}
+    return {n for n, (name, _) in heavy.HEAVY.items()
+            if n in want and n in tests and tests[n][0] == f"tests/test_executor.py::TestExecutor::test_execute_{name}"}
+
+
+def drop_heavy_tests(results, tests):
+    import tempfile
+    import heavy
+    record = os.path.join(HERE, "heavy_fp.json")
+    if not os.path.exists(record):
+        # outside the image (host runs): compute the pristine digests once
+        import hashlib
+        record = os.path.join(tempfile.gettempdir(), "br-heavy-fp-" + hashlib.sha1(
+            (SRC + open(os.path.join(HERE, "heavy.py"), "rb").read().decode()).encode()).hexdigest()[:12] + ".json")
+        if not os.path.exists(record):
+            heavy.record(SRC, record)
+    heavy.drop_heavy(results, tests, SRC, os.path.join(HERE, "heavy_lines.json.gz"), record,
+                     overlay_files, parse_patch, apply, log, T_START, H_WALL_S, H_CPU_S, heavy_tests(tests))
+
 
 # ---------------------------------------------------------------- main
 
