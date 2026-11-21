@@ -1,6 +1,12 @@
 #!/bin/sh
 # Pull labeled mutants from Legion, run the selector on them, report misses.
+# Or: sh tools/mutcheck.sh <already-labeled dataset directory>
 cd "$(dirname "$0")/.."
+if [ "$#" -gt 0 ]; then
+    DATA_DIR="$1" SQLGLOT_SRC="${SQLGLOT_SRC:-work/sqlglot}" MAP_PATH="${MAP_PATH:-map.json.gz}" INDEX_PATH="${INDEX_PATH:-index.json.gz}" python3 selector.py > work/mutout.jsonl 2> work/mutwhy.log
+    python3 tools/report.py "$1" work/mutout.jsonl | grep -E "MISS|total"
+    exit
+fi
 rsync -az legion:br/work/mut/ work/mut/ 2>/dev/null
 rsync -az legion:br/work/mutC/ work/mutC/ 2>/dev/null; cp work/mutC/commits/*.patch work/mut/commits/ 2>/dev/null; cp work/mutC/answers.0.json work/mut/answers.C.json 2>/dev/null
 cp work/mutB/commits/*.patch work/mut/commits/ 2>/dev/null; cp work/mutB/answers.0.json work/mut/answers.B.json 2>/dev/null

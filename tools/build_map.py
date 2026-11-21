@@ -40,20 +40,26 @@ def main(cov_dir, tests_json, out):
         return set_ids[key]
 
     files = {}
+    setup_files = {}
     import_lines = {}
     for path in data.measured_files():
         rel = path.split("/src/", 1)[-1]
         if not rel.endswith(".py"):
             continue
         by_line = data.contexts_by_lineno(path)
-        lines, imp = {}, []
+        lines, setup, imp = {}, {}, []
         for line, ctxs in by_line.items():
             nums = {n for c in ctxs if c for n in [to_num(c)] if n is not None}
             if nums:
                 lines[line] = sid(nums)
+            setup_nums = {n for c in ctxs if c.endswith("|setup") for n in [to_num(c)] if n is not None}
+            if setup_nums:
+                setup[line] = sid(setup_nums)
             if "" in ctxs:
                 imp.append(line)
         files[rel] = lines
+        if setup:
+            setup_files[rel] = setup
         import_lines[rel] = sorted(imp)
 
     fixtures = {}
@@ -79,6 +85,7 @@ def main(cov_dir, tests_json, out):
     out_obj = {
         "sets": sets,
         "files": files,
+        "setup_files": setup_files,
         "import_lines": import_lines,
         "fixtures": {k: sid(v) for k, v in fixtures.items()},
         "classes": {k: sid(v) for k, v in classes.items()},
