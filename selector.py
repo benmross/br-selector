@@ -811,7 +811,9 @@ class Selector:
                 import_level = True
         raises = import_level and could_raise(fp, old_text, new_text)
         kept = None
-        if import_level and not raises:
+        if import_level and not raises and not path.startswith("tests/"):
+            # A test module's module-level edits already select every test
+            # that imports it, which is all an import failure there can reach.
             kept = string_edit_kept_broad(old_tree, new_tree, fp)
             if kept:
                 why.append(f"{path}:{kept}")
