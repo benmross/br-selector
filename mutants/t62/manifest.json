@@ -240,6 +240,36 @@
     "sqlglot/parsers/duckdb.py"
    ],
    "kind": "attribute that does not exist in a class table key: AttributeError at import"
+  },
+  "t62s1": {
+   "files": [
+    "sqlglot/generator.py"
+   ],
+   "kind": "proof 1: string on a continuation line of a stored lambda"
+  },
+  "t62s2": {
+   "files": [
+    "sqlglot/parsers/hive.py"
+   ],
+   "kind": "proof 2: docstring of a builder stored in a FUNCTIONS table"
+  },
+  "t62s3": {
+   "files": [
+    "sqlglot/generators/postgres.py"
+   ],
+   "kind": "proof 3: type spelling copied by Redshift and Materialize, parsed back in round trips"
+  },
+  "t62s4": {
+   "files": [
+    "sqlglot/dialects/oracle.py"
+   ],
+   "kind": "proof 4: dialect keyword key that _Dialect.__new__ reads by membership (SUPPORTS_COLUMN_JOIN_MARKS)"
+  },
+  "t62s5": {
+   "files": [
+    "sqlglot/generators/presto.py"
+   ],
+   "kind": "proof 5: rename_func argument inherited by Trino and Athena"
   }
  }
 }

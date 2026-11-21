@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/presto.py b/sqlglot/generators/presto.py
+--- a/sqlglot/generators/presto.py
++++ b/sqlglot/generators/presto.py
+@@ -327,7 +327,7 @@
+             e.args.get("quantile"),
+             e.args.get("accuracy"),
+         ),
+-        exp.ArgMax: rename_func("MAX_BY"),
++        exp.ArgMax: rename_func("MAXIMUM_BY"),
+         exp.ArgMin: rename_func("MIN_BY"),
+         exp.Array: transforms.preprocess(
+             [transforms.inherit_struct_field_names],

@@ -57,6 +57,12 @@ M = {
  't62b05': ([('sqlglot/generators/clickhouse.py', 'sub', '@unsupported_args("json_scope")', '    @unsupported_args(arg="json_scope")')], 'decorator argument turned into a keyword: TypeError at class creation'),
  't62b06': ([('sqlglot/generators/presto.py', 'sub', 'SELECT_KINDS = ()', '    SELECT_KINDS = tuple((), ())')], 'class attribute call with wrong arity: TypeError at class creation'),
  't62b07': ([('sqlglot/parsers/duckdb.py', 'sub', 'exp.DType.DECIMAL: build_default_decimal_type(precision=18, scale=3),', '        exp.DType.DECIMALS: build_default_decimal_type(precision=18, scale=3),')], 'attribute that does not exist in a class table key: AttributeError at import'),
+ # 7. part B: one string edit per t46 proof
+ 't62s1': ([(G, 'sub', '"RETURNS NULL ON NULL INPUT" if e.args.get("null") else self.naked_property(e)', '            "RETURNS NULL ON EMPTY INPUT" if e.args.get("null") else self.naked_property(e)')], 'proof 1: string on a continuation line of a stored lambda'),
+ 't62s2': ([(HP, 'sub', '"""Map named_struct(\'k\', v, ...) to exp.Struct so _annotate_struct sees it."""', '    """Map named_struct(\'k\', v, ...) to exp.Struct so _annotate_struct sees it. Example: NAMED_STRUCT."""')], 'proof 2: docstring of a builder stored in a FUNCTIONS table'),
+ 't62s3': ([('sqlglot/generators/postgres.py', 'sub', 'exp.DType.TINYINT: "SMALLINT",', '        exp.DType.TINYINT: "SMALLINTEGER",')], 'proof 3: type spelling copied by Redshift and Materialize, parsed back in round trips'),
+ 't62s4': ([('sqlglot/dialects/oracle.py', 'sub', '"(+)": TokenType.JOIN_MARKER,', '            "(+ )": TokenType.JOIN_MARKER,')], 'proof 4: dialect keyword key that _Dialect.__new__ reads by membership (SUPPORTS_COLUMN_JOIN_MARKS)'),
+ 't62s5': ([('sqlglot/generators/presto.py', 'sub', 'exp.ArgMax: rename_func("MAX_BY"),', '        exp.ArgMax: rename_func("MAXIMUM_BY"),')], 'proof 5: rename_func argument inherited by Trino and Athena'),
 }
 manifest = {}
 for cid, (edits, kind) in M.items():

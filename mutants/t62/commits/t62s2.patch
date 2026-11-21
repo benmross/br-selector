@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/hive.py b/sqlglot/parsers/hive.py
+--- a/sqlglot/parsers/hive.py
++++ b/sqlglot/parsers/hive.py
+@@ -32,7 +32,7 @@
+ 
+ 
+ def _build_named_struct(args: list) -> exp.Struct:
+-    """Map named_struct('k', v, ...) to exp.Struct so _annotate_struct sees it."""
++    """Map named_struct('k', v, ...) to exp.Struct so _annotate_struct sees it. Example: NAMED_STRUCT."""
+     expressions: list[exp.Expression] = []
+     for i in range(0, len(args) - 1, 2):
+         key, value = args[i], args[i + 1]
