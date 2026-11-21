@@ -1,0 +1,2983 @@
+{
+"summary": {
+"runs": [
+"base",
+"cov3",
+"cov4",
+"seq",
+"rev"
+],
+"fork": {
+"children": 1621,
+"files": 1621,
+"nonzero_exit": {},
+"missing_output": [],
+"outcomes": {
+"passed": 1618,
+"failed": 3
+},
+"unknown_ids": [
+"tests/dialects/test_sqlite.py::TestSQLite::test_variadic_iif_execution"
+],
+"tests_covered": 1620
+},
+"orderdep_lines": 226,
+"orderdep_by_file": {
+"sqlglot/generator.py": 81,
+"sqlglot/dialects/dialect.py": 41,
+"sqlglot/generators/duckdb.py": 30,
+"sqlglot/expressions/core.py": 25,
+"sqlglot/expressions/builders.py": 17,
+"sqlglot/expressions/datatypes.py": 16,
+"sqlglot/transforms.py": 9,
+"tests/dialects/test_dialect.py": 4,
+"tests/dialects/test_starrocks.py": 3
+},
+"unexplained_marked_import": 25,
+"base_lines_widened": 38,
+"lines_added": 2,
+"classes_widened_or_added": 1,
+"fixtures_widened_or_added": 1,
+"size_bytes": 548151
+},
+"orderdep": [
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 240,
+"sizes": {
+"base": 12,
+"cov3": 18,
+"cov4": 12,
+"seq": 22,
+"rev": 22
+},
+"fork": 5,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 241,
+"sizes": {
+"base": 0,
+"cov3": 0,
+"cov4": 0,
+"seq": 0,
+"rev": 1
+},
+"fork": 0,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 244,
+"sizes": {
+"base": 12,
+"cov3": 18,
+"cov4": 12,
+"seq": 22,
+"rev": 22
+},
+"fork": 5,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 245,
+"sizes": {
+"base": 7,
+"cov3": 14,
+"cov4": 7,
+"seq": 17,
+"rev": 17
+},
+"fork": 1,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 248,
+"sizes": {
+"base": 7,
+"cov3": 14,
+"cov4": 7,
+"seq": 17,
+"rev": 17
+},
+"fork": 1,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 249,
+"sizes": {
+"base": 6,
+"cov3": 13,
+"cov4": 6,
+"seq": 16,
+"rev": 16
+},
+"fork": 0,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 250,
+"sizes": {
+"base": 6,
+"cov3": 13,
+"cov4": 6,
+"seq": 16,
+"rev": 16
+},
+"fork": 0,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 252,
+"sizes": {
+"base": 6,
+"cov3": 13,
+"cov4": 6,
+"seq": 16,
+"rev": 16
+},
+"fork": 0,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 253,
+"sizes": {
+"base": 6,
+"cov3": 13,
+"cov4": 6,
+"seq": 16,
+"rev": 16
+},
+"fork": 0,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 254,
+"sizes": {
+"base": 6,
+"cov3": 13,
+"cov4": 6,
+"seq": 16,
+"rev": 16
+},
+"fork": 0,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 256,
+"sizes": {
+"base": 6,
+"cov3": 13,
+"cov4": 6,
+"seq": 16,
+"rev": 16
+},
+"fork": 0,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 257,
+"sizes": {
+"base": 6,
+"cov3": 13,
+"cov4": 6,
+"seq": 16,
+"rev": 16
+},
+"fork": 0,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 258,
+"sizes": {
+"base": 7,
+"cov3": 14,
+"cov4": 7,
+"seq": 17,
+"rev": 17
+},
+"fork": 1,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 261,
+"sizes": {
+"base": 5,
+"cov3": 4,
+"cov4": 5,
+"seq": 5,
+"rev": 6
+},
+"fork": 4,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 262,
+"sizes": {
+"base": 5,
+"cov3": 4,
+"cov4": 5,
+"seq": 5,
+"rev": 6
+},
+"fork": 4,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 264,
+"sizes": {
+"base": 5,
+"cov3": 4,
+"cov4": 5,
+"seq": 5,
+"rev": 6
+},
+"fork": 4,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 265,
+"sizes": {
+"base": 4,
+"cov3": 3,
+"cov4": 4,
+"seq": 4,
+"rev": 5
+},
+"fork": 3,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 271,
+"sizes": {
+"base": 5,
+"cov3": 4,
+"cov4": 5,
+"seq": 5,
+"rev": 6
+},
+"fork": 4,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 287,
+"sizes": {
+"base": 3,
+"cov3": 2,
+"cov4": 3,
+"seq": 3,
+"rev": 4
+},
+"fork": 2,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 288,
+"sizes": {
+"base": 3,
+"cov3": 2,
+"cov4": 3,
+"seq": 3,
+"rev": 4
+},
+"fork": 2,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 289,
+"sizes": {
+"base": 3,
+"cov3": 2,
+"cov4": 3,
+"seq": 3,
+"rev": 4
+},
+"fork": 2,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 290,
+"sizes": {
+"base": 3,
+"cov3": 2,
+"cov4": 3,
+"seq": 3,
+"rev": 4
+},
+"fork": 2,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 295,
+"sizes": {
+"base": 0,
+"cov3": 0,
+"cov4": 0,
+"seq": 0,
+"rev": 1
+},
+"fork": 0,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 301,
+"sizes": {
+"base": 1235,
+"cov3": 1235,
+"cov4": 1235,
+"seq": 1235,
+"rev": 1234
+},
+"fork": 1235,
+"explained": true
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 302,
+"sizes": {
+"base": 11,
+"cov3": 17,
+"cov4": 11,
+"seq": 21,
+"rev": 21
+},
+"fork": 4,
+"explained": false
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 304,
+"sizes": {
+"base": 1235,
+"cov3": 1235,
+"cov4": 1235,
+"seq": 1235,
+"rev": 1234
+},
+"fork": 1235,
+"explained": true
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 1116,
+"sizes": {
+"base": 1231,
+"cov3": 1231,
+"cov4": 1231,
+"seq": 1231,
+"rev": 1230
+},
+"fork": 1231,
+"explained": true
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 1117,
+"sizes": {
+"base": 1231,
+"cov3": 1231,
+"cov4": 1231,
+"seq": 1231,
+"rev": 1230
+},
+"fork": 1231,
+"explained": true
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 1118,
+"sizes": {
+"base": 1231,
+"cov3": 1231,
+"cov4": 1231,
+"seq": 1231,
+"rev": 1230
+},
+"fork": 1231,
+"explained": true
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 1119,
+"sizes": {
+"base": 1231,
+"cov3": 1231,
+"cov4": 1231,
+"seq": 1231,
+"rev": 1230
+},
+"fork": 1231,
+"explained": true
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 1120,
+"sizes": {
+"base": 1231,
+"cov3": 1231,
+"cov4": 1231,
+"seq": 1231,
+"rev": 1230
+},
+"fork": 1231,
+"explained": true
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 1121,
+"sizes": {
+"base": 1231,
+"cov3": 1231,
+"cov4": 1231,
+"seq": 1231,
+"rev": 1230
+},
+"fork": 1231,
+"explained": true
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 1139,
+"sizes": {
+"base": 1231,
+"cov3": 1231,
+"cov4": 1231,
+"seq": 1231,
+"rev": 1230
+},
+"fork": 1231,
+"explained": true
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 1140,
+"sizes": {
+"base": 1231,
+"cov3": 1231,
+"cov4": 1231,
+"seq": 1231,
+"rev": 1230
+},
+"fork": 1231,
+"explained": true
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 1145,
+"sizes": {
+"base": 1231,
+"cov3": 1231,
+"cov4": 1231,
+"seq": 1231,
+"rev": 1230
+},
+"fork": 1231,
+"explained": true
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 1146,
+"sizes": {
+"base": 1231,
+"cov3": 1231,
+"cov4": 1231,
+"seq": 1231,
+"rev": 1230
+},
+"fork": 1231,
+"explained": true
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 2575,
+"sizes": {
+"base": 57,
+"cov3": 57,
+"cov4": 57,
+"seq": 57,
+"rev": 56
+},
+"fork": 57,
+"explained": true
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 2576,
+"sizes": {
+"base": 57,
+"cov3": 57,
+"cov4": 57,
+"seq": 57,
+"rev": 56
+},
+"fork": 57,
+"explained": true
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 2577,
+"sizes": {
+"base": 57,
+"cov3": 57,
+"cov4": 57,
+"seq": 57,
+"rev": 56
+},
+"fork": 57,
+"explained": true
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 2580,
+"sizes": {
+"base": 57,
+"cov3": 57,
+"cov4": 57,
+"seq": 57,
+"rev": 56
+},
+"fork": 57,
+"explained": true
+},
+{
+"file": "sqlglot/dialects/dialect.py",
+"line": 2583,
+"sizes": {
+"base": 55,
+"cov3": 55,
+"cov4": 55,
+"seq": 55,
+"rev": 54
+},
+"fork": 55,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/builders.py",
+"line": 500,
+"sizes": {
+"base": 125,
+"cov3": 125,
+"cov4": 125,
+"seq": 125,
+"rev": 124
+},
+"fork": 125,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/builders.py",
+"line": 501,
+"sizes": {
+"base": 125,
+"cov3": 125,
+"cov4": 125,
+"seq": 125,
+"rev": 124
+},
+"fork": 125,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/builders.py",
+"line": 504,
+"sizes": {
+"base": 125,
+"cov3": 125,
+"cov4": 125,
+"seq": 125,
+"rev": 124
+},
+"fork": 125,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/builders.py",
+"line": 524,
+"sizes": {
+"base": 121,
+"cov3": 121,
+"cov4": 121,
+"seq": 121,
+"rev": 120
+},
+"fork": 121,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/builders.py",
+"line": 525,
+"sizes": {
+"base": 121,
+"cov3": 121,
+"cov4": 121,
+"seq": 121,
+"rev": 120
+},
+"fork": 121,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/builders.py",
+"line": 527,
+"sizes": {
+"base": 121,
+"cov3": 121,
+"cov4": 121,
+"seq": 121,
+"rev": 120
+},
+"fork": 121,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/builders.py",
+"line": 1017,
+"sizes": {
+"base": 74,
+"cov3": 74,
+"cov4": 74,
+"seq": 74,
+"rev": 73
+},
+"fork": 74,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/builders.py",
+"line": 1020,
+"sizes": {
+"base": 74,
+"cov3": 74,
+"cov4": 74,
+"seq": 74,
+"rev": 73
+},
+"fork": 74,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/builders.py",
+"line": 1022,
+"sizes": {
+"base": 74,
+"cov3": 74,
+"cov4": 74,
+"seq": 74,
+"rev": 73
+},
+"fork": 74,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/builders.py",
+"line": 1024,
+"sizes": {
+"base": 74,
+"cov3": 74,
+"cov4": 74,
+"seq": 74,
+"rev": 73
+},
+"fork": 74,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/builders.py",
+"line": 1025,
+"sizes": {
+"base": 74,
+"cov3": 74,
+"cov4": 74,
+"seq": 74,
+"rev": 73
+},
+"fork": 74,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/builders.py",
+"line": 1027,
+"sizes": {
+"base": 74,
+"cov3": 74,
+"cov4": 74,
+"seq": 74,
+"rev": 73
+},
+"fork": 74,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/builders.py",
+"line": 1028,
+"sizes": {
+"base": 74,
+"cov3": 74,
+"cov4": 74,
+"seq": 74,
+"rev": 73
+},
+"fork": 74,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/builders.py",
+"line": 1048,
+"sizes": {
+"base": 27,
+"cov3": 27,
+"cov4": 27,
+"seq": 27,
+"rev": 26
+},
+"fork": 27,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/builders.py",
+"line": 1049,
+"sizes": {
+"base": 27,
+"cov3": 27,
+"cov4": 27,
+"seq": 27,
+"rev": 26
+},
+"fork": 27,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/builders.py",
+"line": 1051,
+"sizes": {
+"base": 74,
+"cov3": 74,
+"cov4": 74,
+"seq": 74,
+"rev": 73
+},
+"fork": 74,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/builders.py",
+"line": 1054,
+"sizes": {
+"base": 74,
+"cov3": 74,
+"cov4": 74,
+"seq": 74,
+"rev": 73
+},
+"fork": 74,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 845,
+"sizes": {
+"base": 342,
+"cov3": 342,
+"cov4": 342,
+"seq": 341,
+"rev": 341
+},
+"fork": 342,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 846,
+"sizes": {
+"base": 342,
+"cov3": 342,
+"cov4": 342,
+"seq": 341,
+"rev": 341
+},
+"fork": 342,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 851,
+"sizes": {
+"base": 342,
+"cov3": 342,
+"cov4": 342,
+"seq": 341,
+"rev": 341
+},
+"fork": 342,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 852,
+"sizes": {
+"base": 342,
+"cov3": 342,
+"cov4": 342,
+"seq": 341,
+"rev": 341
+},
+"fork": 342,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 853,
+"sizes": {
+"base": 342,
+"cov3": 342,
+"cov4": 342,
+"seq": 341,
+"rev": 341
+},
+"fork": 342,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 855,
+"sizes": {
+"base": 342,
+"cov3": 342,
+"cov4": 342,
+"seq": 341,
+"rev": 341
+},
+"fork": 342,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 856,
+"sizes": {
+"base": 340,
+"cov3": 340,
+"cov4": 340,
+"seq": 339,
+"rev": 339
+},
+"fork": 340,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 859,
+"sizes": {
+"base": 340,
+"cov3": 340,
+"cov4": 340,
+"seq": 339,
+"rev": 339
+},
+"fork": 340,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 864,
+"sizes": {
+"base": 342,
+"cov3": 342,
+"cov4": 342,
+"seq": 341,
+"rev": 341
+},
+"fork": 342,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 865,
+"sizes": {
+"base": 342,
+"cov3": 342,
+"cov4": 342,
+"seq": 341,
+"rev": 341
+},
+"fork": 342,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 867,
+"sizes": {
+"base": 342,
+"cov3": 342,
+"cov4": 342,
+"seq": 341,
+"rev": 341
+},
+"fork": 342,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 868,
+"sizes": {
+"base": 305,
+"cov3": 305,
+"cov4": 305,
+"seq": 304,
+"rev": 304
+},
+"fork": 305,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 869,
+"sizes": {
+"base": 305,
+"cov3": 305,
+"cov4": 305,
+"seq": 304,
+"rev": 304
+},
+"fork": 305,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 870,
+"sizes": {
+"base": 305,
+"cov3": 305,
+"cov4": 305,
+"seq": 304,
+"rev": 304
+},
+"fork": 305,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 871,
+"sizes": {
+"base": 305,
+"cov3": 305,
+"cov4": 305,
+"seq": 304,
+"rev": 304
+},
+"fork": 305,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 886,
+"sizes": {
+"base": 342,
+"cov3": 342,
+"cov4": 342,
+"seq": 341,
+"rev": 341
+},
+"fork": 342,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 910,
+"sizes": {
+"base": 1025,
+"cov3": 1025,
+"cov4": 1025,
+"seq": 1025,
+"rev": 1024
+},
+"fork": 1025,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 982,
+"sizes": {
+"base": 182,
+"cov3": 182,
+"cov4": 182,
+"seq": 182,
+"rev": 181
+},
+"fork": 182,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 986,
+"sizes": {
+"base": 182,
+"cov3": 182,
+"cov4": 182,
+"seq": 182,
+"rev": 181
+},
+"fork": 182,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 989,
+"sizes": {
+"base": 263,
+"cov3": 263,
+"cov4": 263,
+"seq": 263,
+"rev": 262
+},
+"fork": 263,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 990,
+"sizes": {
+"base": 263,
+"cov3": 263,
+"cov4": 263,
+"seq": 263,
+"rev": 262
+},
+"fork": 263,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 1016,
+"sizes": {
+"base": 281,
+"cov3": 281,
+"cov4": 281,
+"seq": 281,
+"rev": 281
+},
+"fork": 281,
+"explained": false
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 1333,
+"sizes": {
+"base": 75,
+"cov3": 75,
+"cov4": 75,
+"seq": 75,
+"rev": 74
+},
+"fork": 75,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 2617,
+"sizes": {
+"base": 678,
+"cov3": 678,
+"cov4": 678,
+"seq": 678,
+"rev": 677
+},
+"fork": 678,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/core.py",
+"line": 2618,
+"sizes": {
+"base": 468,
+"cov3": 468,
+"cov4": 468,
+"seq": 468,
+"rev": 467
+},
+"fork": 468,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/datatypes.py",
+"line": 371,
+"sizes": {
+"base": 575,
+"cov3": 575,
+"cov4": 575,
+"seq": 575,
+"rev": 574
+},
+"fork": 575,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/datatypes.py",
+"line": 373,
+"sizes": {
+"base": 509,
+"cov3": 509,
+"cov4": 509,
+"seq": 509,
+"rev": 508
+},
+"fork": 509,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/datatypes.py",
+"line": 374,
+"sizes": {
+"base": 504,
+"cov3": 504,
+"cov4": 504,
+"seq": 504,
+"rev": 503
+},
+"fork": 504,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/datatypes.py",
+"line": 375,
+"sizes": {
+"base": 504,
+"cov3": 504,
+"cov4": 504,
+"seq": 504,
+"rev": 503
+},
+"fork": 504,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/datatypes.py",
+"line": 378,
+"sizes": {
+"base": 504,
+"cov3": 504,
+"cov4": 504,
+"seq": 504,
+"rev": 503
+},
+"fork": 504,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/datatypes.py",
+"line": 433,
+"sizes": {
+"base": 506,
+"cov3": 506,
+"cov4": 506,
+"seq": 506,
+"rev": 505
+},
+"fork": 506,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/datatypes.py",
+"line": 434,
+"sizes": {
+"base": 506,
+"cov3": 506,
+"cov4": 506,
+"seq": 506,
+"rev": 505
+},
+"fork": 506,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/datatypes.py",
+"line": 435,
+"sizes": {
+"base": 506,
+"cov3": 506,
+"cov4": 506,
+"seq": 506,
+"rev": 505
+},
+"fork": 506,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/datatypes.py",
+"line": 436,
+"sizes": {
+"base": 506,
+"cov3": 506,
+"cov4": 506,
+"seq": 506,
+"rev": 505
+},
+"fork": 506,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/datatypes.py",
+"line": 438,
+"sizes": {
+"base": 506,
+"cov3": 506,
+"cov4": 506,
+"seq": 506,
+"rev": 505
+},
+"fork": 506,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/datatypes.py",
+"line": 439,
+"sizes": {
+"base": 505,
+"cov3": 505,
+"cov4": 505,
+"seq": 505,
+"rev": 504
+},
+"fork": 505,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/datatypes.py",
+"line": 440,
+"sizes": {
+"base": 505,
+"cov3": 505,
+"cov4": 505,
+"seq": 505,
+"rev": 504
+},
+"fork": 505,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/datatypes.py",
+"line": 441,
+"sizes": {
+"base": 502,
+"cov3": 502,
+"cov4": 502,
+"seq": 502,
+"rev": 501
+},
+"fork": 502,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/datatypes.py",
+"line": 445,
+"sizes": {
+"base": 502,
+"cov3": 502,
+"cov4": 502,
+"seq": 502,
+"rev": 501
+},
+"fork": 502,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/datatypes.py",
+"line": 447,
+"sizes": {
+"base": 506,
+"cov3": 506,
+"cov4": 506,
+"seq": 506,
+"rev": 505
+},
+"fork": 506,
+"explained": true
+},
+{
+"file": "sqlglot/expressions/datatypes.py",
+"line": 449,
+"sizes": {
+"base": 489,
+"cov3": 489,
+"cov4": 489,
+"seq": 489,
+"rev": 488
+},
+"fork": 489,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 77,
+"sizes": {
+"base": 47,
+"cov3": 48,
+"cov4": 47,
+"seq": 15,
+"rev": 16
+},
+"fork": 1347,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 79,
+"sizes": {
+"base": 47,
+"cov3": 48,
+"cov4": 47,
+"seq": 15,
+"rev": 16
+},
+"fork": 1347,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 80,
+"sizes": {
+"base": 47,
+"cov3": 48,
+"cov4": 47,
+"seq": 15,
+"rev": 16
+},
+"fork": 1347,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 81,
+"sizes": {
+"base": 47,
+"cov3": 48,
+"cov4": 47,
+"seq": 15,
+"rev": 16
+},
+"fork": 1347,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 83,
+"sizes": {
+"base": 47,
+"cov3": 48,
+"cov4": 47,
+"seq": 15,
+"rev": 16
+},
+"fork": 1347,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 84,
+"sizes": {
+"base": 47,
+"cov3": 48,
+"cov4": 47,
+"seq": 15,
+"rev": 16
+},
+"fork": 1347,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 86,
+"sizes": {
+"base": 47,
+"cov3": 48,
+"cov4": 47,
+"seq": 15,
+"rev": 16
+},
+"fork": 1347,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 87,
+"sizes": {
+"base": 47,
+"cov3": 48,
+"cov4": 47,
+"seq": 15,
+"rev": 16
+},
+"fork": 1347,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 89,
+"sizes": {
+"base": 47,
+"cov3": 48,
+"cov4": 47,
+"seq": 15,
+"rev": 16
+},
+"fork": 1347,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 990,
+"sizes": {
+"base": 608,
+"cov3": 608,
+"cov4": 608,
+"seq": 608,
+"rev": 607
+},
+"fork": 608,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1007,
+"sizes": {
+"base": 47,
+"cov3": 48,
+"cov4": 47,
+"seq": 15,
+"rev": 16
+},
+"fork": 1347,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1008,
+"sizes": {
+"base": 47,
+"cov3": 48,
+"cov4": 47,
+"seq": 15,
+"rev": 16
+},
+"fork": 1347,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1837,
+"sizes": {
+"base": 403,
+"cov3": 403,
+"cov4": 403,
+"seq": 403,
+"rev": 402
+},
+"fork": 403,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1838,
+"sizes": {
+"base": 403,
+"cov3": 403,
+"cov4": 403,
+"seq": 403,
+"rev": 402
+},
+"fork": 403,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1840,
+"sizes": {
+"base": 403,
+"cov3": 403,
+"cov4": 403,
+"seq": 403,
+"rev": 402
+},
+"fork": 403,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1841,
+"sizes": {
+"base": 403,
+"cov3": 403,
+"cov4": 403,
+"seq": 403,
+"rev": 402
+},
+"fork": 403,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1844,
+"sizes": {
+"base": 403,
+"cov3": 403,
+"cov4": 403,
+"seq": 403,
+"rev": 402
+},
+"fork": 403,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1845,
+"sizes": {
+"base": 403,
+"cov3": 403,
+"cov4": 403,
+"seq": 403,
+"rev": 402
+},
+"fork": 403,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1846,
+"sizes": {
+"base": 402,
+"cov3": 402,
+"cov4": 402,
+"seq": 402,
+"rev": 401
+},
+"fork": 402,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1850,
+"sizes": {
+"base": 403,
+"cov3": 403,
+"cov4": 403,
+"seq": 403,
+"rev": 402
+},
+"fork": 403,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1854,
+"sizes": {
+"base": 403,
+"cov3": 403,
+"cov4": 403,
+"seq": 403,
+"rev": 402
+},
+"fork": 403,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1855,
+"sizes": {
+"base": 403,
+"cov3": 403,
+"cov4": 403,
+"seq": 403,
+"rev": 402
+},
+"fork": 403,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1858,
+"sizes": {
+"base": 403,
+"cov3": 403,
+"cov4": 403,
+"seq": 403,
+"rev": 402
+},
+"fork": 403,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1863,
+"sizes": {
+"base": 403,
+"cov3": 403,
+"cov4": 403,
+"seq": 403,
+"rev": 402
+},
+"fork": 403,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1864,
+"sizes": {
+"base": 403,
+"cov3": 403,
+"cov4": 403,
+"seq": 403,
+"rev": 402
+},
+"fork": 403,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1866,
+"sizes": {
+"base": 400,
+"cov3": 400,
+"cov4": 400,
+"seq": 400,
+"rev": 399
+},
+"fork": 400,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1870,
+"sizes": {
+"base": 399,
+"cov3": 399,
+"cov4": 399,
+"seq": 399,
+"rev": 398
+},
+"fork": 399,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1871,
+"sizes": {
+"base": 398,
+"cov3": 398,
+"cov4": 398,
+"seq": 398,
+"rev": 397
+},
+"fork": 398,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1872,
+"sizes": {
+"base": 399,
+"cov3": 399,
+"cov4": 399,
+"seq": 399,
+"rev": 398
+},
+"fork": 399,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1876,
+"sizes": {
+"base": 402,
+"cov3": 402,
+"cov4": 402,
+"seq": 402,
+"rev": 401
+},
+"fork": 402,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1888,
+"sizes": {
+"base": 402,
+"cov3": 402,
+"cov4": 402,
+"seq": 402,
+"rev": 401
+},
+"fork": 402,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1889,
+"sizes": {
+"base": 402,
+"cov3": 402,
+"cov4": 402,
+"seq": 402,
+"rev": 401
+},
+"fork": 402,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1895,
+"sizes": {
+"base": 402,
+"cov3": 402,
+"cov4": 402,
+"seq": 402,
+"rev": 401
+},
+"fork": 402,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1896,
+"sizes": {
+"base": 402,
+"cov3": 402,
+"cov4": 402,
+"seq": 402,
+"rev": 401
+},
+"fork": 402,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 1899,
+"sizes": {
+"base": 402,
+"cov3": 402,
+"cov4": 402,
+"seq": 402,
+"rev": 401
+},
+"fork": 402,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4272,
+"sizes": {
+"base": 81,
+"cov3": 81,
+"cov4": 81,
+"seq": 81,
+"rev": 80
+},
+"fork": 81,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4276,
+"sizes": {
+"base": 81,
+"cov3": 81,
+"cov4": 81,
+"seq": 81,
+"rev": 80
+},
+"fork": 81,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4277,
+"sizes": {
+"base": 81,
+"cov3": 81,
+"cov4": 81,
+"seq": 81,
+"rev": 80
+},
+"fork": 81,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4278,
+"sizes": {
+"base": 81,
+"cov3": 81,
+"cov4": 81,
+"seq": 81,
+"rev": 80
+},
+"fork": 81,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4279,
+"sizes": {
+"base": 81,
+"cov3": 81,
+"cov4": 81,
+"seq": 81,
+"rev": 80
+},
+"fork": 81,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4281,
+"sizes": {
+"base": 81,
+"cov3": 81,
+"cov4": 81,
+"seq": 81,
+"rev": 80
+},
+"fork": 81,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4283,
+"sizes": {
+"base": 81,
+"cov3": 81,
+"cov4": 81,
+"seq": 81,
+"rev": 80
+},
+"fork": 81,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4292,
+"sizes": {
+"base": 75,
+"cov3": 75,
+"cov4": 75,
+"seq": 75,
+"rev": 74
+},
+"fork": 75,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4293,
+"sizes": {
+"base": 75,
+"cov3": 75,
+"cov4": 75,
+"seq": 75,
+"rev": 74
+},
+"fork": 75,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4294,
+"sizes": {
+"base": 71,
+"cov3": 71,
+"cov4": 71,
+"seq": 71,
+"rev": 70
+},
+"fork": 71,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4296,
+"sizes": {
+"base": 71,
+"cov3": 71,
+"cov4": 71,
+"seq": 71,
+"rev": 70
+},
+"fork": 71,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4298,
+"sizes": {
+"base": 71,
+"cov3": 71,
+"cov4": 71,
+"seq": 71,
+"rev": 70
+},
+"fork": 71,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4299,
+"sizes": {
+"base": 70,
+"cov3": 70,
+"cov4": 70,
+"seq": 70,
+"rev": 69
+},
+"fork": 70,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4301,
+"sizes": {
+"base": 75,
+"cov3": 75,
+"cov4": 75,
+"seq": 75,
+"rev": 74
+},
+"fork": 75,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4316,
+"sizes": {
+"base": 182,
+"cov3": 182,
+"cov4": 182,
+"seq": 182,
+"rev": 181
+},
+"fork": 182,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4317,
+"sizes": {
+"base": 182,
+"cov3": 182,
+"cov4": 182,
+"seq": 182,
+"rev": 181
+},
+"fork": 182,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4319,
+"sizes": {
+"base": 182,
+"cov3": 182,
+"cov4": 182,
+"seq": 182,
+"rev": 181
+},
+"fork": 182,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4320,
+"sizes": {
+"base": 182,
+"cov3": 182,
+"cov4": 182,
+"seq": 182,
+"rev": 181
+},
+"fork": 182,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4389,
+"sizes": {
+"base": 171,
+"cov3": 171,
+"cov4": 171,
+"seq": 171,
+"rev": 170
+},
+"fork": 171,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4451,
+"sizes": {
+"base": 272,
+"cov3": 272,
+"cov4": 272,
+"seq": 272,
+"rev": 271
+},
+"fork": 272,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4452,
+"sizes": {
+"base": 272,
+"cov3": 272,
+"cov4": 272,
+"seq": 272,
+"rev": 271
+},
+"fork": 272,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4453,
+"sizes": {
+"base": 272,
+"cov3": 272,
+"cov4": 272,
+"seq": 272,
+"rev": 271
+},
+"fork": 272,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4454,
+"sizes": {
+"base": 272,
+"cov3": 272,
+"cov4": 272,
+"seq": 272,
+"rev": 271
+},
+"fork": 272,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4455,
+"sizes": {
+"base": 272,
+"cov3": 272,
+"cov4": 272,
+"seq": 272,
+"rev": 271
+},
+"fork": 272,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4456,
+"sizes": {
+"base": 272,
+"cov3": 272,
+"cov4": 272,
+"seq": 272,
+"rev": 271
+},
+"fork": 272,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4457,
+"sizes": {
+"base": 272,
+"cov3": 272,
+"cov4": 272,
+"seq": 272,
+"rev": 271
+},
+"fork": 272,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4458,
+"sizes": {
+"base": 272,
+"cov3": 272,
+"cov4": 272,
+"seq": 272,
+"rev": 271
+},
+"fork": 272,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 4459,
+"sizes": {
+"base": 272,
+"cov3": 272,
+"cov4": 272,
+"seq": 272,
+"rev": 271
+},
+"fork": 272,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 5001,
+"sizes": {
+"base": 498,
+"cov3": 498,
+"cov4": 498,
+"seq": 498,
+"rev": 497
+},
+"fork": 498,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 5002,
+"sizes": {
+"base": 498,
+"cov3": 498,
+"cov4": 498,
+"seq": 498,
+"rev": 497
+},
+"fork": 498,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 5003,
+"sizes": {
+"base": 498,
+"cov3": 498,
+"cov4": 498,
+"seq": 498,
+"rev": 497
+},
+"fork": 498,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 5004,
+"sizes": {
+"base": 498,
+"cov3": 498,
+"cov4": 498,
+"seq": 498,
+"rev": 497
+},
+"fork": 498,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 5005,
+"sizes": {
+"base": 498,
+"cov3": 498,
+"cov4": 498,
+"seq": 498,
+"rev": 497
+},
+"fork": 498,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 5007,
+"sizes": {
+"base": 498,
+"cov3": 498,
+"cov4": 498,
+"seq": 498,
+"rev": 497
+},
+"fork": 498,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 5008,
+"sizes": {
+"base": 498,
+"cov3": 498,
+"cov4": 498,
+"seq": 498,
+"rev": 497
+},
+"fork": 498,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 5010,
+"sizes": {
+"base": 498,
+"cov3": 498,
+"cov4": 498,
+"seq": 498,
+"rev": 497
+},
+"fork": 498,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 5011,
+"sizes": {
+"base": 498,
+"cov3": 498,
+"cov4": 498,
+"seq": 498,
+"rev": 497
+},
+"fork": 498,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 5015,
+"sizes": {
+"base": 498,
+"cov3": 498,
+"cov4": 498,
+"seq": 498,
+"rev": 497
+},
+"fork": 498,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 5016,
+"sizes": {
+"base": 498,
+"cov3": 498,
+"cov4": 498,
+"seq": 498,
+"rev": 497
+},
+"fork": 498,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 5018,
+"sizes": {
+"base": 497,
+"cov3": 497,
+"cov4": 497,
+"seq": 497,
+"rev": 496
+},
+"fork": 497,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 5021,
+"sizes": {
+"base": 498,
+"cov3": 498,
+"cov4": 498,
+"seq": 498,
+"rev": 497
+},
+"fork": 498,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 5022,
+"sizes": {
+"base": 498,
+"cov3": 498,
+"cov4": 498,
+"seq": 498,
+"rev": 497
+},
+"fork": 498,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 5023,
+"sizes": {
+"base": 498,
+"cov3": 498,
+"cov4": 498,
+"seq": 498,
+"rev": 497
+},
+"fork": 498,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 5025,
+"sizes": {
+"base": 498,
+"cov3": 498,
+"cov4": 498,
+"seq": 498,
+"rev": 497
+},
+"fork": 498,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 5027,
+"sizes": {
+"base": 498,
+"cov3": 498,
+"cov4": 498,
+"seq": 498,
+"rev": 497
+},
+"fork": 498,
+"explained": true
+},
+{
+"file": "sqlglot/generator.py",
+"line": 6190,
+"sizes": {
+"base": 1,
+"cov3": 1,
+"cov4": 1,
+"seq": 1,
+"rev": 0
+},
+"fork": 1,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 714,
+"sizes": {
+"base": 259,
+"cov3": 259,
+"cov4": 259,
+"seq": 259,
+"rev": 258
+},
+"fork": 259,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 717,
+"sizes": {
+"base": 259,
+"cov3": 259,
+"cov4": 259,
+"seq": 259,
+"rev": 258
+},
+"fork": 259,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 719,
+"sizes": {
+"base": 259,
+"cov3": 259,
+"cov4": 259,
+"seq": 259,
+"rev": 258
+},
+"fork": 259,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 723,
+"sizes": {
+"base": 259,
+"cov3": 259,
+"cov4": 259,
+"seq": 259,
+"rev": 258
+},
+"fork": 259,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 737,
+"sizes": {
+"base": 259,
+"cov3": 259,
+"cov4": 259,
+"seq": 259,
+"rev": 258
+},
+"fork": 259,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 738,
+"sizes": {
+"base": 259,
+"cov3": 259,
+"cov4": 259,
+"seq": 259,
+"rev": 258
+},
+"fork": 259,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2410,
+"sizes": {
+"base": 132,
+"cov3": 132,
+"cov4": 132,
+"seq": 132,
+"rev": 131
+},
+"fork": 132,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2414,
+"sizes": {
+"base": 132,
+"cov3": 132,
+"cov4": 132,
+"seq": 132,
+"rev": 131
+},
+"fork": 132,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2415,
+"sizes": {
+"base": 132,
+"cov3": 132,
+"cov4": 132,
+"seq": 132,
+"rev": 131
+},
+"fork": 132,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2419,
+"sizes": {
+"base": 132,
+"cov3": 132,
+"cov4": 132,
+"seq": 132,
+"rev": 131
+},
+"fork": 132,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2438,
+"sizes": {
+"base": 3,
+"cov3": 3,
+"cov4": 3,
+"seq": 3,
+"rev": 2
+},
+"fork": 3,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2439,
+"sizes": {
+"base": 3,
+"cov3": 3,
+"cov4": 3,
+"seq": 3,
+"rev": 2
+},
+"fork": 3,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2441,
+"sizes": {
+"base": 3,
+"cov3": 3,
+"cov4": 3,
+"seq": 3,
+"rev": 2
+},
+"fork": 3,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2442,
+"sizes": {
+"base": 3,
+"cov3": 3,
+"cov4": 3,
+"seq": 3,
+"rev": 2
+},
+"fork": 3,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2444,
+"sizes": {
+"base": 3,
+"cov3": 3,
+"cov4": 3,
+"seq": 3,
+"rev": 2
+},
+"fork": 3,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2446,
+"sizes": {
+"base": 3,
+"cov3": 3,
+"cov4": 3,
+"seq": 3,
+"rev": 2
+},
+"fork": 3,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2447,
+"sizes": {
+"base": 3,
+"cov3": 3,
+"cov4": 3,
+"seq": 3,
+"rev": 2
+},
+"fork": 3,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2453,
+"sizes": {
+"base": 3,
+"cov3": 3,
+"cov4": 3,
+"seq": 3,
+"rev": 2
+},
+"fork": 3,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2454,
+"sizes": {
+"base": 3,
+"cov3": 3,
+"cov4": 3,
+"seq": 3,
+"rev": 2
+},
+"fork": 3,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2457,
+"sizes": {
+"base": 3,
+"cov3": 3,
+"cov4": 3,
+"seq": 3,
+"rev": 2
+},
+"fork": 3,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2458,
+"sizes": {
+"base": 3,
+"cov3": 3,
+"cov4": 3,
+"seq": 3,
+"rev": 2
+},
+"fork": 3,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2460,
+"sizes": {
+"base": 3,
+"cov3": 3,
+"cov4": 3,
+"seq": 3,
+"rev": 2
+},
+"fork": 3,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2463,
+"sizes": {
+"base": 3,
+"cov3": 3,
+"cov4": 3,
+"seq": 3,
+"rev": 2
+},
+"fork": 3,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 2466,
+"sizes": {
+"base": 3,
+"cov3": 3,
+"cov4": 3,
+"seq": 3,
+"rev": 2
+},
+"fork": 3,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 3262,
+"sizes": {
+"base": 260,
+"cov3": 260,
+"cov4": 260,
+"seq": 260,
+"rev": 259
+},
+"fork": 260,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 3263,
+"sizes": {
+"base": 260,
+"cov3": 260,
+"cov4": 260,
+"seq": 260,
+"rev": 259
+},
+"fork": 260,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 3297,
+"sizes": {
+"base": 30,
+"cov3": 30,
+"cov4": 30,
+"seq": 30,
+"rev": 29
+},
+"fork": 30,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 3298,
+"sizes": {
+"base": 30,
+"cov3": 30,
+"cov4": 30,
+"seq": 30,
+"rev": 29
+},
+"fork": 30,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 3299,
+"sizes": {
+"base": 30,
+"cov3": 30,
+"cov4": 30,
+"seq": 30,
+"rev": 29
+},
+"fork": 30,
+"explained": true
+},
+{
+"file": "sqlglot/generators/duckdb.py",
+"line": 3302,
+"sizes": {
+"base": 29,
+"cov3": 29,
+"cov4": 29,
+"seq": 29,
+"rev": 28
+},
+"fork": 29,
+"explained": true
+},
+{
+"file": "sqlglot/transforms.py",
+"line": 36,
+"sizes": {
+"base": 720,
+"cov3": 720,
+"cov4": 720,
+"seq": 720,
+"rev": 719
+},
+"fork": 720,
+"explained": true
+},
+{
+"file": "sqlglot/transforms.py",
+"line": 38,
+"sizes": {
+"base": 720,
+"cov3": 720,
+"cov4": 720,
+"seq": 720,
+"rev": 719
+},
+"fork": 720,
+"explained": true
+},
+{
+"file": "sqlglot/transforms.py",
+"line": 39,
+"sizes": {
+"base": 720,
+"cov3": 720,
+"cov4": 720,
+"seq": 720,
+"rev": 719
+},
+"fork": 720,
+"explained": true
+},
+{
+"file": "sqlglot/transforms.py",
+"line": 40,
+"sizes": {
+"base": 720,
+"cov3": 720,
+"cov4": 720,
+"seq": 720,
+"rev": 719
+},
+"fork": 720,
+"explained": true
+},
+{
+"file": "sqlglot/transforms.py",
+"line": 41,
+"sizes": {
+"base": 676,
+"cov3": 676,
+"cov4": 676,
+"seq": 676,
+"rev": 675
+},
+"fork": 676,
+"explained": true
+},
+{
+"file": "sqlglot/transforms.py",
+"line": 45,
+"sizes": {
+"base": 720,
+"cov3": 720,
+"cov4": 720,
+"seq": 720,
+"rev": 719
+},
+"fork": 720,
+"explained": true
+},
+{
+"file": "sqlglot/transforms.py",
+"line": 48,
+"sizes": {
+"base": 714,
+"cov3": 714,
+"cov4": 714,
+"seq": 714,
+"rev": 713
+},
+"fork": 714,
+"explained": true
+},
+{
+"file": "sqlglot/transforms.py",
+"line": 49,
+"sizes": {
+"base": 714,
+"cov3": 714,
+"cov4": 714,
+"seq": 714,
+"rev": 713
+},
+"fork": 714,
+"explained": true
+},
+{
+"file": "sqlglot/transforms.py",
+"line": 50,
+"sizes": {
+"base": 713,
+"cov3": 713,
+"cov4": 713,
+"seq": 713,
+"rev": 712
+},
+"fork": 713,
+"explained": true
+},
+{
+"file": "tests/dialects/test_dialect.py",
+"line": 228,
+"sizes": {
+"base": 1,
+"cov3": 1,
+"cov4": 1,
+"seq": 1,
+"rev": 0
+},
+"fork": 1,
+"explained": true
+},
+{
+"file": "tests/dialects/test_dialect.py",
+"line": 229,
+"sizes": {
+"base": 1,
+"cov3": 1,
+"cov4": 1,
+"seq": 1,
+"rev": 0
+},
+"fork": 1,
+"explained": true
+},
+{
+"file": "tests/dialects/test_dialect.py",
+"line": 230,
+"sizes": {
+"base": 1,
+"cov3": 1,
+"cov4": 1,
+"seq": 1,
+"rev": 0
+},
+"fork": 1,
+"explained": true
+},
+{
+"file": "tests/dialects/test_dialect.py",
+"line": 231,
+"sizes": {
+"base": 1,
+"cov3": 1,
+"cov4": 1,
+"seq": 1,
+"rev": 0
+},
+"fork": 1,
+"explained": true
+},
+{
+"file": "tests/dialects/test_starrocks.py",
+"line": 609,
+"sizes": {
+"base": 1,
+"cov3": 1,
+"cov4": 1,
+"seq": 1,
+"rev": 0
+},
+"fork": 1,
+"explained": true
+},
+{
+"file": "tests/dialects/test_starrocks.py",
+"line": 610,
+"sizes": {
+"base": 1,
+"cov3": 1,
+"cov4": 1,
+"seq": 1,
+"rev": 0
+},
+"fork": 1,
+"explained": true
+},
+{
+"file": "tests/dialects/test_starrocks.py",
+"line": 611,
+"sizes": {
+"base": 1,
+"cov3": 1,
+"cov4": 1,
+"seq": 1,
+"rev": 0
+},
+"fork": 1,
+"explained": true
+}
+]
+}

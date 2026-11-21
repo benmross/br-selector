@@ -1,0 +1,40 @@
+{
+ "commits": {
+  "t24ax000": {
+   "kind": "slice_bound",
+   "file": "sqlglot/generator.py",
+   "line": 83,
+   "note": "_build_dispatch suffix strip"
+  },
+  "t24ax001": {
+   "kind": "bool_op",
+   "file": "sqlglot/generator.py",
+   "line": 86,
+   "note": "_build_dispatch keeps TRANSFORMS"
+  },
+  "t24ax002": {
+   "kind": "bool_op",
+   "file": "sqlglot/generator.py",
+   "line": 80,
+   "note": "_build_dispatch filter"
+  },
+  "t24ax003": {
+   "kind": "cmp_op",
+   "file": "sqlglot/dialects/dialect.py",
+   "line": 254,
+   "note": "_try_load class match"
+  },
+  "t24ax004": {
+   "kind": "attr_rename",
+   "file": "sqlglot/dialects/dialect.py",
+   "line": 241,
+   "note": "_try_load enum key"
+  },
+  "t24ax005": {
+   "kind": "cmp_op",
+   "file": "sqlglot/dialects/dialect.py",
+   "line": 248,
+   "note": "_try_load registration guard"
+  }
+ }
+}
