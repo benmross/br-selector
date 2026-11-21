@@ -2987,17 +2987,18 @@ CENSUS_WEIGHTS = (1000, 8000)
 
 def census_string_class(fp, old_tree, new_tree):
     """Census 5 only: where the first changed string literal on an added
-    line (file order, outside function bodies) sits. Reads the parsed ASTs,
-    never executes anything; any error is class 7.
-      1 value in a dict literal (the string is the value or inside a
-        non-call value expression)
-      2 key in a dict literal, or a member of a set, tuple or list
-      3 inside a lambda, or an argument of a call that is a dict value or
-        set/tuple/list member (stored callable tables)
-      4 argument of a call outside tables, a default argument or decorator
-      5 docstring or bare string statement
-      6 the whole value of an assignment (constant, enum member, name)
-      7 anything else, or no such string found"""
+    line (file order, outside function bodies; a value absent from the old
+    file first) sits. Reads the parsed ASTs, never executes anything; any
+    error is class 7.
+      1 value: a dict value (not inside a call), or the whole value of an
+        assignment (string constant, enum member, registry name)
+      2 dict key whose value is a constant (flag and alias tables: arg_types)
+      3 dict key whose value is a name or attribute (TokenType.X, DType.X)
+      4 dict key whose value is a lambda, call or other expression; a string
+        inside a lambda; a call argument inside a dict, set, tuple or list
+      5 member of a set, tuple or list (name collections)
+      6 call argument at import outside tables, default argument, decorator
+      7 docstring or bare string statement, anything else, no string found"""
     try:
         return _census_string_class(fp, old_tree, new_tree)
     except Exception:
@@ -3045,44 +3046,52 @@ def _census_string_class(fp, old_tree, new_tree):
     node = best[1]
     p = parent.get(node)
     if isinstance(p, ast.Expr):
-        return 5
+        return 7  # docstring or bare string statement
     chain, child, p = [], node, parent.get(node)
     while p is not None and not isinstance(p, (ast.stmt, ast.Lambda)):
         chain.append((p, child))
         child, p = p, parent.get(p)
     if isinstance(p, ast.Lambda):
-        return 3
+        return 4
     calls = [(a, c) for a, c in chain if isinstance(a, ast.Call) and c is not a.func]
     tables = [(a, c) for a, c in chain if isinstance(a, (ast.Dict, ast.Set, ast.Tuple, ast.List))]
     if calls and tables and chain.index(calls[0]) < chain.index(tables[0]):
-        return 3
+        return 4
     if tables:
         a, c = tables[0]
-        if isinstance(a, ast.Dict):
-            return 2 if any(k is c for k in a.keys) else 1
-        return 2
+        if not isinstance(a, ast.Dict):
+            return 5
+        for k, v in zip(a.keys, a.values):
+            if k is c:
+                if isinstance(v, ast.Constant):
+                    return 2
+                if isinstance(v, (ast.Attribute, ast.Name)):
+                    return 3
+                return 4
+        return 1
     if calls:
-        return 4
-    if isinstance(p, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-        return 4  # default argument, decorator or class keyword
-    if isinstance(p, (ast.Assign, ast.AnnAssign)) and p.value is node:
         return 6
+    if isinstance(p, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+        return 6  # default argument, decorator or class keyword
+    if isinstance(p, (ast.Assign, ast.AnnAssign)) and p.value is node:
+        return 1
     return 7
 
 
 def census_x(why, tests, chosen, seen):
     """Milliseconds to add to this commit's cost; seen counts earlier
     tok-str fallback commits in output order."""
+    # None: not a tok-str fallback, adds 0 and is not counted.
     if not (len(chosen) == len(tests) and chosen == set(tests)):
-        return 0
+        return None
     if any(w.startswith(CENSUS_FALLBACKS) for w in why):
-        return 0
+        return None
     deciding = [w for w in why if w.endswith("everything")]
     if not deciding or not deciding[-1].endswith("possible import failure, everything"):
-        return 0
+        return None
     marks = [w for w in why if CENSUS_MARK in w]
     if not marks:
-        return None  # not a tok-str fallback
+        return None
     c = int(marks[-1].rsplit(" ", 1)[1])
     if not 1 <= c <= 7:
         c = 7
