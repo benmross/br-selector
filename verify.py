@@ -126,6 +126,19 @@ class InlineExecutor:
         return False
 
 
+# Standard modules (and mypy_extensions) that sqlglot and its test modules
+# import, from sys.modules after importing sqlglot and several test modules
+# in the image.
+PRELOAD = (
+    "argparse", "ast", "asyncio", "base64", "bisect", "concurrent.futures", "contextlib", "copy",
+    "dataclasses", "datetime", "decimal", "difflib", "email", "enum", "fnmatch", "fractions",
+    "functools", "glob", "heapq", "importlib.metadata", "importlib.resources", "importlib.util",
+    "inspect", "itertools", "json", "keyword", "locale", "logging", "math", "mypy_extensions",
+    "numbers", "operator", "pathlib", "pickle", "pkgutil", "pprint", "random", "re", "shutil",
+    "string", "struct", "subprocess", "tempfile", "textwrap", "threading", "tokenize", "traceback",
+    "typing", "unittest", "unittest.mock", "warnings", "weakref", "zipfile",
+)
+
 # Third-party modules some test files import at module level. Importing them
 # once in the parent, before any fork, saves each child about 0.7 s of CPU.
 # They never import sqlglot, so the children still load all of sqlglot fresh.
@@ -267,8 +280,19 @@ class Verifier:
         self.tests = tests  # number -> (id, file, ms)
         self.cpu = 0.0
         self.last_cpu = 0.0
-        import unittest  # noqa: F401  (shared by every child)
         self.shared = False
+        self.preload()
+
+    def preload(self):
+        """Import, once in the parent, the standard modules every child would
+        import with sqlglot and its tests (about 0.1 s of CPU per child).
+        None of them imports sqlglot. random and tempfile reseed after fork."""
+        import importlib
+        for m in PRELOAD:
+            try:
+                importlib.import_module(m)
+            except Exception:
+                pass
 
     def share_modules(self, test_files):
         """Import SHARED_MODULES in the parent when a test file to be run
