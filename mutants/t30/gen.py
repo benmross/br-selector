@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / 'work/sqlglot'
 OUT = Path(__file__).resolve().parent
 manifest = {}
+old_manifest = json.loads((OUT/'manifest.json').read_text())['commits'] if (OUT/'manifest.json').exists() else {}
 
 def emit(kind, label, changes):
     cid = f't30x{len(manifest):03d}'
@@ -23,6 +24,10 @@ def emit(kind, label, changes):
             tofile=f'b/{dest}' if after is not None else '/dev/null')))
     (OUT / 'commits' / (cid + '.patch')).write_text(''.join(patches))
     manifest[cid] = {'kind': kind, 'description': label, 'paths': [c[0] for c in changes]}
+    previous = old_manifest.get(cid,{})
+    if previous.get('description') == label:
+        for key in ('tests','label_scope'):
+            if key in previous: manifest[cid][key] = previous[key]
 
 def replace(kind, label, path, old, new, count=1):
     before = (SRC / path).read_text()

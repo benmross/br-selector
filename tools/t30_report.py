@@ -15,7 +15,8 @@ base, candidate = selections('base'), selections('candidate')
 rows = {}; misses = {}; groups = {}
 lines = ['# t30 real pytest labels', '',
          'Test 1490 is deselected under the 1 GiB cap; collection failures still count it.',
-         'TPC-DS baseline subtest 88 is subtracted by subtest key, preserving other new failures.', '',
+         'TPC-DS baseline subtest 88 is subtracted by subtest key, preserving other new failures.',
+         'A ≥ failure count is a smoke-run lower bound. These controls select every test on main, so a miss is impossible.', '',
          '| Mutant | Class | Edit | Failing | Main selected | Main missed | Candidate missed |',
          '| --- | --- | --- | ---: | ---: | ---: | ---: |']
 for cid, meta in manifest.items():
@@ -32,11 +33,13 @@ for cid, meta in manifest.items():
     if missed: group['main_misses'].append(cid)
     if remaining: group['candidate_misses'].append(cid)
     row = {'class':meta['kind'],'description':meta['description'],'failing':len(failing),
+           'label_scope':meta.get('label_scope','full numbered suite except 1490'),
            'main_selected':len(base[cid]),'main_missing':sorted(missed),
            'candidate_selected':len(candidate[cid]),'candidate_missing':sorted(remaining)}
     rows[cid] = row
     if missed: misses[cid] = row
-    lines.append(f'| {cid} | {meta["kind"]} | {meta["description"]} | {len(failing)} | {len(base[cid])} | {len(missed)} | {len(remaining)} |')
+    fail_count = ('≥' if 'tests' in meta else '') + str(len(failing))
+    lines.append(f'| {cid} | {meta["kind"]} | {meta["description"]} | {fail_count} | {len(base[cid])} | {len(missed)} | {len(remaining)} |')
 (ROOT/'reviews/t30-matrix.md').write_text('\n'.join(lines)+'\n')
 (ROOT/'reviews/t30-label-summary.json').write_text(json.dumps({'labeled':len(answers),'generated':len(manifest),
           'classes':groups,'misses':misses,'rows':rows},indent=2)+'\n')

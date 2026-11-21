@@ -11,7 +11,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools'))
-from label_reports import failure_numbers
+from label_reports import failure_numbers, startup_failures
 
 
 def failure_keys(text):
@@ -31,8 +31,13 @@ def main():
     added = {}
     for cid, row in answers['commits'].items():
         row['kind'] = manifest[cid]['kind']
-        new = failure_keys((logs/(cid+'.log')).read_text()) - baseline
+        row['label_scope'] = manifest[cid].get('label_scope', 'full numbered suite except 1490')
+        if 'tests' in manifest[cid]: row['tests_run'] = manifest[cid]['tests']
+        text = (logs/(cid+'.log')).read_text()
+        new = failure_keys(text) - baseline
         failing = failure_numbers({nodeid for _,_,nodeid in new}, tests)
+        if 'short test summary info' not in text:
+            failing |= startup_failures(text, 1, '/src', tests) or set()
         previous = set(row['failing'])
         if failing-previous:
             added[cid] = sorted(failing-previous)

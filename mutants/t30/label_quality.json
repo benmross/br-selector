@@ -1,0 +1,18 @@
+{
+  "baseline_failure_keys": [
+    [
+      "SUBFAILED",
+      "tpc-ds 88",
+      "tests/test_executor.py::TestExecutor::test_execute_tpcds"
+    ]
+  ],
+  "added_after_subtest_reconciliation": {},
+  "deselected": [
+    1490
+  ],
+  "reason": "Pinned max_nodes OOMs alone with the required 1 GiB cap",
+  "container": "python:3.13-slim@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90",
+  "cpuset": "8-9",
+  "memory_bytes": 1073741824,
+  "pytest_workers": 0
+}

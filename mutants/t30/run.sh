@@ -1,5 +1,14 @@
 #!/bin/sh
 set -eu
+python - <<'PY'
+from pathlib import Path
+import shutil
+for path in Path('/src').iterdir():
+    if path.is_dir() and not path.is_symlink():
+        shutil.rmtree(path)
+    else:
+        path.unlink()
+PY
 cp -a /kit/pinned/. /src/
 pip install -q --root-user-action=ignore -r /kit/requirements.lock
 export LABEL_N=0 LABEL_DIST=load
