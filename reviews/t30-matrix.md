@@ -20,18 +20,18 @@ A ≥ failure count is a smoke-run lower bound. These controls select every test
 | t30x011 | metaclass | bigquery quote scalar value | 33 | 294 | 0 | 0 |
 | t30x012 | metaclass | generator string-read setting | ≥2 | 1620 | 0 | 0 |
 | t30x013 | metaclass | snowflake inverse time map value | ≥0 | 1620 | 0 | 0 |
-| t30x014 | cache | dispatch memo stored under base class | pending | 1347 | pending | pending |
-| t30x015 | cache | dispatch memo read under base class | pending | 1347 | pending | pending |
-| t30x016 | cache | dispatch memo mutates previous cached table | pending | 1347 | pending | pending |
-| t30x017 | cache | optimizer lazy global cached wrong name | pending | 1620 | pending | pending |
-| t30x018 | cache | optimizer lazy global writes extra name | pending | 1620 | pending | pending |
-| t30x019 | cache | optimizer lazy RULES registry target | pending | 1620 | pending | pending |
-| t30x020 | cache | optimizer lazy scope registry target | pending | 1620 | pending | pending |
-| t30x021 | cache | optimizer rule registry swap | pending | 1620 | pending | pending |
-| t30x022 | cache | scope column-cache reset | pending | 229 | pending | pending |
-| t30x023 | cache | resolver cache key loses only-visible | pending | 225 | pending | pending |
-| t30x024 | cache | dialect registry reload pollutes base | pending | 1620 | pending | pending |
-| t30x025 | cache | dialect registry lazy result fallback | pending | 1235 | pending | pending |
+| t30x014 | cache | dispatch memo stored under base class | 176 | 1347 | 0 | 0 |
+| t30x015 | cache | dispatch memo read under base class | 689 | 1347 | 0 | 0 |
+| t30x016 | cache | dispatch memo mutates previous cached table | 868 | 1347 | 0 | 0 |
+| t30x017 | cache | optimizer lazy global cached wrong name | ≥0 | 1620 | 0 | 0 |
+| t30x018 | cache | optimizer lazy global writes extra name | ≥0 | 1620 | 0 | 0 |
+| t30x019 | cache | optimizer lazy RULES registry target | ≥0 | 1620 | 0 | 0 |
+| t30x020 | cache | optimizer lazy scope registry target | ≥0 | 1620 | 0 | 0 |
+| t30x021 | cache | optimizer rule registry swap | ≥13 | 1620 | 0 | 0 |
+| t30x022 | cache | scope column-cache reset | 5 | 229 | 0 | 0 |
+| t30x023 | cache | resolver cache key loses only-visible | 2 | 225 | 0 | 0 |
+| t30x024 | cache | dialect registry reload pollutes base | ≥0 | 1620 | 0 | 0 |
+| t30x025 | cache | dialect registry lazy result fallback | 1099 | 1235 | 0 | 0 |
 | t30x026 | infrastructure | identity SQL whitespace literal | pending | 2 | pending | pending |
 | t30x027 | infrastructure | optimizer fixture metadata | pending | 1 | pending | pending |
 | t30x028 | infrastructure | fixture comment becomes statement | pending | 1 | pending | pending |
@@ -84,3 +84,4 @@ A ≥ failure count is a smoke-run lower bound. These controls select every test
 | t30x075 | shape | PEP 701 comment in f-string expression | pending | 0 | pending | pending |
 | t30x076 | metaclass | time-map key changes type | pending | 291 | pending | pending |
 | t30x077 | metaclass | quote tuple arity shrinks | pending | 117 | pending | pending |
+| t30x078 | shape | two individually harmless edits fail only together | pending | 1620 | pending | pending |

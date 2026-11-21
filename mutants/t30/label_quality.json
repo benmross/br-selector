@@ -6,7 +6,20 @@
       "tests/test_executor.py::TestExecutor::test_execute_tpcds"
     ]
   ],
-  "added_after_subtest_reconciliation": {},
+  "added_after_subtest_reconciliation": {
+    "t30x014": [
+      1106
+    ],
+    "t30x015": [
+      1106
+    ],
+    "t30x016": [
+      1106
+    ],
+    "t30x025": [
+      1106
+    ]
+  },
   "deselected": [
     1490
   ],

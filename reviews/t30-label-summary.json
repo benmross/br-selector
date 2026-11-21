@@ -1,6 +1,6 @@
 {
-  "labeled": 18,
-  "generated": 78,
+  "labeled": 30,
+  "generated": 79,
   "classes": {
     "metaclass": {
       "mutants": 18,
@@ -11,6 +11,14 @@
         "t30x064",
         "t30x065"
       ],
+      "candidate_misses": []
+    },
+    "cache": {
+      "mutants": 12,
+      "failing_mutants": 7,
+      "failing_test_instances": 2852,
+      "main_selected_test_instances": 15450,
+      "main_misses": [],
       "candidate_misses": []
     }
   },
@@ -1692,6 +1700,126 @@
       "main_selected": 1620,
       "main_missing": [],
       "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x014": {
+      "class": "cache",
+      "description": "dispatch memo stored under base class",
+      "failing": 176,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 1347,
+      "main_missing": [],
+      "candidate_selected": 1347,
+      "candidate_missing": []
+    },
+    "t30x015": {
+      "class": "cache",
+      "description": "dispatch memo read under base class",
+      "failing": 689,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 1347,
+      "main_missing": [],
+      "candidate_selected": 1347,
+      "candidate_missing": []
+    },
+    "t30x016": {
+      "class": "cache",
+      "description": "dispatch memo mutates previous cached table",
+      "failing": 868,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 1347,
+      "main_missing": [],
+      "candidate_selected": 1347,
+      "candidate_missing": []
+    },
+    "t30x017": {
+      "class": "cache",
+      "description": "optimizer lazy global cached wrong name",
+      "failing": 0,
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x018": {
+      "class": "cache",
+      "description": "optimizer lazy global writes extra name",
+      "failing": 0,
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x019": {
+      "class": "cache",
+      "description": "optimizer lazy RULES registry target",
+      "failing": 0,
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x020": {
+      "class": "cache",
+      "description": "optimizer lazy scope registry target",
+      "failing": 0,
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x021": {
+      "class": "cache",
+      "description": "optimizer rule registry swap",
+      "failing": 13,
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x022": {
+      "class": "cache",
+      "description": "scope column-cache reset",
+      "failing": 5,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 229,
+      "main_missing": [],
+      "candidate_selected": 229,
+      "candidate_missing": []
+    },
+    "t30x023": {
+      "class": "cache",
+      "description": "resolver cache key loses only-visible",
+      "failing": 2,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 225,
+      "main_missing": [],
+      "candidate_selected": 225,
+      "candidate_missing": []
+    },
+    "t30x024": {
+      "class": "cache",
+      "description": "dialect registry reload pollutes base",
+      "failing": 0,
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x025": {
+      "class": "cache",
+      "description": "dialect registry lazy result fallback",
+      "failing": 1099,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 1235,
+      "main_missing": [],
+      "candidate_selected": 1235,
       "candidate_missing": []
     },
     "t30x064": {
