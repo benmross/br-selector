@@ -21,12 +21,18 @@ answers = json.load(open(out))["commits"] if os.path.exists(out) else {}
 env = dict(os.environ, SKIP_INTEGRATION="0", PYTHONPATH=src, PYTHONDONTWRITEBYTECODE="1")
 
 
-def run_suite():
+def run_suite(tag="baseline"):
     r = subprocess.run(
         [sys.executable, "-m", "pytest", "tests", "-q", "-n", os.environ.get("LABEL_N", "3"), "-rfE", "-p", "no:cacheprovider",
          "-o", "addopts=", "--timeout=300"],
         cwd=src, env=env, capture_output=True, text=True,
     )
+    # Keep the raw report so labels can be re-parsed without rerunning the suite.
+    try:
+        os.makedirs(os.path.join(os.path.dirname(out), "raw"), exist_ok=True)
+        open(os.path.join(os.path.dirname(out), "raw", tag + ".txt"), "w").write(r.stdout)
+    except OSError:
+        pass
     failing = set()
     for line in r.stdout.splitlines():
         if not line.startswith(("FAILED", "ERROR", "SUBFAILED")):
@@ -67,7 +73,7 @@ for k, name in enumerate(sorted(os.listdir(os.path.join(muts, "commits")))):
         new, _, _ = apply(saved[p], fp)
         open(p, "w").write(new)
     t0 = time.time()
-    failing = run_suite() - baseline
+    failing = run_suite(cid) - baseline
     for p, t in saved.items():
         open(p, "w").write(t)
     answers[cid] = {"failing": sorted(failing), "kind": "mutant"}
