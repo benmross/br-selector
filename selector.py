@@ -750,6 +750,9 @@ class Selector:
                     # module loads, failing every importer at collection.
                     why.append(f"{path}:{line} import-time lookup changed, importers")
                     return self.importers(path)
+                if bad_regex_at_import(node, line, changed, new_tree, fp):
+                    why.append(f"{path}:{line} import-time regex no longer compiles, importers")
+                    return self.importers(path)
                 if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and line <= header_end:
                     # A decorator or signature edit reaches every caller of the
                     # function, including callers through the class (class and
@@ -1405,6 +1408,42 @@ def lookup_at_import(node, line, changed):
             stack.extend(c for c in (n.target, n.value) if c is not None)
             continue
         stack.extend(ast.iter_child_nodes(n))
+    return False
+
+
+RE_CALLS = {"compile", "match", "fullmatch", "search", "findall", "finditer", "sub", "subn", "split"}
+
+
+def bad_regex_at_import(node, line, changed, new_tree, fp):
+    """Does an import-level re.compile("...") (or another re call) on a
+    changed line now fail to compile? Compiling a literal pattern runs no
+    patch code. A pattern that compiles keeps the ordinary selection."""
+    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+        return False
+    if not any(l[:1] == "+" for _, ls in fp.hunks for l in ls):
+        return False
+    new_lines = set()
+    for (_, lines), (_, new_start, new_count) in zip(fp.hunks, fp.ranges):
+        n = new_start if new_count else new_start + 1
+        for l in lines:
+            if l[:1] == "+":
+                new_lines.add(n)
+            if l[:1] in (" ", "+"):
+                n += 1
+    for n in ast.walk(new_tree):
+        if not (isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute) and n.func.attr in RE_CALLS
+                and isinstance(n.func.value, ast.Name) and n.func.value.id == "re" and n.args
+                and isinstance(n.args[0], ast.Constant) and isinstance(n.args[0].value, (str, bytes))):
+            continue
+        if not any(n.lineno <= l <= n.end_lineno for l in new_lines):
+            continue
+        flags = 0
+        if len(n.args) > 1 and isinstance(n.args[1], ast.Constant) and isinstance(n.args[1].value, int):
+            flags = n.args[1].value
+        try:
+            re.compile(n.args[0].value, flags)
+        except (re.error, OverflowError, ValueError, TypeError, RecursionError):
+            return True
     return False
 
 

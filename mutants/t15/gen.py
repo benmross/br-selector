@@ -87,6 +87,11 @@ EXTRA = [
     ("t15x020", "lambda_sort_key", "sqlglot/errors.py",
      "    sorted_positions = sorted(positions, key=lambda pos: pos[0])\n",
      "    sorted_positions = sorted(positions, key=lambda pos: -pos[0])\n"),
+    # A module-level regex literal made invalid: re.error while the module
+    # loads, although only runtime code reads the compiled pattern.
+    ("t15x022", "import_time_regex_literal", "sqlglot/generators/duckdb.py",
+     "TIMEZONE_PATTERN = re.compile(r\":\\d{2}.*?[+\\-]\\d{2}(?::\\d{2})?\")\n",
+     "TIMEZONE_PATTERN = re.compile(r\":\\d{2}.*?[+\\-]\\d{2}(?::\\d{2}?\")\n"),
     ("t15x021", "lambda_body_parser_table", "sqlglot/parser.py",
      "        \"ARRAY_INTERSECT\": lambda args: exp.ArrayIntersect(expressions=args),\n",
      "        \"ARRAY_INTERSECT\": lambda args: exp.ArrayIntersect(expressions=args[:1]),\n"),
