@@ -807,7 +807,7 @@ class Selector:
                     out |= got | self.at_import(path, body, why)
                 out |= self.cov(path, range(start, end + 1))
                 out |= self.module_level(path, module, cls, why, line, node)
-                out |= self.qualified_consumers(cls, node, why)
+                out |= self.qualified_consumers(cls, node, why, path=path)
                 import_level = True
         if import_level and could_raise(fp, old_text, new_text) and not self.literal_only(path, old_tree, new_tree, why):
             # Never execute patch-supplied code in the selector. Even an
@@ -1088,7 +1088,7 @@ class Selector:
         why.append(f"{path}:{span.start} also runs at import, everything")
         return set(self.all)
 
-    def qualified_consumers(self, cls, node, why, depth=3):
+    def qualified_consumers(self, cls, node, why, depth=3, path=None):
         """Code that reads this class attribute through its class name.
 
         presto.py binds `TIME_MAPPING = MySQL.TIME_MAPPING` in its class
@@ -1100,6 +1100,15 @@ class Selector:
         read keeps the coverage of its function. Widening only."""
         if not cls or not isinstance(node, (ast.Assign, ast.AnnAssign)):
             return set()
+        # Dialect parsers and generators are top-level classes that code also
+        # reads through the dialect's handle without an instance:
+        # anonymize.py checks `parser_class.FUNCTION_PARSERS`, so dropping
+        # LISTAGG from TrinoParser fails TestAnonymize::
+        # test_athena_known_function_kept, which never builds a parser
+        # (t52x092). Keep those runtime reads too.
+        handle = next((h for p, h in (("sqlglot/parsers/", "parser_class."),
+                                      ("sqlglot/generators/", "generator_class."))
+                       if (path or "").startswith(p)), None)
         frontier = [(cls, n) for n in sorted(assigned_names(node) or ())]
         seen, out = set(frontier), set()
         reads = (self.index or {}).get("@qualified_reads")
@@ -1115,7 +1124,13 @@ class Selector:
                              for m in pat.finditer(text)]
                 else:
                     found = [(rel, ln) for rel, ln, chain in reads.get(n, ())
-                             if chain == c + "." or chain.endswith("." + c + ".")]
+                             if chain == c + "." or chain.endswith("." + c + ".")
+                             or (handle and c == cls and chain.endswith(handle))]
+                if reads is None and handle and c == cls:
+                    pat = re.compile(r"\b" + re.escape(f"{handle}{n}") + r"\b")
+                    found += [(rel, text.count("\n", 0, m.start()) + 1)
+                              for rel, text in self._all_sources().items() if rel.startswith("sqlglot/")
+                              for m in pat.finditer(text)]
                 for rel, ln in found:
                     sites.setdefault(rel, set()).add(ln)
             for rel in sorted(sites):
@@ -2191,7 +2206,10 @@ def build_index(out_path):
                 for i in range(1, len(parts)):
                     # every owner.attr prefix: `MySQL.TIME_MAPPING.items`
                     # records TIME_MAPPING under owner `MySQL.`
-                    if parts[i - 1][:1].isupper() or parts[i - 1][:1] == "_":
+                    # and `dialect.parser_class.FUNCTIONS`, a dialect table
+                    # read without a parser instance (anonymize.py)
+                    if (parts[i - 1][:1].isupper() or parts[i - 1][:1] == "_"
+                            or parts[i - 1] in ("parser_class", "generator_class")):
                         qual.setdefault(parts[i], []).append([rel, ln, ".".join(parts[:i]) + "."])
     index["@qualified_reads"] = qual
     index["@inert_name_ranges"] = {

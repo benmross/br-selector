@@ -888,3 +888,36 @@ def test_class_body_edit_does_not_trigger_base_change_guard(sandbox):
     (src / 'sqlglot/core.py').write_text(before)
     result, why, _ = run({'body': diff('sqlglot/core.py', before, after)})
     assert 'class bases changed' not in why
+
+
+PARSER_TABLE = 'class TrinoParser:\n    FUNCTION_PARSERS = {\n        "LISTAGG": 1,\n        "TRIM": 2,\n    }\n'
+CLASS_HANDLE_READER = ('def anonymize(dialect):\n    parser_class = dialect.parser_class\n'
+                       '    return "LISTAGG" in parser_class.FUNCTION_PARSERS\n')
+
+
+@pytest.mark.parametrize('indexed', [False, True])
+def test_dialect_parser_table_keeps_class_handle_readers(sandbox, tmp_path, indexed):
+    # t52x092: dropping LISTAGG from TrinoParser.FUNCTION_PARSERS fails
+    # TestAnonymize::test_athena_known_function_kept. anonymize.py reads the
+    # table through `dialect.parser_class` and never builds a parser, so the
+    # test is not one of TrinoParser's users.
+    run, src = sandbox
+    (src / 'sqlglot/parsers').mkdir()
+    (src / 'sqlglot/parsers/trino.py').write_text(PARSER_TABLE)
+    (src / 'sqlglot/anonymize.py').write_text(CLASS_HANDLE_READER)
+    with gzip.open(run.env['MAP_PATH'], 'rt') as f:
+        mapping = json.load(f)
+    mapping['classes']['sqlglot.parsers.trino:TrinoParser'] = 3
+    mapping['import_lines']['sqlglot/parsers/trino.py'] = [1, 2, 3, 4, 5]
+    mapping['files']['sqlglot/anonymize.py'] = {'2': 4, '3': 4}
+    with gzip.open(run.env['MAP_PATH'], 'wt') as f:
+        json.dump(mapping, f)
+    if indexed:
+        index = tmp_path / 'index.json.gz'
+        subprocess.run([sys.executable, str(ROOT / 'selector.py'), '--index', str(index)],
+                       env=run.env, check=True, capture_output=True)
+        run.env['INDEX_PATH'] = str(index)
+    answers, why, _ = run({'drop': diff('sqlglot/parsers/trino.py', PARSER_TABLE,
+                                        PARSER_TABLE.replace('        "LISTAGG": 1,\n', ''))})
+    assert 4 in answers['drop'], why
+    assert 'anonymize.py:3 runtime read' in why
