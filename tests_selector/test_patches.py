@@ -330,7 +330,8 @@ def test_import_errors_without_new_names(sandbox, after):
 @pytest.mark.parametrize("action", ["exception", "exit", "signal", "timeout", "memory"])
 def test_analysis_process_failure_is_contained(tmp_path, action):
     selector = load_selector()
-    selector.MAX_COMMIT_SECONDS = 0.1
+    selector.MAX_COMMIT_SECONDS = 1
+    selector.MAX_COMMIT_WALL_SECONDS = 0.5
     patch_path = tmp_path / "bad.patch"
     patch_path.write_text(NORMAL)
 
@@ -356,6 +357,65 @@ def test_analysis_process_failure_is_contained(tmp_path, action):
     assert chosen == ALL
     assert why
     assert time.monotonic() - started < 2
+    assert not multiprocessing.active_children()
+
+
+class SlowSelector:
+    """Stands in for the real selector: burns CPU or sits idle, then picks 1."""
+    all = ALL
+
+    def __init__(self, busy=0.0, idle=0.0):
+        self.busy, self.idle = busy, idle
+
+    def for_file(self, fp, why):
+        end = time.process_time() + self.busy
+        while time.process_time() < end:
+            pass
+        time.sleep(self.idle)
+        return {1}
+
+    def expand_shared_setup(self, chosen, why):
+        return chosen
+
+
+def test_cpu_limit_stops_a_busy_child(tmp_path):
+    selector = load_selector()
+    selector.MAX_COMMIT_SECONDS = 1
+    patch_path = tmp_path / "busy.patch"
+    patch_path.write_text(NORMAL)
+    started = time.monotonic()
+    chosen, why = selector.analyze_patch(multiprocessing.get_context("fork"), str(patch_path),
+                                         SlowSelector(busy=30), {n: None for n in ALL}, started + 20)
+    assert chosen == ALL
+    assert "resource limit" in why[0]
+    assert time.monotonic() - started < 5
+    assert not multiprocessing.active_children()
+
+
+def test_stalled_child_under_the_cpu_limit_is_not_cut_off(tmp_path):
+    """A host stall makes wall time pass without CPU use. Idle time past the
+    CPU limit must not turn the commit into a select-everything fallback."""
+    selector = load_selector()
+    selector.MAX_COMMIT_SECONDS = 1
+    patch_path = tmp_path / "stall.patch"
+    patch_path.write_text(NORMAL)
+    chosen, why = selector.analyze_patch(multiprocessing.get_context("fork"), str(patch_path),
+                                         SlowSelector(busy=0.2, idle=2.5), {n: None for n in ALL},
+                                         time.monotonic() + 20)
+    assert chosen == {1}
+
+
+def test_wall_backstop_is_capped_by_the_batch_budget(tmp_path):
+    selector = load_selector()
+    selector.MAX_COMMIT_WALL_SECONDS = 30
+    patch_path = tmp_path / "hang.patch"
+    patch_path.write_text(NORMAL)
+    started = time.monotonic()
+    chosen, why = selector.analyze_patch(multiprocessing.get_context("fork"), str(patch_path),
+                                         SlowSelector(idle=60), {n: None for n in ALL}, started + 1)
+    assert chosen == ALL
+    assert "timed out" in why[0]
+    assert time.monotonic() - started < 3
     assert not multiprocessing.active_children()
 
 
