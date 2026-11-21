@@ -49,15 +49,15 @@
 | t56x030 | 4 | executor ENV key COALESCE renamed NVL (lambda value; the executor resolves names at run time) | unlabeled | 1620 | 36.8 | 36.8 | yes | - |
 | t56x031 | 4 | executor ENV key FIRST renamed FIRST_VALUE (lambda value) | unlabeled | 1620 | 36.8 | 36.8 | yes | - |
 | t56x032 | 4 | executor ENV key IF renamed IIF (lambda value) | unlabeled | 1620 | 36.8 | 36.8 | yes | - |
-| t56x033 | 4 | Postgres FUNCTIONS JSON_EXTRACT_PATH_TEXT key renamed JSON_EXTRACT_PATH_TXT (value is a build_ call) | unlabeled | 285 | 10.4 | 36.8 | yes | - |
+| t56x033 | 4 | Postgres FUNCTIONS JSON_EXTRACT_PATH_TEXT key renamed JSON_EXTRACT_PATH_TXT (value is a build_ call) | 4 | 285 | 10.4 | 36.8 | yes | no |
 | t56x034 | 4 | Hive FUNCTIONS key LAST_VALUE renamed LASTVALUE (value build_with_ignore_nulls call) | unlabeled | 307 | 10.9 | 36.8 | yes | - |
 | t56x035 | 4 | executor ENV key ORD renamed ASCII (value null_if_any(ord) call) | unlabeled | 1620 | 36.8 | 36.8 | yes | - |
 | t56x062 | 4 | generator.py AFTER_HAVING_MODIFIER_TRANSFORMS key windows renamed window (BigQuery subscripts ["windows"] at import) | unlabeled | 1620 | 36.8 | 36.8 | yes | - |
 | t56x063 | 4 | base FUNCTION_PARSERS key TRY_CAST renamed TRYCAST (Teradata subscripts ["TRY_CAST"] at import) | unlabeled | 1620 | 36.8 | 36.8 | yes | - |
-| t56x064 | 4 | Snowflake FUNCTIONS key ARRAY_GENERATE_RANGE renamed ARRAY_GENERATE_RANGES (generator subscripts it at run time) | unlabeled | 323 | 9.6 | 36.8 | yes | - |
+| t56x064 | 4 | Snowflake FUNCTIONS key ARRAY_GENERATE_RANGE renamed ARRAY_GENERATE_RANGES (generator subscripts it at run time) | 3 | 323 | 9.6 | 36.8 | yes | no |
 | t56x066 | 4 | SQLite FUNCTIONS DATETIME lambda Anonymous(this="DATETIME") changed to "DATE_TIME" | 1 | 155 | 8.1 | 36.8 | yes | no |
-| t56x067 | 4 | MySQL FUNCTIONS TO_DAYS lambda epoch literal 0000-01-01 changed to 0001-01-01 | unlabeled | 298 | 9.8 | 9.8 | yes | - |
-| t56x068 | 4 | DuckDB generator TRANSFORMS rename_func("LIST_FILTER") changed to "ARRAY_FILTER" | unlabeled | 377 | 27.5 | 36.8 | yes | - |
+| t56x067 | 4 | MySQL FUNCTIONS TO_DAYS lambda epoch literal 0000-01-01 changed to 0001-01-01 | 1 | 298 | 9.8 | 9.8 | yes | no |
+| t56x068 | 4 | DuckDB generator TRANSFORMS rename_func("LIST_FILTER") changed to "ARRAY_FILTER" | 7 | 377 | 27.5 | 36.8 | yes | no |
 | t56x051 | 5 | Presto RESERVED_KEYWORDS member alter renamed analyze (Trino/Athena inherit) | unlabeled | 180 | 8.5 | 8.5 | yes | - |
 | t56x052 | 5 | Redshift RESERVED_KEYWORDS member aes128 renamed aes192 | unlabeled | 87 | 7.9 | 7.9 | yes | - |
 | t56x053 | 5 | array.py ArrayContains _sql_names ARRAY_HAS renamed ARRAY_HAS_ANY | unlabeled | 11 | 6.3 | 36.8 | yes | - |
