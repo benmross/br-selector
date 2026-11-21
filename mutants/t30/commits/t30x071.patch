@@ -1,0 +1,12 @@
+diff --git a/sqlglot/diff.py b/sqlglot/diff.py
+--- a/sqlglot/diff.py
++++ b/sqlglot/diff.py
+@@ -261,7 +261,7 @@
+         target_args = [id(e) for e in _expression_only_args(target)]
+ 
+         args_lcs = set(
+-            _lcs(source_args, target_args, lambda l, r: matchings.get(t.cast(int, l)) == r)
++            _lcs(source_args, target_args, lambda l, r: matchings.get(t.cast(int, l)) != r)
+         )
+ 
+         move_edits = []

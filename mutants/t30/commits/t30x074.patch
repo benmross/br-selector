@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -6771,7 +6771,7 @@
+     def _parse_type(
+         self, parse_interval: bool = True, fallback_to_identifier: bool = False
+     ) -> exp.Expr | None:
+-        if not fallback_to_identifier and (atom := self._parse_atom()) is not None:
++        if not fallback_to_identifier and (atom := self._parse_atom()) != None:
+             return atom
+ 
+         if interval := parse_interval and self._parse_interval():

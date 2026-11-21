@@ -448,6 +448,90 @@
       "paths": [
         "sqlglot/generators/doris.py"
       ]
+    },
+    "t30x064": {
+      "kind": "metaclass",
+      "description": "nested quote pair loses endpoint",
+      "paths": [
+        "sqlglot/dialects/hive.py"
+      ]
+    },
+    "t30x065": {
+      "kind": "metaclass",
+      "description": "nested quote entry becomes empty list",
+      "paths": [
+        "sqlglot/dialects/bigquery.py"
+      ]
+    },
+    "t30x066": {
+      "kind": "metaclass",
+      "description": "escape item changes type",
+      "paths": [
+        "sqlglot/dialects/hive.py"
+      ]
+    },
+    "t30x067": {
+      "kind": "metaclass",
+      "description": "time-map value changes type",
+      "paths": [
+        "sqlglot/dialects/mysql.py"
+      ]
+    },
+    "t30x068": {
+      "kind": "comparison",
+      "description": "chained lower bound",
+      "paths": [
+        "sqlglot/anonymize.py"
+      ]
+    },
+    "t30x069": {
+      "kind": "comparison",
+      "description": "chained upper bound",
+      "paths": [
+        "sqlglot/generators/bigquery.py"
+      ]
+    },
+    "t30x070": {
+      "kind": "comparison",
+      "description": "comparison lambda equality",
+      "paths": [
+        "sqlglot/executor/env.py"
+      ]
+    },
+    "t30x071": {
+      "kind": "comparison",
+      "description": "comparison lambda mapping read",
+      "paths": [
+        "sqlglot/diff.py"
+      ]
+    },
+    "t30x072": {
+      "kind": "comparison",
+      "description": "comparison in comprehension",
+      "paths": [
+        "sqlglot/dialects/athena.py"
+      ]
+    },
+    "t30x073": {
+      "kind": "comparison",
+      "description": "comparison in import-time generator",
+      "paths": [
+        "sqlglot/dialects/dialect.py"
+      ]
+    },
+    "t30x074": {
+      "kind": "comparison",
+      "description": "comparison operand advances parser",
+      "paths": [
+        "sqlglot/parser.py"
+      ]
+    },
+    "t30x075": {
+      "kind": "shape",
+      "description": "PEP 701 comment in f-string expression",
+      "paths": [
+        "sqlglot/lineage.py"
+      ]
     }
   }
 }

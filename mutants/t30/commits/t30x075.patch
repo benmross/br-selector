@@ -1,0 +1,13 @@
+diff --git a/sqlglot/lineage.py b/sqlglot/lineage.py
+--- a/sqlglot/lineage.py
++++ b/sqlglot/lineage.py
+@@ -51,7 +51,8 @@
+         for node in self.walk():
+             if isinstance(node.expression, exp.Table):
+                 label = f"FROM {node.expression.this}"
+-                title = f"<pre>SELECT {node.name} FROM {node.expression.this}</pre>"
++                title = f"<pre>SELECT {node.name # t30
++} FROM {node.expression.this}</pre>"
+                 group = 1
+             else:
+                 label = node.expression.sql(pretty=True, dialect=dialect)

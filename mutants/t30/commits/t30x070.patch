@@ -1,0 +1,12 @@
+diff --git a/sqlglot/executor/env.py b/sqlglot/executor/env.py
+--- a/sqlglot/executor/env.py
++++ b/sqlglot/executor/env.py
+@@ -279,7 +279,7 @@
+     "DATESTRTODATE": null_if_any(lambda arg: datetime.date.fromisoformat(arg)),
+     "DIV": null_if_any(lambda e, this: e / this),
+     "DOT": null_if_any(lambda e, this: e[this]),
+-    "EQ": null_if_any(lambda this, e: this == e),
++    "EQ": null_if_any(lambda this, e: this is e),
+     "EXTRACT": null_if_any(lambda this, e: getattr(e, this)),
+     "GT": null_if_any(lambda this, e: this > e),
+     "GTE": null_if_any(lambda this, e: this >= e),

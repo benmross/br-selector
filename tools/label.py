@@ -43,7 +43,9 @@ def run_suite(tag, targets=("tests",)):
                      LABEL_STOP_AFTER_FILE=out + ".stop-after", LABEL_STOP_REQUEST_FILE=out + ".stop")
     r = subprocess.run(
         [sys.executable, "-m", "pytest", *targets, "-q", "-n", os.environ.get("LABEL_N", "1"), "--dist", os.environ.get("LABEL_DIST", "load"), "-rfE", "-p", "no:cacheprovider",
-         "-o", "addopts=", "--timeout=300", "--tb=no", "-p", "label_trace"],
+         "-o", "addopts=", "--timeout=300", "--tb=no", "-p", "label_trace",
+         *[arg for nodeid in os.environ.get("LABEL_DESELECT", "").split(",") if nodeid
+           for arg in ("--deselect", nodeid)]],
         cwd=src, env=suite_env, capture_output=True, text=True,
     )
     log_dir = out + ".logs"

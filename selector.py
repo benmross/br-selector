@@ -1273,8 +1273,12 @@ def _shape(value):
 
 
 def reshaped_names(old_scopes, new_scopes):
-    """(class, name) assigned at import whose literal value changed kind or
-    became empty, such as IDENTIFIERS = ["`"] -> IDENTIFIERS = []."""
+    """Import-time class bindings whose literal structure became unsafe.
+
+    Class construction also indexes entries inside tables: IDENTIFIERS can
+    remain a nonempty list while an entry becomes an empty or one-item pair.
+    Keep ordinary same-type leaf edits on the existing reader selection.
+    """
     def values(sc):
         out = {}
         for start, end, header_end, node, runtime, cls in sc.stmts:
@@ -1282,15 +1286,37 @@ def reshaped_names(old_scopes, new_scopes):
                 continue
             names = assigned_names(node)
             if names and len(names) == 1 and node.value is not None:
-                out[(cls, next(iter(names)))] = _shape(node.value)
+                out[(cls, next(iter(names)))] = node.value
         return out
     old, new = values(old_scopes), values(new_scopes)
     out = set()
-    for key, shape in old.items():
-        if key in new and shape is not None and new[key] != shape:
-            if new[key] is None or new[key][0] != shape[0] or (shape[1] and not new[key][1]):
-                out.add(key)
+    for key, value in old.items():
+        if key in new and literal_structure_changed(value, new[key]):
+            out.add(key)
     return out
+
+
+def literal_structure_changed(before, after):
+    """A literal or one of its entries changed type, emptied, or lost arity.
+
+    Unknown computed old values carry no literal contract. Dictionary values
+    are matched by key, so adding/removing ordinary keys stays with the
+    existing import-time lookup rule rather than widening unrelated entries.
+    """
+    old, new = _shape(before), _shape(after)
+    if old is None:
+        return False
+    if new is None or old[0] != new[0] or (old[1] and not new[1]):
+        return True
+    if isinstance(before, (ast.List, ast.Tuple)):
+        if isinstance(before, ast.Tuple) and len(before.elts) != len(after.elts):
+            return True
+        return any(literal_structure_changed(a, b) for a, b in zip(before.elts, after.elts))
+    if isinstance(before, ast.Dict):
+        previous = {_dump(k): v for k, v in zip(before.keys, before.values) if k is not None}
+        return any(_dump(k) in previous and literal_structure_changed(previous[_dump(k)], v)
+                   for k, v in zip(after.keys, after.values) if k is not None)
+    return False
 
 def _is_ref(node, names):
     return (isinstance(node, ast.Name) and node.id in names) or \

@@ -156,6 +156,27 @@ for count,path,line,col,n,alt,text,seg in sorted(candidates,key=lambda x:x[:4]):
     seen.add(path)
     if len(seen)==10: break
 
-assert len(manifest) == 64, len(manifest)
+# Additional adversarial nested shapes: the outer table remains non-empty.
+for label,path,old,new in [
+ ('nested quote pair loses endpoint','sqlglot/dialects/hive.py','IDENTIFIERS = ["`"]','IDENTIFIERS = [("`",)]'),
+ ('nested quote entry becomes empty list','sqlglot/dialects/bigquery.py','IDENTIFIERS = ["`"]','IDENTIFIERS = [[]]'),
+ ('escape item changes type','sqlglot/dialects/hive.py','STRING_ESCAPES = ["\\\\"]','STRING_ESCAPES = [0]'),
+ ('time-map value changes type','sqlglot/dialects/mysql.py','"%M": "%B"','"%M": 0'),
+]: replace('metaclass',label,path,old,new)
+
+for label,path,old,new in [
+ ('chained lower bound','sqlglot/anonymize.py','start <= open_end < close_start','start < open_end < close_start'),
+ ('chained upper bound','sqlglot/generators/bigquery.py','0 <= value <= 1','0 <= value < 1'),
+ ('comparison lambda equality','sqlglot/executor/env.py','lambda this, e: this == e','lambda this, e: this is e'),
+ ('comparison lambda mapping read','sqlglot/diff.py','matchings.get(t.cast(int, l)) == r','matchings.get(t.cast(int, l)) != r'),
+ ('comparison in comprehension','sqlglot/dialects/athena.py','t.token_type != TokenType.SELECT','t.token_type is not TokenType.SELECT'),
+ ('comparison in import-time generator','sqlglot/dialects/dialect.py','if t == token_type','if t is token_type'),
+ ('comparison operand advances parser','sqlglot/parser.py','(atom := self._parse_atom()) is not None','(atom := self._parse_atom()) != None'),
+]: replace('comparison',label,path,old,new)
+p = 'sqlglot/lineage.py'; a = (SRC/p).read_text()
+emit('shape','PEP 701 comment in f-string expression',[(p,a,a.replace('f"<pre>SELECT {node.name} FROM {node.expression.this}</pre>"',
+    'f"<pre>SELECT {node.name # t30\\n} FROM {node.expression.this}</pre>"'.replace('\\n','\n'),1))])
+
+assert len(manifest) == 76, len(manifest)
 (OUT/'manifest.json').write_text(json.dumps({'commits':manifest},indent=2)+'\n')
 print('generated',len(manifest))
