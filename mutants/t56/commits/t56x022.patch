@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/drill.py b/sqlglot/generators/drill.py
+--- a/sqlglot/generators/drill.py
++++ b/sqlglot/generators/drill.py
+@@ -67,7 +67,7 @@
+         exp.CurrentTimestamp: lambda *_: "CURRENT_TIMESTAMP",
+         exp.ArrayContains: rename_func("REPEATED_CONTAINS"),
+         exp.Create: preprocess([move_schema_columns_to_partitioned_by]),
+-        exp.DateAdd: date_add_sql("ADD"),
++        exp.DateAdd: date_add_sql("PLUS"),
+         exp.DateStrToDate: datestrtodate_sql,
+         exp.DateSub: date_add_sql("SUB"),
+         exp.DateToDi: lambda self, e: (

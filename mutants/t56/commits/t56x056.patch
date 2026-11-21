@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/hive.py b/sqlglot/generators/hive.py
+--- a/sqlglot/generators/hive.py
++++ b/sqlglot/generators/hive.py
+@@ -242,7 +242,7 @@
+     NVL2_SUPPORTED = False
+     LAST_DAY_SUPPORTS_DATE_PART = False
+     JSON_PATH_SINGLE_QUOTE_ESCAPE = True
+-    SAFE_JSON_PATH_KEY_RE = re.compile(r"^[_\-a-zA-Z][\-\w]*$")
++    SAFE_JSON_PATH_KEY_RE = re.compile(r"^[_a-zA-Z][\w]*$")
+     SUPPORTS_TO_NUMBER = False
+     WITH_PROPERTIES_PREFIX = "TBLPROPERTIES"
+     PARSE_JSON_NAME: str | None = "PARSE_JSON"

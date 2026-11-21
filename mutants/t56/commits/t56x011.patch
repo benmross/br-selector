@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -131,7 +131,7 @@
+         "DATE_ADD": build_date_delta_with_interval(exp.DateAdd),
+         "DATE_FORMAT": lambda args: exp.TimeToStr(
+             this=exp.TsOrDsToTimestamp(this=seq_get(args, 0)),
+-            format=Dialect["mysql"].format_time(seq_get(args, 1)),
++            format=Dialect["doris"].format_time(seq_get(args, 1)),
+         ),
+         "DATE_SUB": build_date_delta_with_interval(exp.DateSub),
+         "DAY": lambda args: exp.Day(this=exp.TsOrDsToDate(this=seq_get(args, 0))),

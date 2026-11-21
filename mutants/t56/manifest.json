@@ -1,0 +1,522 @@
+{
+ "commits": {
+  "t56x000": {
+   "kind": "class4",
+   "description": "base FUNCTION_PARSERS key GAP_FILL renamed GAPFILL",
+   "paths": [
+    "sqlglot/parser.py"
+   ]
+  },
+  "t56x001": {
+   "kind": "class4",
+   "description": "base FUNCTION_PARSERS key JSON_OBJECTAGG renamed JSON_OBJECT_AGG",
+   "paths": [
+    "sqlglot/parser.py"
+   ]
+  },
+  "t56x002": {
+   "kind": "class4",
+   "description": "base FUNCTION_PARSERS key WEIGHT_STRING renamed WEIGHTSTRING",
+   "paths": [
+    "sqlglot/parser.py"
+   ]
+  },
+  "t56x003": {
+   "kind": "class4",
+   "description": "base NO_PAREN_FUNCTION_PARSERS key CONNECT_BY_ROOT renamed CONNECTBYROOT",
+   "paths": [
+    "sqlglot/parser.py"
+   ]
+  },
+  "t56x004": {
+   "kind": "class4",
+   "description": "base FUNCTIONS key ARRAY_INTERSECTION renamed ARRAY_INTERSECT_ALL",
+   "paths": [
+    "sqlglot/parser.py"
+   ]
+  },
+  "t56x005": {
+   "kind": "class4",
+   "description": "base FUNCTIONS key DATE_TO_DATE_STR renamed DATE_TO_DATESTR",
+   "paths": [
+    "sqlglot/parser.py"
+   ]
+  },
+  "t56x006": {
+   "kind": "class4",
+   "description": "Trino FUNCTION_PARSERS key LISTAGG renamed LIST_AGG (Athena inherits; anonymize reads it)",
+   "paths": [
+    "sqlglot/parsers/trino.py"
+   ]
+  },
+  "t56x007": {
+   "kind": "class4",
+   "description": "Oracle FUNCTION_PARSERS key LISTAGG renamed LIST_AGG",
+   "paths": [
+    "sqlglot/parsers/oracle.py"
+   ]
+  },
+  "t56x008": {
+   "kind": "class4",
+   "description": "Snowflake FUNCTION_PARSERS key LISTAGG renamed LIST_AGG",
+   "paths": [
+    "sqlglot/parsers/snowflake.py"
+   ]
+  },
+  "t56x009": {
+   "kind": "class4",
+   "description": "Hive FUNCTIONS key GET_JSON_OBJECT renamed GET_JSON (Spark2/Spark/Databricks inherit)",
+   "paths": [
+    "sqlglot/parsers/hive.py"
+   ]
+  },
+  "t56x010": {
+   "kind": "class4",
+   "description": "Hive FUNCTIONS key DATE_FORMAT renamed DATEFORMAT (Spark family inherits)",
+   "paths": [
+    "sqlglot/parsers/hive.py"
+   ]
+  },
+  "t56x011": {
+   "kind": "class4",
+   "description": "MySQL FUNCTIONS DATE_FORMAT lambda reads Dialect[\"mysql\"] changed to Dialect[\"doris\"]",
+   "paths": [
+    "sqlglot/parsers/mysql.py"
+   ]
+  },
+  "t56x012": {
+   "kind": "class4",
+   "description": "Snowflake FUNCTIONS key ARRAY_TO_STRING renamed ARRAY_TOSTRING",
+   "paths": [
+    "sqlglot/parsers/snowflake.py"
+   ]
+  },
+  "t56x013": {
+   "kind": "class4",
+   "description": "Postgres FUNCTION_PARSERS key DATE_PART renamed DATEPART (Redshift/Materialize/RisingWave inherit)",
+   "paths": [
+    "sqlglot/parsers/postgres.py"
+   ]
+  },
+  "t56x014": {
+   "kind": "class4",
+   "description": "Postgres FUNCTION_PARSERS key JSONB_EXISTS renamed JSONB_KEY_EXISTS",
+   "paths": [
+    "sqlglot/parsers/postgres.py"
+   ]
+  },
+  "t56x015": {
+   "kind": "class4",
+   "description": "Postgres PROPERTY_PARSERS key TABLESPACE renamed TABLE_SPACE",
+   "paths": [
+    "sqlglot/parsers/postgres.py"
+   ]
+  },
+  "t56x016": {
+   "kind": "class4",
+   "description": "Oracle NO_PAREN_FUNCTION_PARSERS key SYSDATE renamed SYS_DATE",
+   "paths": [
+    "sqlglot/parsers/oracle.py"
+   ]
+  },
+  "t56x017": {
+   "kind": "class4",
+   "description": "Oracle FUNCTION_PARSERS key TO_NUMBER renamed TONUMBER",
+   "paths": [
+    "sqlglot/parsers/oracle.py"
+   ]
+  },
+  "t56x018": {
+   "kind": "class4",
+   "description": "Doris PROPERTY_PARSERS key REFRESH renamed REFRESH_MODE",
+   "paths": [
+    "sqlglot/parsers/doris.py"
+   ]
+  },
+  "t56x019": {
+   "kind": "class4",
+   "description": "Databricks NO_PAREN_FUNCTION_PARSERS key CURDATE renamed CUR_DATE",
+   "paths": [
+    "sqlglot/parsers/databricks.py"
+   ]
+  },
+  "t56x020": {
+   "kind": "class4",
+   "description": "SingleStore FUNCTIONS build_formatted_time(exp.StrToDate, \"mysql\") dialect name changed to \"hive\"",
+   "paths": [
+    "sqlglot/parsers/singlestore.py"
+   ]
+  },
+  "t56x021": {
+   "kind": "class4",
+   "description": "Databricks generator TRANSFORMS date_delta_sql(\"DATEADD\") changed to \"DATE_ADD\"",
+   "paths": [
+    "sqlglot/generators/databricks.py"
+   ]
+  },
+  "t56x022": {
+   "kind": "class4",
+   "description": "Drill generator TRANSFORMS date_add_sql(\"ADD\") changed to \"PLUS\"",
+   "paths": [
+    "sqlglot/generators/drill.py"
+   ]
+  },
+  "t56x023": {
+   "kind": "class4",
+   "description": "ClickHouse generator TRANSFORMS _datetime_delta_sql(\"TIMESTAMP_ADD\") changed to \"TIMESTAMPADD\"",
+   "paths": [
+    "sqlglot/generators/clickhouse.py"
+   ]
+  },
+  "t56x024": {
+   "kind": "class4",
+   "description": "BigQuery generator TRANSFORMS date_add_interval_sql(\"DATETIME\", \"ADD\") unit DATETIME changed to TIMESTAMP",
+   "paths": [
+    "sqlglot/generators/bigquery.py"
+   ]
+  },
+  "t56x025": {
+   "kind": "class4",
+   "description": "BigQuery generator TRANSFORMS lambda self.func(\"REGEXP_EXTRACT_ALL\") changed to \"REGEXP_EXTRACTALL\"",
+   "paths": [
+    "sqlglot/generators/bigquery.py"
+   ]
+  },
+  "t56x026": {
+   "kind": "class4",
+   "description": "DuckDB annotator DateBin _annotate_by_args(e, \"expression\") changed to \"origin\"",
+   "paths": [
+    "sqlglot/typing/duckdb.py"
+   ]
+  },
+  "t56x027": {
+   "kind": "class4",
+   "description": "Snowflake annotator ConcatWs _annotate_by_args(e, \"expressions\") changed to \"this\"",
+   "paths": [
+    "sqlglot/typing/snowflake.py"
+   ]
+  },
+  "t56x028": {
+   "kind": "class4",
+   "description": "Spark2 annotator Concat _annotate_by_similar_args(.., \"expressions\") changed to \"this\"",
+   "paths": [
+    "sqlglot/typing/spark2.py"
+   ]
+  },
+  "t56x029": {
+   "kind": "class4",
+   "description": "base annotator _annotate_by_args(e, \"this\", \"expressions\") second arg changed to \"expression\"",
+   "paths": [
+    "sqlglot/typing/__init__.py"
+   ]
+  },
+  "t56x030": {
+   "kind": "class4",
+   "description": "executor ENV key COALESCE renamed NVL (lambda value; the executor resolves names at run time)",
+   "paths": [
+    "sqlglot/executor/env.py"
+   ]
+  },
+  "t56x031": {
+   "kind": "class4",
+   "description": "executor ENV key FIRST renamed FIRST_VALUE (lambda value)",
+   "paths": [
+    "sqlglot/executor/env.py"
+   ]
+  },
+  "t56x032": {
+   "kind": "class4",
+   "description": "executor ENV key IF renamed IIF (lambda value)",
+   "paths": [
+    "sqlglot/executor/env.py"
+   ]
+  },
+  "t56x033": {
+   "kind": "class4",
+   "description": "Postgres FUNCTIONS JSON_EXTRACT_PATH_TEXT key renamed JSON_EXTRACT_PATH_TXT (value is a build_ call)",
+   "paths": [
+    "sqlglot/parsers/postgres.py"
+   ]
+  },
+  "t56x034": {
+   "kind": "class4",
+   "description": "Hive FUNCTIONS key LAST_VALUE renamed LASTVALUE (value build_with_ignore_nulls call)",
+   "paths": [
+    "sqlglot/parsers/hive.py"
+   ]
+  },
+  "t56x035": {
+   "kind": "class4",
+   "description": "executor ENV key ORD renamed ASCII (value null_if_any(ord) call)",
+   "paths": [
+    "sqlglot/executor/env.py"
+   ]
+  },
+  "t56x036": {
+   "kind": "class1",
+   "description": "MySQL TIME_MAPPING value of %W changed %A to %a (Presto aliases MySQL.TIME_MAPPING)",
+   "paths": [
+    "sqlglot/dialects/mysql.py"
+   ]
+  },
+  "t56x037": {
+   "kind": "class1",
+   "description": "BigQuery TIME_MAPPING value of %e changed %-d to %d",
+   "paths": [
+    "sqlglot/dialects/bigquery.py"
+   ]
+  },
+  "t56x038": {
+   "kind": "class1",
+   "description": "ClickHouse NULL_ORDERING nulls_are_last changed to nulls_are_large",
+   "paths": [
+    "sqlglot/dialects/clickhouse.py"
+   ]
+  },
+  "t56x039": {
+   "kind": "class1",
+   "description": "Drill NULL_ORDERING nulls_are_last changed to nulls_are_small",
+   "paths": [
+    "sqlglot/dialects/drill.py"
+   ]
+  },
+  "t56x040": {
+   "kind": "class1",
+   "description": "Doris TIME_FORMAT changed to include milliseconds",
+   "paths": [
+    "sqlglot/dialects/doris.py"
+   ]
+  },
+  "t56x041": {
+   "kind": "class1",
+   "description": "ClickHouse TIME_MAPPING value of %i changed %M to %m",
+   "paths": [
+    "sqlglot/dialects/clickhouse.py"
+   ]
+  },
+  "t56x042": {
+   "kind": "class2",
+   "description": "BigQuery TIME_MAPPING key %E6S renamed %E3S",
+   "paths": [
+    "sqlglot/dialects/bigquery.py"
+   ]
+  },
+  "t56x043": {
+   "kind": "class2",
+   "description": "ClickHouse TIME_MAPPING key %W renamed %a",
+   "paths": [
+    "sqlglot/dialects/clickhouse.py"
+   ]
+  },
+  "t56x044": {
+   "kind": "class2",
+   "description": "temporal.py arg_types key unit renamed part (this, unit expression at line 352)",
+   "paths": [
+    "sqlglot/expressions/temporal.py"
+   ]
+  },
+  "t56x045": {
+   "kind": "class3",
+   "description": "base FUNCTIONS key SORT_ARRAY renamed SORTARRAY (value build_sort_array)",
+   "paths": [
+    "sqlglot/parser.py"
+   ]
+  },
+  "t56x046": {
+   "kind": "class3",
+   "description": "base FUNCTIONS key ARRAY_APPEND renamed ARRAY_PUSH_BACK (value build_array_append)",
+   "paths": [
+    "sqlglot/parser.py"
+   ]
+  },
+  "t56x047": {
+   "kind": "class3",
+   "description": "MySQL FUNCTIONS key STR_TO_DATE renamed STRTODATE (value _str_to_date)",
+   "paths": [
+    "sqlglot/parsers/mysql.py"
+   ]
+  },
+  "t56x048": {
+   "kind": "class3",
+   "description": "BigQuery FUNCTIONS key TO_HEX renamed TOHEX (value _build_to_hex)",
+   "paths": [
+    "sqlglot/parsers/bigquery.py"
+   ]
+  },
+  "t56x049": {
+   "kind": "class3",
+   "description": "executor ENV key STRPOSITION renamed STR_POSITION (value str_position)",
+   "paths": [
+    "sqlglot/executor/env.py"
+   ]
+  },
+  "t56x050": {
+   "kind": "class3",
+   "description": "ClickHouse Tokenizer KEYWORDS key UINT8 renamed UINT08",
+   "paths": [
+    "sqlglot/dialects/clickhouse.py"
+   ]
+  },
+  "t56x051": {
+   "kind": "class5",
+   "description": "Presto RESERVED_KEYWORDS member alter renamed analyze (Trino/Athena inherit)",
+   "paths": [
+    "sqlglot/generators/presto.py"
+   ]
+  },
+  "t56x052": {
+   "kind": "class5",
+   "description": "Redshift RESERVED_KEYWORDS member aes128 renamed aes192",
+   "paths": [
+    "sqlglot/generators/redshift.py"
+   ]
+  },
+  "t56x053": {
+   "kind": "class5",
+   "description": "array.py ArrayContains _sql_names ARRAY_HAS renamed ARRAY_HAS_ANY",
+   "paths": [
+    "sqlglot/expressions/array.py"
+   ]
+  },
+  "t56x054": {
+   "kind": "class5",
+   "description": "array.py ArraySize _sql_names ARRAY_LENGTH renamed ARRAY_LEN",
+   "paths": [
+    "sqlglot/expressions/array.py"
+   ]
+  },
+  "t56x055": {
+   "kind": "class5",
+   "description": "DuckDB FUNCTIONS_WITH_ALIASED_ARGS member STRUCT_PACK renamed ROW_PACK",
+   "paths": [
+    "sqlglot/parsers/duckdb.py"
+   ]
+  },
+  "t56x056": {
+   "kind": "class6",
+   "description": "Hive generator SAFE_JSON_PATH_KEY_RE drops the hyphen (Spark family inherits)",
+   "paths": [
+    "sqlglot/generators/hive.py"
+   ]
+  },
+  "t56x057": {
+   "kind": "class6",
+   "description": "builders.py INTERVAL_STRING_RE unit group also allows underscores",
+   "paths": [
+    "sqlglot/expressions/builders.py"
+   ]
+  },
+  "t56x058": {
+   "kind": "class6",
+   "description": "generator.properties default sep \", \" changed to \",\"",
+   "paths": [
+    "sqlglot/generator.py"
+   ]
+  },
+  "t56x059": {
+   "kind": "class6",
+   "description": "lineage.py logger name sqlglot changed to sqlglot.lineage",
+   "paths": [
+    "sqlglot/lineage.py"
+   ]
+  },
+  "t56x060": {
+   "kind": "class6",
+   "description": "DuckDB generator TIMEZONE_PATTERN minutes optional",
+   "paths": [
+    "sqlglot/generators/duckdb.py"
+   ]
+  },
+  "t56x061": {
+   "kind": "class6",
+   "description": "generator.table_sql default sep \" AS \" changed to \" as \"",
+   "paths": [
+    "sqlglot/generator.py"
+   ]
+  },
+  "t56x062": {
+   "kind": "class4",
+   "description": "generator.py AFTER_HAVING_MODIFIER_TRANSFORMS key windows renamed window (BigQuery subscripts [\"windows\"] at import)",
+   "paths": [
+    "sqlglot/generator.py"
+   ]
+  },
+  "t56x063": {
+   "kind": "class4",
+   "description": "base FUNCTION_PARSERS key TRY_CAST renamed TRYCAST (Teradata subscripts [\"TRY_CAST\"] at import)",
+   "paths": [
+    "sqlglot/parser.py"
+   ]
+  },
+  "t56x064": {
+   "kind": "class4",
+   "description": "Snowflake FUNCTIONS key ARRAY_GENERATE_RANGE renamed ARRAY_GENERATE_RANGES (generator subscripts it at run time)",
+   "paths": [
+    "sqlglot/parsers/snowflake.py"
+   ]
+  },
+  "t56x065": {
+   "kind": "class3",
+   "description": "MySQL Tokenizer KEYWORDS key IGNORE renamed IGNORED (StarRocks pops \"IGNORE\" at import)",
+   "paths": [
+    "sqlglot/dialects/mysql.py"
+   ]
+  },
+  "t56x066": {
+   "kind": "class4",
+   "description": "SQLite FUNCTIONS DATETIME lambda Anonymous(this=\"DATETIME\") changed to \"DATE_TIME\"",
+   "paths": [
+    "sqlglot/parsers/sqlite.py"
+   ]
+  },
+  "t56x067": {
+   "kind": "class4",
+   "description": "MySQL FUNCTIONS TO_DAYS lambda epoch literal 0000-01-01 changed to 0001-01-01",
+   "paths": [
+    "sqlglot/parsers/mysql.py"
+   ]
+  },
+  "t56x068": {
+   "kind": "class4",
+   "description": "DuckDB generator TRANSFORMS rename_func(\"LIST_FILTER\") changed to \"ARRAY_FILTER\"",
+   "paths": [
+    "sqlglot/generators/duckdb.py"
+   ]
+  },
+  "t56x069": {
+   "kind": "class6",
+   "description": "DuckDB generator _SEQ_BASE template parsed at import: ORDER BY 1 dropped (still parses)",
+   "paths": [
+    "sqlglot/generators/duckdb.py"
+   ]
+  },
+  "t56x070": {
+   "kind": "class6",
+   "description": "DuckDB generator _SEQ_UNSIGNED template parsed at import loses an operand (parse error at import)",
+   "paths": [
+    "sqlglot/generators/duckdb.py"
+   ]
+  },
+  "t56x071": {
+   "kind": "class6",
+   "description": "Postgres Tokenizer pops \"DIVIDE\" instead of \"DIV\" (no such key: KeyError at import)",
+   "paths": [
+    "sqlglot/dialects/postgres.py"
+   ]
+  },
+  "t56x072": {
+   "kind": "class6",
+   "description": "Postgres Tokenizer pops \"OFFSET\" instead of \"DIV\" (key exists: OFFSET stops being a keyword)",
+   "paths": [
+    "sqlglot/dialects/postgres.py"
+   ]
+  },
+  "t56x073": {
+   "kind": "class6",
+   "description": "DuckDB dialect DATE_PART_MAPPING.pop(\"WEEKDAY\") changed to \"WEEKDAY_ISO\" (no such key: KeyError at import)",
+   "paths": [
+    "sqlglot/dialects/duckdb.py"
+   ]
+  }
+ }
+}

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/snowflake.py b/sqlglot/parsers/snowflake.py
+--- a/sqlglot/parsers/snowflake.py
++++ b/sqlglot/parsers/snowflake.py
+@@ -766,7 +766,7 @@
+         "DATE_PART": lambda self: self._parse_date_part(),
+         "DIRECTORY": lambda self: self._parse_directory(),
+         "OBJECT_CONSTRUCT_KEEP_NULL": lambda self: self._parse_object_construct_keep_null(),
+-        "LISTAGG": lambda self: self._parse_listagg(),
++        "LIST_AGG": lambda self: self._parse_listagg(),
+         "SEMANTIC_VIEW": lambda self: self._parse_semantic_view(),
+         "SUBSTR": lambda self: self._parse_substring(),
+     }

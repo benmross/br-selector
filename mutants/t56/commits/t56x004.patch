@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -413,7 +413,7 @@
+         "ARRAY_CAT": build_array_concat,
+         "ARRAY_CONCAT": build_array_concat,
+         "ARRAY_INTERSECT": lambda args: exp.ArrayIntersect(expressions=args),
+-        "ARRAY_INTERSECTION": lambda args: exp.ArrayIntersect(expressions=args),
++        "ARRAY_INTERSECT_ALL": lambda args: exp.ArrayIntersect(expressions=args),
+         "ARRAY_PREPEND": build_array_prepend,
+         "ARRAY_REMOVE": build_array_remove,
+         "COUNT": lambda args: exp.Count(this=seq_get(args, 0), expressions=args[1:], big_int=True),

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/lineage.py b/sqlglot/lineage.py
+--- a/sqlglot/lineage.py
++++ b/sqlglot/lineage.py
+@@ -17,7 +17,7 @@
+     from sqlglot._typing import GraphHTMLArgs
+     from typing_extensions import Unpack
+ 
+-logger = logging.getLogger("sqlglot")
++logger = logging.getLogger("sqlglot.lineage")
+ 
+ 
+ @dataclass(frozen=True)

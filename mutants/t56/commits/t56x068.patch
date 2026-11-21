@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -1659,7 +1659,7 @@
+         exp.ArrayConcat: array_concat_sql("LIST_CONCAT"),
+         exp.ArrayContains: _array_contains_sql,
+         exp.ArrayOverlaps: _array_overlaps_sql,
+-        exp.ArrayFilter: rename_func("LIST_FILTER"),
++        exp.ArrayFilter: rename_func("ARRAY_FILTER"),
+         exp.ArrayInsert: _array_insert_sql,
+         exp.ArrayPosition: lambda self, e: (
+             self.sql(

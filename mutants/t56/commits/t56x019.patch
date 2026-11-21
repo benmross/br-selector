@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/databricks.py b/sqlglot/parsers/databricks.py
+--- a/sqlglot/parsers/databricks.py
++++ b/sqlglot/parsers/databricks.py
+@@ -33,7 +33,7 @@
+ 
+     NO_PAREN_FUNCTION_PARSERS = {
+         **SparkParser.NO_PAREN_FUNCTION_PARSERS,
+-        "CURDATE": lambda self: self._parse_curdate(),
++        "CUR_DATE": lambda self: self._parse_curdate(),
+     }
+ 
+     FUNCTION_PARSERS = {

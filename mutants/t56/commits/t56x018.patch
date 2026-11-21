@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/doris.py b/sqlglot/parsers/doris.py
+--- a/sqlglot/parsers/doris.py
++++ b/sqlglot/parsers/doris.py
+@@ -68,7 +68,7 @@
+         # Plain KEY without UNIQUE/DUPLICATE/AGGREGATE prefixes should be treated as UniqueKeyProperty with unique=False
+         "KEY": lambda self: self._parse_composite_key_property(exp.UniqueKeyProperty),
+         "BUILD": lambda self: self._parse_build_property(),
+-        "REFRESH": lambda self: self._parse_refresh_property(),
++        "REFRESH_MODE": lambda self: self._parse_refresh_property(),
+     }
+ 
+     def _parse_range(self, this: exp.Expr | None = None, parse_is: bool = False) -> exp.Expr | None:

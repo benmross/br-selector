@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -2248,7 +2248,7 @@
+         self,
+         properties: exp.Properties,
+         prefix: str = "",
+-        sep: str = ", ",
++        sep: str = ",",
+         suffix: str = "",
+         wrapped: bool = True,
+     ) -> str:

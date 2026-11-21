@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/redshift.py b/sqlglot/generators/redshift.py
+--- a/sqlglot/generators/redshift.py
++++ b/sqlglot/generators/redshift.py
+@@ -123,7 +123,7 @@
+     }
+ 
+     RESERVED_KEYWORDS = {
+-        "aes128",
++        "aes192",
+         "aes256",
+         "all",
+         "allowoverwrite",

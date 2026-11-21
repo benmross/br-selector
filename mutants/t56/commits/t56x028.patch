@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/spark2.py b/sqlglot/typing/spark2.py
+--- a/sqlglot/typing/spark2.py
++++ b/sqlglot/typing/spark2.py
+@@ -80,7 +80,7 @@
+         )
+     },
+     exp.AtTimeZone: {"returns": exp.DType.TIMESTAMP},
+-    exp.Concat: {"annotator": lambda self, e: _annotate_by_similar_args(self, e, "expressions")},
++    exp.Concat: {"annotator": lambda self, e: _annotate_by_similar_args(self, e, "this")},
+     exp.NextDay: {"returns": exp.DType.DATE},
+     exp.Pad: {
+         "annotator": lambda self, e: _annotate_by_similar_args(self, e, "this", "fill_pattern")

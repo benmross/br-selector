@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -494,7 +494,7 @@
+             e.args.get("position"),
+             e.args.get("occurrence"),
+         ),
+-        exp.RegexpExtractAll: lambda self, e: self.func("REGEXP_EXTRACT_ALL", e.this, e.expression),
++        exp.RegexpExtractAll: lambda self, e: self.func("REGEXP_EXTRACTALL", e.this, e.expression),
+         exp.RegexpReplace: regexp_replace_sql,
+         exp.RegexpLike: rename_func("REGEXP_CONTAINS"),
+         exp.ReturnsProperty: _returnsproperty_sql,

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/hive.py b/sqlglot/parsers/hive.py
+--- a/sqlglot/parsers/hive.py
++++ b/sqlglot/parsers/hive.py
+@@ -107,7 +107,7 @@
+         "FIRST": build_with_ignore_nulls(exp.First),
+         "FIRST_VALUE": build_with_ignore_nulls(exp.FirstValue),
+         "FROM_UNIXTIME": build_formatted_time(exp.UnixToStr, default=True),
+-        "GET_JSON_OBJECT": lambda args, dialect: exp.JSONExtractScalar(
++        "GET_JSON": lambda args, dialect: exp.JSONExtractScalar(
+             this=seq_get(args, 0), expression=dialect.to_json_path(seq_get(args, 1))
+         ),
+         "LAST": build_with_ignore_nulls(exp.Last),

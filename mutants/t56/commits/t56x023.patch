@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/clickhouse.py b/sqlglot/generators/clickhouse.py
+--- a/sqlglot/generators/clickhouse.py
++++ b/sqlglot/generators/clickhouse.py
+@@ -378,7 +378,7 @@
+             e.args.get("zone"),
+         ),
+         exp.TimeStrToTime: _timestrtotime_sql,
+-        exp.TimestampAdd: _datetime_delta_sql("TIMESTAMP_ADD"),
++        exp.TimestampAdd: _datetime_delta_sql("TIMESTAMPADD"),
+         exp.TimestampSub: _datetime_delta_sql("TIMESTAMP_SUB"),
+         exp.Typeof: rename_func("toTypeName"),
+         exp.VarMap: _map_sql,

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/postgres.py b/sqlglot/parsers/postgres.py
+--- a/sqlglot/parsers/postgres.py
++++ b/sqlglot/parsers/postgres.py
+@@ -203,7 +203,7 @@
+         "JSON_AGG": lambda self: self.expression(
+             exp.JSONArrayAgg(this=self._parse_lambda(), order=self._parse_order())
+         ),
+-        "JSONB_EXISTS": lambda self: self._parse_jsonb_exists(),
++        "JSONB_KEY_EXISTS": lambda self: self._parse_jsonb_exists(),
+         "JSON_VALUE": lambda self: self._parse_json_value(json_path=False),
+     }
+ 

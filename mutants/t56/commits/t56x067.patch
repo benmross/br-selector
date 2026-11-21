@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -164,7 +164,7 @@
+         "TO_DAYS": lambda args: exp.paren(
+             exp.DateDiff(
+                 this=exp.TsOrDsToDate(this=seq_get(args, 0)),
+-                expression=exp.TsOrDsToDate(this=exp.Literal.string("0000-01-01")),
++                expression=exp.TsOrDsToDate(this=exp.Literal.string("0001-01-01")),
+                 unit=exp.var("DAY"),
+             )
+             + 1

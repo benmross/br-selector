@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/singlestore.py b/sqlglot/parsers/singlestore.py
+--- a/sqlglot/parsers/singlestore.py
++++ b/sqlglot/parsers/singlestore.py
+@@ -29,7 +29,7 @@
+         "TO_DATE": build_formatted_time(exp.TsOrDsToDate),
+         "TO_TIMESTAMP": build_formatted_time(exp.StrToTime),
+         "TO_CHAR": build_formatted_time(exp.ToChar),
+-        "STR_TO_DATE": build_formatted_time(exp.StrToDate, "mysql"),
++        "STR_TO_DATE": build_formatted_time(exp.StrToDate, "hive"),
+         "DATE_FORMAT": build_formatted_time(exp.TimeToStr, "mysql"),
+         # The first argument of following functions is converted to TIME(6)
+         # This is needed because exp.TimeToStr is converted to DATE_FORMAT

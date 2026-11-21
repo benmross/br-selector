@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -402,7 +402,7 @@
+         **{name: func.from_arg_list for name, func in exp.FUNCTION_BY_NAME.items()},
+         **dict.fromkeys(("COALESCE", "IFNULL", "NVL"), build_coalesce),
+         "ARRAY": lambda args, dialect: exp.Array(expressions=args),
+-        "SORT_ARRAY": build_sort_array,
++        "SORTARRAY": build_sort_array,
+         "ARRAYAGG": lambda args, dialect: exp.ArrayAgg(
+             this=seq_get(args, 0), nulls_excluded=dialect.ARRAY_AGG_INCLUDES_NULLS is None or None
+         ),
