@@ -61,3 +61,15 @@ def test_inert_string_value_is_never_executable(before,after,allowed):
 ])
 def test_generator_type_values_only(before,after,allowed):
     assert bool(s.generator_table_changes(ast.parse(before),ast.parse(after))) is allowed
+
+
+@pytest.mark.parametrize('before,after,allowed',[
+ ('class X:\n    class Tokenizer:\n        KEYWORDS={"OLD":1}\n','class X:\n    class Tokenizer:\n        KEYWORDS={"NEW":1}\n',True),
+ ('class X:\n    class Tokenizer:\n        KEYWORDS={"OLD":1}\n','class X:\n    class Tokenizer:\n        KEYWORDS={"":1}\n',False),
+ ('class Tokenizer:\n    KEYWORDS={"OLD":1}\n','class Tokenizer:\n    KEYWORDS={"NEW":1}\n',False),
+ ('class X:\n    class Tokenizer:\n        KEYWORDS={"OLD":1,"OTHER":2}\n','class X:\n    class Tokenizer:\n        KEYWORDS={"OTHER":1,"OTHER":2}\n',False),
+ ('class X:\n    class Tokenizer:\n        KEYWORDS={1:"OLD"}\n','class X:\n    class Tokenizer:\n        KEYWORDS={1:"NEW"}\n',False),
+ ('class X:\n    class Tokenizer:\n        FUNCTIONS={"OLD":1}\n','class X:\n    class Tokenizer:\n        FUNCTIONS={"NEW":1}\n',False),
+])
+def test_keyword_keys_exclude_base_collisions_and_registries(before,after,allowed):
+    assert s.dialect_keyword_changes(ast.parse(before),ast.parse(after)) is allowed

@@ -806,7 +806,8 @@ class Selector:
                 import_level = True
         if import_level and could_raise(fp, old_text, new_text) and not self.literal_only(path, old_tree, new_tree, why) \
                 and not self.runtime_strings_safe(path, old_tree, new_tree, why) \
-                and not self.generator_table_strings_safe(path, old_tree, new_tree, why):
+                and not self.generator_table_strings_safe(path, old_tree, new_tree, why) \
+                and not self.dialect_keyword_strings_safe(path, old_tree, new_tree, why):
             # Never execute patch-supplied code in the selector. Even an
             # innocent import may loop, fork, write files, or produce unlimited
             # output. Unknown import effects need a conservative selection.
@@ -939,6 +940,23 @@ class Selector:
                 return False
             self._literal_extra_users |= self.cov(rel, [line])
         why.append(f'{path}: only generator type spellings changed; class users, qualified copies and direct cast readers retained')
+        return True
+
+    def dialect_keyword_strings_safe(self, path, old_tree, new_tree, why):
+        """Dialect-only keyword tries have no import-time SQL consumers.
+
+        Pinned import SQL templates all parse with the base dialect. A base
+        Tokenizer KEYWORDS edit can therefore break imports and is excluded.
+        A dialect tokenizer's nonempty string keys feed only pure trie/copy
+        builders at import. Required pop/index keys were checked earlier.
+        Its runtime tokenizer users, dialect users and qualified copies stay
+        selected, including readers of the derived SUPPORTS_COLUMN_JOIN_MARKS.
+        """
+        if not self._single_file_patch or not (self.index or {}).get('@pinned_string_audit'):
+            return False
+        if not path.startswith('sqlglot/dialects/') or not dialect_keyword_changes(old_tree, new_tree):
+            return False
+        why.append(f'{path}: only dialect keyword strings changed; import SQL uses the unchanged base tokenizer')
         return True
 
     # Import-time hooks reviewed at the pinned commit. Given non-empty strings
@@ -1488,6 +1506,29 @@ def generator_table_changes(old_tree, new_tree):
     # An empty replacement remains a str but is deliberately outside the
     # audited type-name contract.
     return all(chain[-1].value for chain in string_changes(new_tree, old_tree))
+
+
+def dialect_keyword_changes(old_tree, new_tree):
+    changes = string_changes(old_tree, new_tree)
+    reverse = string_changes(new_tree, old_tree)
+    if not changes or not all(chain[-1].value for chain in changes + reverse):
+        return False
+    for chain in changes:
+        if len(chain) != 6 or not isinstance(chain[-2], ast.Dict) \
+                or not any(k is chain[-1] for k in chain[-2].keys):
+            return False
+        module, dialect, tokenizer, stmt = chain[:4]
+        if not isinstance(module, ast.Module) or not isinstance(dialect, ast.ClassDef) \
+                or not isinstance(tokenizer, ast.ClassDef) or tokenizer.name != 'Tokenizer' \
+                or dialect.decorator_list or dialect.keywords or tokenizer.decorator_list or tokenizer.keywords \
+                or not isinstance(stmt, (ast.Assign, ast.AnnAssign)) \
+                or assigned_names(stmt) != {'KEYWORDS'} or stmt.value is not chain[-2]:
+            return False
+    for chain in reverse:
+        keys = [k.value for k in chain[-2].keys if isinstance(k, ast.Constant)]
+        if len(keys) != len(set(keys)):
+            return False
+    return True
 
 
 def runtime_lambda_changes(old_tree, new_tree):
