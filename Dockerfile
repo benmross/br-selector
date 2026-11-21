@@ -8,6 +8,7 @@ u='https://github.com/tobymao/sqlglot/archive/eb11aec4be8cb2122afe713a4816662c3f
 t=tarfile.open(fileobj=io.BytesIO(urllib.request.urlopen(u, timeout=120).read())); \
 t.extractall('/opt', filter='data')" \
  && mv /opt/sqlglot-eb11aec4be8cb2122afe713a4816662c3f0fb2fa /opt/sqlglot \
+ && (python -m compileall -q /opt/sqlglot/sqlglot /opt/sqlglot/tests || true) \
  && chmod -R a+rX /opt/sqlglot
 
 COPY selector.py map.json.gz /app/
