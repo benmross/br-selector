@@ -124,6 +124,9 @@ class Deep:
         return h
 
 
+_STATE_DUMP = {} if os.environ.get("BR_HEAVY_STATE_DUMP") else None
+
+
 class State:
     """Digest of every loaded sqlglot module's state: module and class
     attributes, containers, enum members, function defaults and decorator
@@ -168,7 +171,12 @@ class State:
         self.stack.add(key)
         try:
             if t in (list, tuple):
-                return t.__name__ + "[" + ",".join(self.v(x, depth + 1) for x in o) + "]"
+                parts = [self.v(x, depth + 1) for x in o]
+                if o and all(isinstance(x, type) for x in o):
+                    # class tuples for isinstance, built from sets in id()
+                    # order (canonicalize._CANONICALIZE_TYPES): order varies
+                    parts.sort()
+                return t.__name__ + "[" + ",".join(parts) + "]"
             if t in (set, frozenset):
                 return "set[" + ",".join(sorted(self.v(x, depth + 1) for x in o)) + "]"
             if isinstance(o, dict):
@@ -227,6 +235,11 @@ class State:
                 else:
                     s = self.v(x, 0)
                 h.update(f"{k}={s}\n".encode("utf-8", "surrogatepass"))
+                if _STATE_DUMP is not None:
+                    _STATE_DUMP[f"{name}.{k}"] = s
+        if _STATE_DUMP is not None and os.environ.get("BR_HEAVY_STATE_DUMP"):
+            with open(os.environ["BR_HEAVY_STATE_DUMP"] + f".{os.getpid()}", "w") as f:
+                json.dump(_STATE_DUMP, f)
         return h.hexdigest()
 
 
@@ -271,7 +284,7 @@ def parent_side(tpch, roots):
     return blobs, duck, meta, State(roots, deep).modules()
 
 
-def worker_side(tpch, blobs, meta, roots):
+def worker_side(tpch, blobs, meta, roots, expect=None):
     """What a pool worker does before PythonExecutor runs: mp_execute's
     find_tables and execute()'s schema, optimize, eager sql() and Plan."""
     _test_module_imports()
@@ -294,6 +307,8 @@ def worker_side(tpch, blobs, meta, roots):
         expression.sql(pretty=True)
         plan = Plan(expression)
         out.append(deep([names, schema.supported_table_args, plan, expression]))
+        if expect is not None and (len(expect) != len(blobs) or out[-1][:16] != expect[len(out) - 1]):
+            raise Doubt(f"plan of query {len(out)} differs")
     return out, State(roots, deep).modules()
 
 
@@ -327,7 +342,7 @@ def _recv(fd):
     return pickle.loads(data)
 
 
-def fingerprint(root, src, tpch):
+def fingerprint(root, src, tpch, expect=None):
     """Runs in a forked child that has not imported sqlglot. Forks a second
     fresh process for the worker side. Returns one digest for the test."""
     roots = [os.path.abspath(root), os.path.abspath(src)]
@@ -342,7 +357,7 @@ def fingerprint(root, src, tpch):
             try:
                 blobs, meta = _recv(r1)
                 _enter(root, src)
-                res = ("ok",) + worker_side(tpch, blobs, meta, roots)
+                res = ("ok",) + worker_side(tpch, blobs, meta, roots, expect and expect.get("q"))
             except BaseException as e:  # noqa: B036
                 res = ("err", repr(e)[:300])
             _send(w2, res)
@@ -353,6 +368,8 @@ def fingerprint(root, src, tpch):
     try:
         _enter(root, src)
         blobs, duck, meta, st_parent = parent_side(tpch, roots)
+        if expect is not None and hashlib.sha1(json.dumps([duck, meta]).encode()).hexdigest()[:16] != expect["duck"]:
+            raise Doubt("duckdb sql differs")
         _send(w1, (blobs, meta))
         res = _recv(r2)
     finally:
@@ -368,7 +385,28 @@ def fingerprint(root, src, tpch):
     if dump:
         with open(dump, "w") as f:
             json.dump([duck, meta, per_query, st_parent, st_worker], f)
-    return hashlib.sha1(json.dumps([duck, meta, per_query, st_parent, st_worker]).encode()).hexdigest()
+    return json.dumps({"duck": hashlib.sha1(json.dumps([duck, meta]).encode()).hexdigest()[:16],
+                       "q": [q[:16] if q else None for q in per_query], "sp": st_parent[:16], "sw": st_worker[:16]},
+                      separators=(",", ":"))
+
+
+def compare(a, b):
+    """'' when two digests are equal, else which parts differ."""
+    try:
+        a, b = json.loads(a), json.loads(b)
+    except (TypeError, ValueError):
+        return "unreadable"
+    out = []
+    if a["duck"] != b["duck"]:
+        out.append("duckdb sql")
+    nq = sum(x != y for x, y in zip(a["q"], b["q"])) + abs(len(a["q"]) - len(b["q"]))
+    if nq:
+        out.append(f"plan of {nq} queries")
+    if a["sp"] != b["sp"]:
+        out.append("parent module state")
+    if a["sw"] != b["sw"]:
+        out.append("worker module state")
+    return ", ".join(out)
 
 
 # ------------------------------------------------------------- selector side
@@ -396,7 +434,7 @@ def static_ok(name, lines, changes):
     return True
 
 
-def _fp_main(root, src, tpch, cpu_s):
+def _fp_main(root, src, tpch, cpu_s, expect_path=None):
     """Entry of the fresh interpreter (PYTHONHASHSEED=0): prints D<digest> or E."""
     import resource
     try:
@@ -410,7 +448,13 @@ def _fp_main(root, src, tpch, cpu_s):
         os.dup2(devnull, 2)
     msg = "E"
     try:
-        msg = "D" + fingerprint(root, src, tpch)
+        expect = None
+        if expect_path:
+            with open(expect_path) as f:
+                expect = json.loads(f.read())
+        msg = "D" + fingerprint(root, src, tpch, expect)
+    except Doubt as e:
+        msg = "X" + str(e).replace("\n", " ")[:200]
     except BaseException as e:  # noqa: B036
         if os.environ.get("BR_V_DEBUG"):
             import traceback
@@ -420,7 +464,7 @@ def _fp_main(root, src, tpch, cpu_s):
     os._exit(0)
 
 
-def run_fingerprint(src, files, tpch, wall_s, cpu_s, acc=None):
+def run_fingerprint(src, files, tpch, wall_s, cpu_s, acc=None, expect=None):
     """Digest of the cheap phase on src patched with files, or None. The
     child is a fresh interpreter with a fixed hash seed, so set and dict
     orders, and therefore the digest, repeat from run to run."""
@@ -431,8 +475,15 @@ def run_fingerprint(src, files, tpch, wall_s, cpu_s, acc=None):
     from verify import build_overlay, _cpu_of
     src = os.path.abspath(src)
     root = build_overlay(src, files)
+    argv = [sys.executable, os.path.abspath(__file__), "--fp", root, src, str(int(tpch)), str(cpu_s)]
+    if expect is not None:
+        # the pristine digest: the child stops at the first part that differs
+        ep = os.path.join(root, ".heavy-expect.json")
+        with open(ep, "w") as f:
+            f.write(expect)
+        argv.append(ep)
     env = dict(os.environ, PYTHONHASHSEED="0", PYTHONDONTWRITEBYTECODE="1", SKIP_INTEGRATION="0")
-    p = subprocess.Popen([sys.executable, os.path.abspath(__file__), "--fp", root, src, str(int(tpch)), str(cpu_s)],
+    p = subprocess.Popen(argv,
                          stdout=subprocess.PIPE, stderr=None if os.environ.get("BR_V_DEBUG") else subprocess.DEVNULL,
                          stdin=subprocess.DEVNULL, env=env, cwd=root, start_new_session=True)
     r = p.stdout.fileno()
@@ -468,6 +519,7 @@ def run_fingerprint(src, files, tpch, wall_s, cpu_s, acc=None):
     if acc is not None:
         acc.last_cpu = cpu
         acc.cpu += cpu
+        acc.last_reason = msg[1:] if msg and msg[0] == "X" else ("failed" if not msg or msg[0] != "D" else "")
     if msg and msg.startswith("D"):
         return msg[1:]
     return None
@@ -488,8 +540,9 @@ def record(src, out, wall_s=600.0, cpu_s=600.0):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 6 and sys.argv[1] == "--fp":
-        _fp_main(sys.argv[2], sys.argv[3], sys.argv[4] == "1", float(sys.argv[5]))
+    if len(sys.argv) in (6, 7) and sys.argv[1] == "--fp":
+        _fp_main(sys.argv[2], sys.argv[3], sys.argv[4] == "1", float(sys.argv[5]),
+                 sys.argv[6] if len(sys.argv) == 7 else None)
     if len(sys.argv) >= 3 and sys.argv[1] == "--record":
         print(record(os.environ.get("SQLGLOT_SRC", "/opt/sqlglot"), sys.argv[2]))
 
@@ -601,9 +654,10 @@ def drop_heavy(results, tests, src, lines_path, record_path, overlay_files, pars
             if left < 3 * cpu_cap:
                 r[2].append("heavy: out of time")
                 break
-            d = run_fingerprint(src, files, nums[n][1], min(left, 4 * cpu_cap), cpu_cap, _CPU)
-            same = d is not None and d == rec[str(n)]
-            r[2].append(f"heavy: {nums[n][0]} fingerprint {'same' if same else 'differs' if d else 'failed'},"
+            d = run_fingerprint(src, files, nums[n][1], min(left, 4 * cpu_cap), cpu_cap, _CPU, rec[str(n)])
+            diff = compare(d, rec[str(n)]) if d is not None else _CPU.last_reason
+            same = d is not None and diff == "" and d == rec[str(n)]
+            r[2].append(f"heavy: {nums[n][0]} fingerprint {'same' if same else 'differs: ' + diff},"
                         f" child CPU {_CPU.last_cpu:.2f} s")
             if same:
                 r[1] = set(r[1]) - {n}
@@ -613,6 +667,7 @@ def drop_heavy(results, tests, src, lines_path, record_path, overlay_files, pars
 class _Acc:
     cpu = 0.0
     last_cpu = 0.0
+    last_reason = ""
 
 
 _CPU = _Acc()
