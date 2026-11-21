@@ -2158,6 +2158,82 @@ def analyze_patch(context, patch_path, sel, tests, deadline):
             process.close()
 
 
+# ---------------------------------------------------------------- census
+
+# Diagnostic entry, never a candidate. The analysis runs unchanged, but every
+# commit's line holds every test, so no miss is possible, packed so that the
+# commit costs exactly the optimal all-tests cost plus x, where x encodes what
+# the analysis decided for that commit. The batch total then gives counts.
+#   1: x = 1 s when the analysis selected every test (not a process fallback).
+#   2: among those: 1 s at-import rule ("also runs at import"), 7 s a read at
+#      import ("read at import"), 49 s could_raise ("possible import
+#      failure"); 0 for any other reason.
+#   3: when the analysis did not select every test: 1 s if the selection has
+#      test_execute_tpcds, plus 11 s if it has TestParser::test_max_nodes.
+CENSUS_MODE = 1
+CENSUS_FALLBACKS = ("commit analysis timed out", "commit analysis stopped", "analysis process failed",
+                    "batch analysis deadline", "analysis error", "map unavailable")
+CENSUS_CLASSES = (("also runs at import, everything", 1000), ("read at import, everything", 7000),
+                  ("possible import failure, everything", 49000))
+CENSUS_TPCDS = "tests/test_executor.py::TestExecutor::test_execute_tpcds"
+CENSUS_MAX_NODES = "tests/test_parser.py::TestParser::test_max_nodes"
+
+
+def census_x(mode, chosen, why, tests):
+    """Milliseconds to add to this commit's cost."""
+    everything = len(chosen) == len(tests) and chosen == set(tests)
+    fallback = any(w.startswith(CENSUS_FALLBACKS) for w in why)
+    if mode == 1:
+        return 1000 if everything and not fallback else 0
+    if mode == 2:
+        if not everything or fallback:
+            return 0
+        deciding = [w for w in why if w.endswith("everything")]
+        if not deciding:
+            return 0
+        for marker, x in CENSUS_CLASSES:
+            if deciding[-1].endswith(marker):
+                return x
+        return 0
+    if mode == 3:
+        if everything:
+            return 0
+        ids = {tests[n][0] for n in chosen if n in tests}
+        return (1000 if CENSUS_TPCDS in ids else 0) + (11000 if CENSUS_MAX_NODES in ids else 0)
+    return 0
+
+
+def census_workers(tests, x):
+    """Every test once over 4 workers: the worker with the heaviest test is
+    filled to exactly heaviest + x ms, the other three stay below it. Cost =
+    heaviest + x + 4 * WORKER_MS. None when that cannot be met exactly."""
+    order = sorted(tests, key=lambda n: (-tests[n][2], n))
+    heavy = order[0]
+    target = tests[heavy][2] + x
+    first, left = [heavy], x
+    rest = []
+    for n in order[1:]:
+        ms = tests[n][2]
+        if left > 0 and ms <= left and ms > 0:
+            first.append(n)
+            left -= ms
+        else:
+            rest.append(n)
+    if left != 0:
+        return None
+    loads, bins = [0, 0, 0], [[], [], []]
+    for n in rest:
+        i = min(range(3), key=loads.__getitem__)
+        loads[i] += tests[n][2]
+        bins[i].append(n)
+    if max(loads) >= target or not all(bins):
+        return None
+    workers = [sorted(first)] + [sorted(b) for b in bins]
+    assert sorted(n for w in workers for n in w) == sorted(tests)
+    assert max(sum(tests[n][2] for n in w) for w in workers) + WORKER_MS * len(workers) == target + 4 * WORKER_MS
+    return workers
+
+
 def main():
     import multiprocessing
 
@@ -2187,9 +2263,19 @@ def main():
     everything = set(tests)
     paths = [os.path.join(cdir, name) for name in sorted(os.listdir(cdir)) if name.endswith(".patch")]
 
+    census = {}
+
     def emit(path, chosen, why):
         cid = os.path.basename(path)[: -len(".patch")]
         workers = fallback_workers if chosen == everything else pack(chosen, tests)
+        if CENSUS_MODE:
+            try:
+                x = census_x(CENSUS_MODE, chosen, why, tests)
+                if x not in census:
+                    census[x] = census_workers(tests, x) if x else None
+                workers = census[x] or fallback_workers
+            except Exception:
+                workers = fallback_workers
         log(cid, len(chosen), "tests;", "; ".join(why))
         sys.stdout.write(json.dumps({"commit": cid, "workers": workers}) + "\n")
 
