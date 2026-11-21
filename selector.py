@@ -53,7 +53,11 @@ MAX_COMMIT_WALL_SECONDS = 10
 
 
 def log(*a):
-    print(*a, file=sys.stderr)
+    # Diagnostics only: a closed or broken stderr must never stop a stdout line.
+    try:
+        print(*a, file=sys.stderr)
+    except Exception:
+        pass
 
 
 # ---------------------------------------------------------------- patches
@@ -2132,20 +2136,25 @@ def analyze_batch(context, patch_paths, sel, tests, deadline, emit, slots=1):
             if budget <= 0:
                 emit(path, set(tests), ["batch analysis deadline reached: everything"])
                 continue
-            receiver, sender = context.Pipe(duplex=False)
-            process = None
+            receiver = sender = process = None
             try:
+                # Inside the try: os.pipe fails with EMFILE once failed forks
+                # have leaked descriptors (CPython's Popen_fork leaks 4 per
+                # failed fork), and that must cost one commit, not the run.
+                receiver, sender = context.Pipe(duplex=False)
                 process = context.Process(target=_analyze_child,
                                           args=(sender, path, sel, tests, deadline))
                 process.start()
             except Exception as e:
-                receiver.close()
+                if receiver is not None:
+                    receiver.close()
                 if process is not None:
                     _reap(process)
                 emit(path, set(tests), [f"analysis process failed {type(e).__name__}: everything"])
                 continue
             finally:
-                sender.close()
+                if sender is not None:
+                    sender.close()
             running[receiver] = (process, path, now + budget)
         if not running:
             continue
@@ -2234,32 +2243,42 @@ def main():
     everything = set(tests)
     paths = [os.path.join(cdir, name) for name in sorted(os.listdir(cdir)) if name.endswith(".patch")]
 
+    emitted = set()
+
     def emit(path, chosen, why):
+        if path in emitted:  # one line per commit, whatever happens
+            return
         cid = os.path.basename(path)[: -len(".patch")]
         workers = fallback_workers if chosen == everything else pack(chosen, tests)
         log(cid, len(chosen), "tests;", "; ".join(why))
         sys.stdout.write(json.dumps({"commit": cid, "workers": workers}) + "\n")
+        emitted.add(path)
 
-    if sel is None:
+    try:
+        if sel is None:
+            for path in paths:
+                emit(path, everything, ["map unavailable: everything"])
+        else:
+            cost = {}
+            try:
+                cost = prepare_batch(sel, paths, deadline)
+            except Exception as e:  # caches are an optimisation only
+                log("batch preparation failed:", repr(e))
+                sel.patches = {}
+            # Cheapest first: if the deadline comes, the fewest commits fall back
+            # to every test. Output order is free.
+            paths.sort(key=lambda p: (cost.get(p, 1 << 40), p))
+            # Children never free the parent's objects. Without this, a child's
+            # first collection walks every inherited object (the maps, the cached
+            # trees), copying their pages and spending CPU on each commit.
+            import gc
+            gc.collect()
+            gc.freeze()
+            analyze_batch(context, paths, sel, tests, deadline, emit, cpu_slots())
+    except Exception as e:  # a missing line rejects the run: fall back for the rest
+        log("batch failed:", repr(e))
         for path in paths:
-            emit(path, everything, ["map unavailable: everything"])
-    else:
-        cost = {}
-        try:
-            cost = prepare_batch(sel, paths, deadline)
-        except Exception as e:  # caches are an optimisation only
-            log("batch preparation failed:", repr(e))
-            sel.patches = {}
-        # Cheapest first: if the deadline comes, the fewest commits fall back
-        # to every test. Output order is free.
-        paths.sort(key=lambda p: (cost.get(p, 1 << 40), p))
-        # Children never free the parent's objects. Without this, a child's
-        # first collection walks every inherited object (the maps, the cached
-        # trees), copying their pages and spending CPU on each commit.
-        import gc
-        gc.collect()
-        gc.freeze()
-        analyze_batch(context, paths, sel, tests, deadline, emit, cpu_slots())
+            emit(path, everything, ["batch failed: everything"])
     sys.stdout.flush()
 
 
