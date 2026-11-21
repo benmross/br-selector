@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -2086,7 +2086,7 @@
+             unit = Var(this=(self.UNABBREVIATED_UNIT_NAME.get(unit.name) or unit.name).upper())
+             self.args["unit"] = unit
+             self._set_parent("unit", unit)
+-        elif type(unit).__name__ == "Week":
++        elif type(unit).__name__ is "Week":
+             unit.set("this", Var(this=unit.this.name.upper()))  # type: ignore[union-attr]
+ 
+     @property

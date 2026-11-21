@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokenizer_core.py b/sqlglot/tokenizer_core.py
+--- a/sqlglot/tokenizer_core.py
++++ b/sqlglot/tokenizer_core.py
+@@ -1205,7 +1205,7 @@
+ 
+         while end < limit:
+             digit = _DIGIT_VALUES.get(sql[end], 16)
+-            if digit >= base or value * base + digit > max_value:
++            if digit > base or value * base + digit > max_value:
+                 break
+             value = value * base + digit
+             end += 1

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -1215,7 +1215,7 @@
+             sql_segments.append(self.sql(exp.Literal.string("".join(group))))
+ 
+     sql = " || ".join(sql_segments)
+-    return sql if len(sql_segments) == 1 else f"({sql})"
++    return sql if len(sql_segments) is 1 else f"({sql})"
+ 
+ 
+ def _escape_regex_metachars(

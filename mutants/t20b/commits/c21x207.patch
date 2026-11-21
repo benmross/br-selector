@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/duckdb.py b/sqlglot/parsers/duckdb.py
+--- a/sqlglot/parsers/duckdb.py
++++ b/sqlglot/parsers/duckdb.py
+@@ -77,7 +77,7 @@
+ def _build_generate_series(end_exclusive: bool = False) -> t.Callable[[list], exp.GenerateSeries]:
+     def _builder(args: list) -> exp.GenerateSeries:
+         # Check https://duckdb.org/docs/sql/functions/nested.html#range-functions
+-        if len(args) == 1:
++        if len(args) is 1:
+             # DuckDB uses 0 as a default for the series' start when it's omitted
+             args.insert(0, exp.Literal.number("0"))
+ 

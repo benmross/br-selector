@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -6099,7 +6099,7 @@
+             return False
+ 
+         name = self._tokens[self._index + 1] if self._index + 1 < len(self._tokens) else None
+-        if name is None or name.token_type not in self.ID_VAR_TOKENS:
++        if name == None or name.token_type not in self.ID_VAR_TOKENS:
+             return False
+ 
+         alias_tok = self._tokens[self._index + 2] if self._index + 2 < len(self._tokens) else None

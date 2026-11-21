@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/postgres.py b/sqlglot/generators/postgres.py
+--- a/sqlglot/generators/postgres.py
++++ b/sqlglot/generators/postgres.py
+@@ -315,7 +315,7 @@
+     def lateral_sql(self, expression: exp.Lateral) -> str:
+         sql = super().lateral_sql(expression)
+ 
+-        if expression.args.get("cross_apply") is not None:
++        if expression.args.get("cross_apply") != None:
+             sql = f"{sql} ON TRUE"
+ 
+         return sql

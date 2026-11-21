@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -2664,7 +2664,7 @@
+         if not is_jsonb:
+             kwargs["only_json_types"] = arrow_req_json_type
+ 
+-        if json_type is not None:
++        if json_type != None:
+             kwargs["json_type"] = json_type
+ 
+         return expr_type(**kwargs)

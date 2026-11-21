@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/presto.py b/sqlglot/parsers/presto.py
+--- a/sqlglot/parsers/presto.py
++++ b/sqlglot/parsers/presto.py
+@@ -66,7 +66,7 @@
+ 
+     # Formats with quoted text, a literal % or a field without a mapping are left as is
+     if (
+-        len(args) != 2
++        len(args) is not 2
+         or not (fmt and fmt.is_string and fmt.name)
+         or "'" in fmt.name
+         or "%" in fmt.name

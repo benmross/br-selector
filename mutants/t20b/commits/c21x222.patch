@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -3338,7 +3338,7 @@
+         return count_if_to_sum(self, expression)
+ 
+     def bracket_sql(self, expression: exp.Bracket) -> str:
+-        if self.dialect.version >= (1, 2):
++        if self.dialect.version > (1, 2):
+             return super().bracket_sql(expression)
+ 
+         # https://duckdb.org/2025/02/05/announcing-duckdb-120.html#breaking-changes

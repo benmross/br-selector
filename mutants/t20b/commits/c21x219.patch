@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -6033,7 +6033,7 @@
+ 
+         _with = expression.args.get("with_")
+ 
+-        if _with is None:
++        if _with == None:
+             with_sql = ""
+         elif not _with:
+             with_sql = " WITHOUT"

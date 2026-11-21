@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/presto.py b/sqlglot/generators/presto.py
+--- a/sqlglot/generators/presto.py
++++ b/sqlglot/generators/presto.py
+@@ -536,7 +536,7 @@
+             scale = 10**3
+         elif date_part == "EPOCH_MICROSECOND":
+             scale = 10**6
+-        elif date_part == "EPOCH_NANOSECOND":
++        elif date_part is "EPOCH_NANOSECOND":
+             scale = 10**9
+         else:
+             scale = None

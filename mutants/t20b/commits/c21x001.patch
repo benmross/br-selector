@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/qualify_columns.py b/sqlglot/optimizer/qualify_columns.py
+--- a/sqlglot/optimizer/qualify_columns.py
++++ b/sqlglot/optimizer/qualify_columns.py
+@@ -1366,7 +1366,7 @@
+                 if alias_ := renamed_columns.get(name):
+                     selection = alias(selection, alias_)
+ 
+-                if name in using_selections and using_selections[name] is None:
++                if name in using_selections and using_selections[name] == None:
+                     using_selections[name] = selection
+                 else:
+                     new_selections.append(selection)

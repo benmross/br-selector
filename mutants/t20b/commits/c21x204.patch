@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -1223,7 +1223,7 @@
+         if strategy is NormalizationStrategy.CASE_SENSITIVE:
+             return expression
+ 
+-        if strategy is NormalizationStrategy.CASE_INSENSITIVE_EXCEPT_TABLES:
++        if strategy == NormalizationStrategy.CASE_INSENSITIVE_EXCEPT_TABLES:
+             parent = expression.parent
+             while isinstance(parent, exp.Dot):
+                 parent = parent.parent

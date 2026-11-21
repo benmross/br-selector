@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -5424,7 +5424,7 @@
+         return self.sql(case)
+ 
+     def nthvalue_sql(self, expression: exp.NthValue) -> str:
+-        if expression.args.get("from_first") is False:
++        if expression.args.get("from_first") == False:
+             self.unsupported("NTH_VALUE FROM LAST is not supported")
+ 
+         return self.function_fallback_sql(expression)

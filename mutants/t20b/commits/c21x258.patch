@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -2956,7 +2956,7 @@
+                     self.raise_error("Duplicate OLD clause in REFERENCING")
+                 old_alias = alias
+             elif alias := self._parse_trigger_referencing_clause("NEW"):
+-                if new_alias is not None:
++                if new_alias != None:
+                     self.raise_error("Duplicate NEW clause in REFERENCING")
+                 new_alias = alias
+             else:

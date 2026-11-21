@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -1225,7 +1225,7 @@
+ 
+     def unnest(self) -> Expr:
+         expression = self
+-        while type(expression) is Paren:
++        while type(expression) == Paren:
+             expression = expression.this
+         return expression
+ 

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -6106,7 +6106,7 @@
+         if alias_tok is None or alias_tok.token_type != TokenType.ALIAS:
+             return False
+ 
+-        body = self._tokens[self._index + 3] if self._index + 3 < len(self._tokens) else None
++        body = self._tokens[self._index + 3] if self._index + 3 <= len(self._tokens) else None
+         return body is not None and body.token_type == TokenType.L_PAREN
+ 
+     def _parse_limit_by(self) -> list[exp.Expr] | None:

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokenizer_core.py b/sqlglot/tokenizer_core.py
+--- a/sqlglot/tokenizer_core.py
++++ b/sqlglot/tokenizer_core.py
+@@ -1248,7 +1248,7 @@
+             # With byte semantics, octal and hex escapes encode a byte, so octal values wrap around,
+             # e.g. \541 is \x61
+             is_byte = self.numeric_escapes_are_bytes and (base == 8 or max_value <= 0xFF)
+-            if is_byte and value >= 0:
++            if is_byte and value > 0:
+                 value &= 0xFF
+ 
+             # A UTF-16 surrogate is only valid as a high half (D800-DBFF) followed by an escaped
