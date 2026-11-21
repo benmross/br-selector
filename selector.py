@@ -1092,19 +1092,30 @@ class Selector:
             return set()
         frontier = [(cls, n) for n in sorted(assigned_names(node) or ())]
         seen, out = set(frontier), set()
+        reads = (self.index or {}).get("@qualified_reads")
         while frontier and depth > 0:
             depth -= 1
             nxt = []
-            pat = re.compile("|".join(r"\b" + re.escape(f"{c}.{n}") + r"\b" for c, n in frontier))
-            for rel, text in self._all_sources().items():
-                if not rel.startswith("sqlglot/") or not pat.search(text):
-                    continue
+            sites = {}
+            for c, n in frontier:
+                if reads is None:  # old or absent index: scan the pinned source
+                    pat = re.compile(r"\b" + re.escape(f"{c}.{n}") + r"\b")
+                    found = [(rel, text.count("\n", 0, m.start()) + 1)
+                             for rel, text in self._all_sources().items() if rel.startswith("sqlglot/")
+                             for m in pat.finditer(text)]
+                else:
+                    found = [(rel, ln) for rel, ln, chain in reads.get(n, ())
+                             if chain == c + "." or chain.endswith("." + c + ".")]
+                for rel, ln in found:
+                    sites.setdefault(rel, set()).add(ln)
+            for rel in sorted(sites):
                 try:
-                    scopes = self._scopes(rel, text)
-                except SyntaxError:
+                    with open(os.path.join(SRC, rel), encoding="utf-8") as f:
+                        scopes = self._scopes(rel, f.read())
+                except (OSError, SyntaxError):
                     continue
                 module = rel[:-3].replace("/", ".").removesuffix(".__init__")
-                for ln in sorted({text.count("\n", 0, m.start()) + 1 for m in pat.finditer(text)}):
+                for ln in sorted(sites[rel]):
                     st = scopes.at(ln)
                     if st is None:
                         continue
@@ -1348,6 +1359,8 @@ def comparison_swaps(a_list, b_list, lo, hi):
 
 UNSAFE_FUNCS = {"__new__", "__init_subclass__", "__set_name__", "__class_getitem__"}
 DYNAMIC = re.compile(r"getattr\(|__dict__|vars\(")
+# A maximal dotted chain such as `tokens.Tokenizer.KEYWORDS.copy`.
+QUALIFIED_READ = re.compile(r"(?<![\w.])[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)+")
 
 
 def argparse_help_only(old_tree, new_tree):
@@ -2158,6 +2171,19 @@ def build_index(out_path):
     index["@shared_setup"] = build_shared_setups(sources)
     # Build-time-only tokenization: a proof must not add a source-wide token
     # scan to every charged commit. Offsets refer to the pinned source only.
+    # Build-time-only: every `Class.name` read in sqlglot (presto.py's
+    # `MySQL.TIME_MAPPING`), so qualified_consumers needs no source scan.
+    qual = {}
+    for rel, text in sources.items():
+        if rel.startswith("sqlglot/"):
+            for m in QUALIFIED_READ.finditer(text):
+                parts, ln = m.group(0).split("."), text.count("\n", 0, m.start()) + 1
+                for i in range(1, len(parts)):
+                    # every owner.attr prefix: `MySQL.TIME_MAPPING.items`
+                    # records TIME_MAPPING under owner `MySQL.`
+                    if parts[i - 1][:1].isupper() or parts[i - 1][:1] == "_":
+                        qual.setdefault(parts[i], []).append([rel, ln, ".".join(parts[:i]) + "."])
+    index["@qualified_reads"] = qual
     index["@inert_name_ranges"] = {
         rel: inert_name_ranges(sources[rel], sc)
         for rel, sc in parsed.items() if rel.startswith("sqlglot/")}
