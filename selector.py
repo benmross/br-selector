@@ -667,6 +667,10 @@ class Selector:
         if same_ast(old_tree.body, new_tree.body, min(touched or {0}), max(touched or {0})):
             why.append(f"{path}: syntax tree unchanged")
             return set()
+        if self._single_file_patch and (self.index or {}).get('@pinned_string_audit') \
+                and inert_string_changes(old_tree, new_tree) and self.docstrings_unobserved():
+            why.append(f'{path}: only inert string statements changed; audited doc consumers have no numbered runtime users')
+            return set()
         if path.startswith("tests/"):
             shared = changed_test_state(old_tree, new_tree, touched)
             if shared:
@@ -875,6 +879,17 @@ class Selector:
                 why.append(f"{path}:{ref} dedented line runs with its outer block: {len(got)}")
                 out |= got | self.at_import(path, span, why)
         return out
+
+    def docstrings_unobserved(self):
+        # Complete source-tree fingerprint guards this closed reader audit.
+        # pytest does not collect unittest.load_tests; test_docs has no
+        # numbered tests. leakcheck reads its own module doc only in main(),
+        # which no numbered test invokes. Expr.__init_subclass__ copies a
+        # nonempty __doc__ or ""; no runtime code consumes that content.
+        for rel in ('tests/test_docs.py', 'tests/leakcheck.py'):
+            if self.by_file.get(rel) or self.file_users(rel) or self.fixture_users(rel):
+                return False
+        return True
 
     def runtime_strings_safe(self, path, old_tree, new_tree, why):
         """Stored generator callbacks are invoked only by runtime dispatch.
@@ -1423,6 +1438,12 @@ def string_changes(old_tree, new_tree):
         return type(a) is type(b) and a == b
 
     return changes if same(old_tree, new_tree) and changes else None
+
+
+def inert_string_changes(old_tree, new_tree):
+    changes = string_changes(old_tree, new_tree)
+    return bool(changes) and all(len(chain) >= 2 and isinstance(chain[-2], ast.Expr)
+                                and chain[-2].value is chain[-1] for chain in changes)
 
 
 def runtime_lambda_changes(old_tree, new_tree):

@@ -36,3 +36,16 @@ def test_second_non_string_effect_invalidates_callback_proof():
 
 def test_changed_reader_tree_invalidates_pinned_audit():
     assert s.source_fingerprint({'a.py':'x=1\n'})!=s.source_fingerprint({'a.py':'x=2\n'})
+
+
+@pytest.mark.parametrize('before,after,allowed',[
+ ('"old"\n','"new"\n',True),
+ ('class X:\n    "old"\n','class X:\n    "new"\n',True),
+ ('class X:\n    VALUE=1\n    "old"\n','class X:\n    VALUE=1\n    "new"\n',True),
+ ('def f():\n    "old"\n    return 1\n','def f():\n    "new"\n    return 1\n',True),
+ ('VALUE="old"\n','VALUE="new"\n',False),
+ ('"old"\nVALUE=1\n','"new"\nVALUE=2\n',False),
+ ('"old"\n','f"{new}"\n',False),
+])
+def test_inert_string_value_is_never_executable(before,after,allowed):
+    assert s.inert_string_changes(ast.parse(before),ast.parse(after)) is allowed
