@@ -353,9 +353,11 @@ class Selector:
     def class_users(self, module, qualname):
         sid = self.m["classes"].get(f"{module}:{qualname}")
         out = set(self.sets[sid]) if sid is not None else set()
-        # Instance/fixture traces predate phase tags, so retain the
-        # conservative expansion for their shared-setup contexts.
-        self.pending_shared |= out
+        # Phase-tagged traces (setup_files present) already credit setup
+        # observations to the whole class in the map. Older maps cannot tell
+        # setup from call, so mark every user.
+        if not self.has_setup_phases:
+            self.pending_shared |= out
         return out
 
     def module_classes_users(self, module):
@@ -364,7 +366,8 @@ class Selector:
         for k, sid in self.m["classes"].items():
             if k.startswith(prefix):
                 out |= self.sets[sid]
-        self.pending_shared |= out
+        if not self.has_setup_phases:
+            self.pending_shared |= out
         return out
 
     def fixture_users(self, path):
@@ -376,7 +379,8 @@ class Selector:
         sid = self.m["fixtures"].get(d)
         if sid is not None:
             out |= self.sets[sid]
-        self.pending_shared |= out
+        if not self.has_setup_phases:
+            self.pending_shared |= out
         return out
 
     def test_importers(self, path):
@@ -420,28 +424,38 @@ class Selector:
     def prepare_shared_setup(self):
         """Build the setup-scope and test-import tables once, in the parent,
         so each forked commit analysis inherits them."""
+        pending = set(self.pending_shared)
         if self._shared_setup_map is None:
             specs = (self.index or {}).get("@shared_setup")
             if specs is None:
                 specs = build_shared_setups(self._all_sources())
             self._shared_setup_map = []
             for rel, start, end, prefix in specs:
-                triggers = self.cov(rel, range(start, end + 1), mark_shared=False)
+                if self.has_setup_phases:
+                    # Only tests whose own setup phase ran the shared setup.
+                    # The map's files entries credit setup lines to the whole
+                    # class, which would make every class member a trigger.
+                    setup = self.setup_files.get(rel, {})
+                    triggers = set()
+                    for line in range(start, end + 1):
+                        if line in setup:
+                            triggers |= self.sets[setup[line]]
+                else:
+                    triggers = self.cov(rel, range(start, end + 1), mark_shared=False)
                 if prefix == "*":
                     users = self.all
                 elif prefix.startswith("@imports:"):
                     # Imported shared fixtures can serve a different test
-                    # file. Building metadata must not mark affected code.
-                    pending = set(self.pending_shared)
+                    # file.
                     users = self.test_importers(prefix[len("@imports:"):])
-                    self.pending_shared = pending
                 else:
                     users = {n for n, (tid, _, _) in self.tests.items() if tid.startswith(prefix)}
                 if triggers and users:
                     self._shared_setup_map.append((triggers, users, prefix))
         if self._test_import_map is None:
             self.test_importers("tests/__init__.py")
-        self.pending_shared = set()
+        # Building tables reads coverage; it must not mark affected setups.
+        self.pending_shared = pending
 
     # -- one file of a patch
 
@@ -468,6 +482,7 @@ class Selector:
             why.append(f"{path}: executable bit only")
             return set()
         users = set()
+        pending = set(self.pending_shared)
         for p in paths:
             users |= self.fixture_users(p) | self.file_users(p) | self.by_file.get(p, set())
         if fp.binary:
@@ -478,6 +493,9 @@ class Selector:
             # an existing module's contents. Structural changes widened above.
             direct = self.m["fixtures"].get(path)
             readers = set(self.sets[direct]) if direct is not None else set()
+            # The eager whole-file lookup above must not mark setup contexts
+            # for lines this patch leaves alone; for_python marks changed ones.
+            self.pending_shared = pending
             return self.for_python(fp, path, why) | readers
         if users:
             why.append(f"{path}: data file read by {len(users)}")
@@ -558,10 +576,25 @@ class Selector:
             # other tests never execute the old function/class themselves.
             why.append(f"{path}: definition names changed, import/collection users")
             return self.broad(path) | self.importers(path)
+        removed = bound_names(scopes) - bound_names(new_scopes)
+        removed_readers = set()
+        if removed:
+            # Removing a class attribute, enum member, constant or imported
+            # name turns every read of it into an error. A read during import
+            # (TokenType.X inside another class body) breaks loading sqlglot,
+            # which no coverage context records.
+            names = {n for _, n in removed}
+            code, tests = self.readers(names)
+            if code is None:
+                why.append(f"{path}: removed import-level name {','.join(sorted(names))} "
+                           f"read at import, everything")
+                return set(self.all)
+            removed_readers = code | tests
+            why.append(f"{path}: removed name {','.join(sorted(names))}, readers {len(removed_readers)}")
         module = path[:-3].replace("/", ".")
         if module.endswith(".__init__"):
             module = module[: -len(".__init__")]
-        out = set()
+        out = set(removed_readers)
         import_level = False
         points = set(changed)
         for ins in inserts:
@@ -796,6 +829,21 @@ def same_ast(a_list, b_list, lo, hi):
 
 UNSAFE_FUNCS = {"__new__", "__init_subclass__", "__set_name__", "__class_getitem__"}
 DYNAMIC = re.compile(r"getattr\(|__dict__|vars\(")
+
+
+def bound_names(scopes):
+    """(class qualname, name) bound at import: assignments and imports."""
+    out = set()
+    for start, end, header_end, node, runtime, cls in scopes.stmts:
+        if runtime:
+            continue
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            names = {(a.asname or a.name).split(".")[0] for a in node.names if a.name != "*"}
+        else:
+            names = assigned_names(node)
+        for n in names or ():
+            out.add((cls, n))
+    return out
 
 
 def assigned_names(node):

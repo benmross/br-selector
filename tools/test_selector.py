@@ -7,7 +7,15 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from selector import Selector, same_ast, build_test_importers, FilePatch, build_shared_setups, import_fails
+from selector import Selector, same_ast, build_test_importers, FilePatch, build_shared_setups, parse_patch
+
+
+def file_patch(path, before, after):
+    """A real parsed FilePatch, so hunk ranges match the hardened apply()."""
+    import difflib
+    body = "".join(difflib.unified_diff(before.splitlines(True), after.splitlines(True),
+                                       "a/" + path, "b/" + path))
+    return parse_patch(f"diff --git a/{path} b/{path}\n" + body)[0]
 
 
 class SelectorSafetyTests(unittest.TestCase):
@@ -69,21 +77,23 @@ class SelectorSafetyTests(unittest.TestCase):
             patch.hunks = [(0, ["+VALUE = 1"])]
             self.assertEqual(sel.for_file(patch, []), {0, 1})
 
-    def test_literal_import_time_edits_are_checked_for_import_errors(self):
-        tests = {0: ("one", "tests/test_one.py", 1)}
-        sel = Selector(tests, {"sets": [], "files": {}, "classes": {}, "fixtures": {}})
-        sel.module_level = lambda *args, **kwargs: set()
-        fp = FilePatch()
-        fp.old = fp.new = "sqlglot/demo.py"
-        fp.hunks = [(1, ["-VALUE = 1", "+VALUE = 0", " assert VALUE > 0"])]
+    def test_removed_name_read_at_import_selects_everything(self):
+        # Replaces t3's literal-edit import probe: patched code is never run.
+        # Deleting an enum member read inside another class body breaks import.
+        tests = {0: ("one", "tests/test_one.py", 1), 1: ("two", "tests/test_two.py", 1)}
+        mapping = {"sets": [[0]], "files": {"sqlglot/enum.py": {"3": 0}},
+                   "classes": {"sqlglot.enum:Kind": 0}, "fixtures": {},
+                   "import_lines": {"sqlglot/user.py": [3]}}
+        sel = Selector(tests, mapping)
+        before = "class Kind:\n    A = 1\n    B = 2\n"
+        sel.index = {"B": {"u": False, "c": [["sqlglot/user.py", 3, 3]], "t": [], "tf": []}}
+        fp = file_patch("sqlglot/enum.py", before, "class Kind:\n    A = 1\n")
         with tempfile.TemporaryDirectory() as root:
-            source = Path(root, "sqlglot/demo.py")
+            source = Path(root, "sqlglot/enum.py")
             source.parent.mkdir()
-            source.write_text("VALUE = 1\nassert VALUE > 0\n")
+            source.write_text(before)
             with mock_patch("selector.SRC", root):
-                sel.for_python(fp, fp.new, [])
-        self.assertEqual(len(sel.pending_import), 1)
-        self.assertIn("VALUE = 0", sel.pending_import[0][2])
+                self.assertEqual(sel.for_python(fp, fp.new, []), {0, 1})
 
     def test_shared_setup_phase_expands_class_without_expanding_run_phase(self):
         tests = {0: ("tests/test_a.py::TestA::test_first", "tests/test_a.py", 1),
@@ -91,7 +101,7 @@ class SelectorSafetyTests(unittest.TestCase):
                  2: ("tests/test_a.py::TestB::test_other", "tests/test_a.py", 1)}
         mapping = {"sets": [[0]], "files": {"tests/test_a.py": {"10": 0},
                    "sqlglot/helper.py": {"1": 0, "2": 0}},
-                   "setup_files": {"sqlglot/helper.py": {"1": 0}},
+                   "setup_files": {"sqlglot/helper.py": {"1": 0}, "tests/test_a.py": {"10": 0}},
                    "classes": {}, "fixtures": {}}
         sel = Selector(tests, mapping)
         sel.index = {"@shared_setup": [["tests/test_a.py", 10, 12, "tests/test_a.py::TestA::"]]}
@@ -117,45 +127,36 @@ class SelectorSafetyTests(unittest.TestCase):
                      "@test_importers": {"tests.helpers": ["tests/test_a.py"]}}
         self.assertEqual(sel.expand_shared_setup(sel.cov("tests/helpers.py", [10]), []), {0, 1})
 
-    def test_import_probe_overlays_cold_runtime_edits_in_multi_file_changes(self):
-        tests = {0: ("one", "tests/test_one.py", 1)}
+    def test_new_import_time_call_selects_everything_without_running_it(self):
+        # t3 probed the overlay of both files; main's rule never executes the
+        # patch and treats a new import-time call as a possible import failure.
+        tests = {0: ("one", "tests/test_one.py", 1), 1: ("two", "tests/test_two.py", 1)}
         mapping = {"sets": [[0]], "files": {"sqlglot/helper.py": {"2": 0}},
                    "classes": {}, "fixtures": {}, "import_lines": {"sqlglot/bootstrap.py": [1, 2]}}
         sel = Selector(tests, mapping)
         sel.module_level = lambda *args, **kwargs: {0}
-        helper = FilePatch()
-        helper.old = helper.new = "sqlglot/helper.py"
-        helper.hunks = [(1, [" def cold():", "-    return 1", "+    raise RuntimeError('broken')"])]
-        boot = FilePatch()
-        boot.old = boot.new = "sqlglot/bootstrap.py"
-        boot.hunks = [(1, [" from .helper import cold", "-VALUE = 1", "+VALUE = cold()"])]
+        before = "from .helper import cold\nVALUE = 1\n"
+        boot = file_patch("sqlglot/bootstrap.py", before, "from .helper import cold\nVALUE = cold()\n")
         with tempfile.TemporaryDirectory() as root:
             package = Path(root, "sqlglot")
             package.mkdir()
-            (package / "__init__.py").write_text("from . import bootstrap\n")
-            (package / "helper.py").write_text("def cold():\n    return 1\n")
-            (package / "bootstrap.py").write_text("from .helper import cold\nVALUE = 1\n")
+            (package / "bootstrap.py").write_text(before)
             with mock_patch("selector.SRC", root), mock_patch("selector.log"):
-                sel.for_python(helper, helper.new, [])
-                sel.for_python(boot, boot.new, [])
-                self.assertFalse(import_fails(sel.pending_import))
-                self.assertTrue(import_fails(sel.patched_python))
+                self.assertEqual(sel.for_python(boot, boot.new, []), {0, 1})
 
-    def test_functions_executed_at_import_schedule_an_import_probe(self):
-        tests = {0: ("one", "tests/test_one.py", 1)}
+    def test_functions_executed_at_import_select_everything(self):
+        tests = {0: ("one", "tests/test_one.py", 1), 1: ("two", "tests/test_two.py", 1)}
         mapping = {"sets": [[0]], "files": {"sqlglot/helper.py": {"2": 0}},
                    "classes": {}, "fixtures": {}, "import_lines": {"sqlglot/helper.py": [2]}}
         sel = Selector(tests, mapping)
-        fp = FilePatch()
-        fp.old = fp.new = "sqlglot/helper.py"
-        fp.hunks = [(1, [" def f():", "-    return 1", "+    return missing_name"])]
+        before = "def f():\n    return 1\n"
+        fp = file_patch("sqlglot/helper.py", before, "def f():\n    return missing_name\n")
         with tempfile.TemporaryDirectory() as root:
             source = Path(root, "sqlglot/helper.py")
             source.parent.mkdir()
-            source.write_text("def f():\n    return 1\n")
+            source.write_text(before)
             with mock_patch("selector.SRC", root):
-                sel.for_python(fp, fp.new, [])
-        self.assertEqual(len(sel.pending_import), 1)
+                self.assertEqual(sel.for_python(fp, fp.new, []), {0, 1})
 
     def test_module_move_is_not_skipped_as_identical_ast(self):
         tests = {0: ("one", "tests/test_one.py", 1)}
@@ -167,9 +168,8 @@ class SelectorSafetyTests(unittest.TestCase):
     def test_renamed_definition_keeps_importers_without_runtime_coverage(self):
         tests = {0: ("one", "tests/test_one.py", 1)}
         sel = Selector(tests, {"sets": [], "files": {}, "classes": {}, "fixtures": {}})
-        fp = FilePatch()
-        fp.old = fp.new = "sqlglot/helper.py"
-        fp.hunks = [(1, ["-def exported():", "+def renamed():", "     return 1"])]
+        fp = file_patch("sqlglot/helper.py", "def exported():\n    return 1\n",
+                        "def renamed():\n    return 1\n")
         with tempfile.TemporaryDirectory() as root:
             source = Path(root, "sqlglot/helper.py")
             source.parent.mkdir()
