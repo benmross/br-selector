@@ -1,0 +1,52 @@
+{
+ "commits": {
+  "t59x00": {
+   "file": "sqlglot/parsers/hive.py",
+   "kind": "t62k09: a call added, wrong arity at import"
+  },
+  "t59x01": {
+   "file": "sqlglot/generators/spark2.py",
+   "kind": "arity change of a builder call (TypeError at import)"
+  },
+  "t59x02": {
+   "file": "sqlglot/generators/presto.py",
+   "kind": "call removed, bare builder left as the value"
+  },
+  "t59x03": {
+   "file": "sqlglot/parsers/hive.py",
+   "kind": "call added in an entry"
+  },
+  "t59x04": {
+   "file": "sqlglot/parsers/hive.py",
+   "kind": "keyword renamed in a builder call"
+  },
+  "t59x05": {
+   "file": "sqlglot/parsers/teradata.py",
+   "kind": "subscript key changed on a table at import (KeyError)"
+  },
+  "t59x06": {
+   "file": "sqlglot/generators/clickhouse.py",
+   "kind": "decorator call arguments changed"
+  },
+  "t59x07": {
+   "file": "sqlglot/parsers/clickhouse.py",
+   "kind": "arity change in a parser builder"
+  },
+  "t59x08": {
+   "file": "sqlglot/parsers/hive.py",
+   "kind": "call removed in a parser entry"
+  },
+  "t59x09": {
+   "file": "sqlglot/generators/duckdb.py",
+   "kind": "positional argument made a keyword (same behaviour, shape changed)"
+  },
+  "t59x10": {
+   "file": "sqlglot/generators/duckdb.py",
+   "kind": "attribute that does not exist (AttributeError at import)"
+  },
+  "t59x11": {
+   "file": "sqlglot/parsers/tsql.py",
+   "kind": "keyword renamed (TypeError at import)"
+  }
+ }
+}

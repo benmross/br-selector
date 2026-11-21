@@ -17,6 +17,7 @@ both versions are parsed. A patch that leaves the module's syntax tree
 unchanged (comments, blank lines) cannot change behaviour and selects nothing.
 """
 import ast
+import collections
 import gzip
 import json
 import os
@@ -676,6 +677,13 @@ class Selector:
             verdict = self.comparison_verdict(path, swaps, why)
             if verdict == "equivalent":
                 return set()
+
+        shape = import_shape_change(old_tree, new_tree, fp, old_text)
+        if shape:
+            # The module may fail to import: every importer, which for any
+            # sqlglot module is every test.
+            why.append(f"{path}: {shape}, importers")
+            return self.importers(path)
 
         # An insertion next to a function need not run inside it. In particular,
         # dedented code appended at EOF executes during import, even though its
@@ -1868,6 +1876,160 @@ def lookup_at_import(node, line, changed):
 PARSE_CALLS = {"maybe_parse", "parse_one", "parse", "from_str", "build", "to_identifier", "column", "table_",
                "Struct", "strptime", "fromhex", "Decimal", "int", "float", "complex", "format", "compile",
                "match", "fullmatch", "search", "sub", "split", "findall", "literal_eval", "loads"}
+
+
+def _patch_sides(fp):
+    """Old-side and new-side line numbers a patch touches. A deletion marks the
+    new line at its position and an insertion the old line at its position, so
+    the statement enclosing either is found on both sides."""
+    old, new = set(), set()
+    for (start, lines), (old_count, new_start, new_count) in zip(fp.hunks, fp.ranges):
+        o = start if old_count else start + 1
+        n = new_start if new_count else new_start + 1
+        for l in lines:
+            c = l[:1]
+            if c == "-":
+                old.add(o)
+                new.add(n)
+                o += 1
+            elif c == "+":
+                new.add(n)
+                old.add(o)
+                n += 1
+            elif c == " ":
+                o += 1
+                n += 1
+    return old, new
+
+
+def _import_eval_walk(node, out, decorators=None):
+    """Append the nodes of node that are evaluated while the module loads:
+    not function or lambda bodies (the lambda object itself is built), but
+    decorators, defaults, annotations and class bases. Decorator expressions
+    are also collected whole in decorators."""
+    if isinstance(node, ast.Lambda):
+        out.append(node)
+        for d in node.args.defaults + [d for d in node.args.kw_defaults if d is not None]:
+            _import_eval_walk(d, out, decorators)
+        return
+    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+        if decorators is not None:
+            decorators.extend(ast.dump(d) for d in node.decorator_list)
+        if isinstance(node, ast.ClassDef):
+            for x in node.decorator_list + node.bases + node.keywords:
+                _import_eval_walk(x, out, decorators)
+            for st in node.body:
+                _import_eval_walk(st, out, decorators)
+            return
+        a = node.args
+        for d in (node.decorator_list + a.defaults + [d for d in a.kw_defaults if d is not None]
+                  + [x.annotation for x in a.posonlyargs + a.args + a.kwonlyargs if x.annotation is not None]
+                  + ([node.returns] if node.returns is not None else [])):
+            _import_eval_walk(d, out, decorators)
+        return
+    out.append(node)
+    for ch in ast.iter_child_nodes(node):
+        _import_eval_walk(ch, out, decorators)
+
+
+def _import_eval_nodes(tree, lines, decorators=None):
+    """Import-time nodes of the module and class-body statements that touch
+    lines (a class touched only in its body contributes the touched body
+    statements)."""
+    out = []
+
+    def visit(body):
+        for st in body:
+            lo = min([st.lineno] + [d.lineno for d in getattr(st, "decorator_list", [])])
+            if not any(lo <= l <= st.end_lineno for l in lines):
+                continue
+            if isinstance(st, ast.ClassDef):
+                if decorators is not None:
+                    decorators.extend(ast.dump(d) for d in st.decorator_list)
+                for x in st.decorator_list + st.bases + st.keywords:
+                    _import_eval_walk(x, out, decorators)
+                visit(st.body)
+            else:
+                _import_eval_walk(st, out, decorators)
+    visit(tree.body)
+    return out
+
+
+def _callee(f):
+    """A callee by its dotted name; a base that is not a name (a display, a
+    call) counts by its kind, its own calls being counted separately."""
+    parts = []
+    while isinstance(f, ast.Attribute):
+        parts.append(f.attr)
+        f = f.value
+    parts.append(f.id if isinstance(f, ast.Name) else "<" + type(f).__name__ + ">")
+    return ".".join(reversed(parts))
+
+
+def _call_shape(c):
+    return (_callee(c.func), sum(not isinstance(a, ast.Starred) for a in c.args),
+            tuple(sorted(k.arg or "**" for k in c.keywords)), any(isinstance(a, ast.Starred) for a in c.args))
+
+
+def import_shape_change(old_tree, new_tree, fp, old_text):
+    """A changed line evaluated at import that can raise there although it
+    adds no new name: a call whose callee, positional count, keyword names or
+    starred arguments differ, a call added or removed (a builder called with
+    the wrong arity, a bare function left where its result was expected:
+    t62k09, "TO_DATE": _build_to_date([])), a subscript added, removed or
+    given another key (KeyError), or an attribute chain the old file never
+    spelled (AttributeError). Returns a reason or None."""
+    old_lines, new_lines = _patch_sides(fp)
+    old_dec, new_dec = [], []
+    old_nodes = _import_eval_nodes(old_tree, old_lines, old_dec)
+    new_nodes = _import_eval_nodes(new_tree, new_lines, new_dec)
+    # A decorator runs at import on its arguments: any change in one may
+    # raise there (t62b03: a 1-tuple where a pair was unpacked).
+    if collections.Counter(old_dec) != collections.Counter(new_dec):
+        return "import-time decorator changed"
+    calls = lambda ns: collections.Counter(_call_shape(n) for n in ns if isinstance(n, ast.Call))
+    subs = lambda ns: collections.Counter(ast.dump(n) for n in ns
+                                          if isinstance(n, ast.Subscript) and isinstance(n.ctx, ast.Load))
+    oc, nc = calls(old_nodes), calls(new_nodes)
+    os_, ns = subs(old_nodes), subs(new_nodes)
+    # Calls and subscripts that leave together with a whole dict entry (its
+    # key removed) cannot fail the import; one stripped from an entry that
+    # stays can (a bare builder where its result was expected).
+    def keys(ns_):
+        return collections.Counter(ast.dump(k) for n in ns_ if isinstance(n, ast.Dict) for k in n.keys if k is not None)
+    gone = keys(old_nodes) - keys(new_nodes)
+    gone_calls, gone_subs = collections.Counter(), collections.Counter()
+    if gone:
+        for n in old_nodes:
+            if isinstance(n, ast.Dict):
+                for k, v in zip(n.keys, n.values):
+                    if k is not None and gone[ast.dump(k)] > 0:
+                        inner = []
+                        _import_eval_walk(v, inner)
+                        gone_calls += calls(inner)
+                        gone_subs += subs(inner)
+    if nc - oc or (oc - nc) - gone_calls:
+        diff = (nc - oc) or ((oc - nc) - gone_calls)
+        func = next(iter(diff))[0]
+        return f"import-time call shape changed ({'added or changed' if nc - oc else 'removed'}: {func[:60]})"
+    if ns - os_ or (os_ - ns) - gone_subs:
+        return "import-time subscript changed"
+    known = {}
+
+    def spelled(n):
+        if isinstance(n, ast.Name):
+            if n.id not in known:
+                known[n.id] = re.search(r"(?<![\w.])" + re.escape(n.id) + r"\b", old_text) is not None
+            return known[n.id]
+        if isinstance(n, ast.Attribute):
+            return ast.unparse(n) in old_text or (spelled(n.value) and ("." + n.attr) in old_text)
+        return True
+    old_chains = {ast.unparse(n) for n in old_nodes if isinstance(n, ast.Attribute)}
+    for n in new_nodes:
+        if isinstance(n, ast.Attribute) and isinstance(n.ctx, ast.Load) and ast.unparse(n) not in old_chains \
+                and not spelled(n):
+            return f"import-time attribute {ast.unparse(n)[:60]} not spelled in the old file"
+    return None
 
 
 def _added_lines(fp):

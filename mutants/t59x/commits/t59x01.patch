@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/spark2.py b/sqlglot/generators/spark2.py
+--- a/sqlglot/generators/spark2.py
++++ b/sqlglot/generators/spark2.py
+@@ -158,7 +158,7 @@
+         for k, v in {
+             **HiveGenerator.TRANSFORMS,
+             exp.ArraySort: _array_sort_sql,
+-            exp.ApproxDistinct: rename_func("APPROX_COUNT_DISTINCT"),
++            exp.ApproxDistinct: rename_func("APPROX_COUNT_DISTINCT", "X"),
+             exp.ArraySum: lambda self, e: (
+                 f"AGGREGATE({self.sql(e, 'this')}, 0, (acc, x) -> acc + x, acc -> acc)"
+             ),

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/clickhouse.py b/sqlglot/generators/clickhouse.py
+--- a/sqlglot/generators/clickhouse.py
++++ b/sqlglot/generators/clickhouse.py
+@@ -450,7 +450,7 @@
+         exp.DType.MULTIPOLYGON,
+     }
+ 
+-    @unsupported_args("json_scope")
++    @unsupported_args("json_scope", "path")
+     def contains_sql(self, expression: exp.Contains) -> str:
+         # ClickHouse has no CONTAINS; keep the parentheses only where the parent needs them
+         result = exp.paren(

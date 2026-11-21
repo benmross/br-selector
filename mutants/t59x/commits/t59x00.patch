@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/hive.py b/sqlglot/parsers/hive.py
+--- a/sqlglot/parsers/hive.py
++++ b/sqlglot/parsers/hive.py
+@@ -125,7 +125,7 @@
+             pair_delim=seq_get(args, 1) or exp.Literal.string(","),
+             key_value_delim=seq_get(args, 2) or exp.Literal.string(":"),
+         ),
+-        "TO_DATE": _build_to_date,
++        "TO_DATE": _build_to_date([]),
+         "TO_JSON": exp.JSONFormat.from_arg_list,
+         "TRUNC": exp.TimestampTrunc.from_arg_list,
+         "UNBASE64": exp.FromBase64.from_arg_list,
