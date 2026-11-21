@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dremio.py b/sqlglot/dialects/dremio.py
+--- a/sqlglot/dialects/dremio.py
++++ b/sqlglot/dialects/dremio.py
+@@ -49,7 +49,7 @@
+         "FFF": "%f",
+         "fff": "%f",
+         "AMPM": "%p",
+-        "ampm": "%p",
++        'ampm_t32_24': "%p",
+         # ISO week / century etc.
+         "WW": "%W",
+         "ww": "%W",

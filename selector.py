@@ -951,7 +951,12 @@ class Selector:
                 return False
             imp = self.import_lines.get(rel) or set()
             lines = text.split("\n")
-            for ln in sorted({text.count("\n", 0, m.start()) + 1 for m in pat.finditer(text)}):
+            # Comments and standalone string expressions cannot read a name.
+            # Keep strings in executable expressions: getattr(C, "SETTING")
+            # really can read SETTING without a Name/Attribute AST node.
+            inert = (self.index or {}).get("@inert_name_ranges", {}).get(rel)
+            mentioned = name_reference_lines(text, pat, scopes, inert)
+            for ln in sorted(mentioned):
                 st = scopes.at(ln)
                 if st is None:
                     return False
@@ -987,6 +992,11 @@ class Selector:
         if not all(isinstance(t, ast.Name) for t in targets):
             return False
         if value is None:
+            return True
+        # A same-name alias preserves the literal value and cannot fail on a
+        # same-type literal edit. Readers of the target are already scanned
+        # under the same name; differently named aliases need propagation.
+        if _is_ref(value, names) and all(t.id in names for t in targets):
             return True
         ok = []
 
@@ -1241,6 +1251,45 @@ def comparison_swaps(a_list, b_list, lo, hi):
 
 UNSAFE_FUNCS = {"__new__", "__init_subclass__", "__set_name__", "__class_getitem__"}
 DYNAMIC = re.compile(r"getattr\(|__dict__|vars\(")
+
+
+def inert_name_ranges(text, scopes):
+    """Character intervals occupied by comments and inert string statements."""
+    import io
+    import tokenize
+
+    inert = {(st[3].value.lineno, st[3].value.col_offset)
+             for st in scopes.stmts if isinstance(st[3], ast.Expr)
+             and isinstance(st[3].value, ast.Constant)
+             and isinstance(st[3].value.value, str)}
+    offsets = [0]
+    for line in text.splitlines(keepends=True):
+        offsets.append(offsets[-1] + len(line))
+    ranges = []
+    for token in tokenize.generate_tokens(io.StringIO(text).readline):
+        if token.type == tokenize.COMMENT or token.start in inert:
+            ranges.append((offsets[token.start[0] - 1] + token.start[1],
+                           offsets[token.end[0] - 1] + token.end[1]))
+    return ranges
+
+
+def name_reference_lines(text, pattern, scopes, inert=None):
+    """Lexical name mentions minus comments and inert string statements.
+
+    Executable string expressions remain possible dynamic name reads.
+    The image indexes inert intervals at build time; old or absent indexes
+    compute the identical intervals here. No patch code is evaluated.
+    """
+    if inert is None:
+        inert = inert_name_ranges(text, scopes)
+    lines, pos = set(), 0
+    for match in pattern.finditer(text):
+        while pos < len(inert) and inert[pos][1] <= match.start():
+            pos += 1
+        if pos < len(inert) and inert[pos][0] <= match.start() and match.end() <= inert[pos][1]:
+            continue
+        lines.add(text.count("\n", 0, match.start()) + 1)
+    return lines
 
 
 def bound_names(scopes):
@@ -1771,6 +1820,11 @@ def build_index(out_path):
         e["t"] = sorted({tuple(x) for x in e["t"]})
     index["@test_importers"] = build_test_importers(sources)
     index["@shared_setup"] = build_shared_setups(sources)
+    # Build-time-only tokenization: a proof must not add a source-wide token
+    # scan to every charged commit. Offsets refer to the pinned source only.
+    index["@inert_name_ranges"] = {
+        rel: inert_name_ranges(sources[rel], sc)
+        for rel, sc in parsed.items() if rel.startswith("sqlglot/")}
     with gzip.open(out_path, "wt") as f:
         json.dump(index, f, separators=(",", ":"))
     log(f"index: {len(cands)} names; test imports and shared setup scopes")

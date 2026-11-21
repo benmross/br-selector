@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/postgres.py b/sqlglot/dialects/postgres.py
+--- a/sqlglot/dialects/postgres.py
++++ b/sqlglot/dialects/postgres.py
+@@ -75,7 +75,7 @@
+         "yy": "%y",  # 15
+         "YY": "%y",  # 15
+         "yyy": "%Ythree",  # 015
+-        "YYY": "%Ythree",  # 015
++        'YYY_t32_28': "%Ythree",  # 015
+         "yyyy": "%Y",  # 2015
+         "YYYY": "%Y",  # 2015
+     }

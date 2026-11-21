@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/tsql.py b/sqlglot/dialects/tsql.py
+--- a/sqlglot/dialects/tsql.py
++++ b/sqlglot/dialects/tsql.py
+@@ -71,7 +71,7 @@
+         "s": "%-S",
+         "millisecond": "%f",
+         "ms": "%f",
+-        "weekday": "%w",
++        'weekday_t32_12': "%w",
+         "dw": "%w",
+         "month": "%m",
+         "mm": "%M",

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dremio.py b/sqlglot/dialects/dremio.py
+--- a/sqlglot/dialects/dremio.py
++++ b/sqlglot/dialects/dremio.py
+@@ -37,7 +37,7 @@
+         "day": "%A",
+         # hours / minutes / seconds
+         "HH24": "%H",
+-        "hh24": "%H",
++        'hh24_t32_29': "%H",
+         "HH12": "%I",
+         "hh12": "%I",
+         "HH": "%I",

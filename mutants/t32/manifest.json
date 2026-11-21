@@ -1,0 +1,244 @@
+{
+  "commits": {
+    "t32x000": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/spark.py",
+      "line": 32,
+      "old": "hh",
+      "new": "hh_t32_0",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x001": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/exasol.py",
+      "line": 41,
+      "old": "ID",
+      "new": "ID_t32_1",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x002": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/tsql.py",
+      "line": 63,
+      "old": "iso_week",
+      "new": "iso_week_t32_2",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x003": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/postgres.py",
+      "line": 70,
+      "old": "dy",
+      "new": "dy_t32_3",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x004": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/hive.py",
+      "line": 81,
+      "old": "EE",
+      "new": "EE_t32_4",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x005": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/mysql.py",
+      "line": 48,
+      "old": "%e",
+      "new": "%e_t32_5",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x006": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/teradata.py",
+      "line": 26,
+      "old": "MMMM",
+      "new": "MMMM_t32_6",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x007": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/singlestore.py",
+      "line": 24,
+      "old": "HH",
+      "new": "HH_t32_7",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x008": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/postgres.py",
+      "line": 74,
+      "old": "WW",
+      "new": "WW_t32_8",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x009": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/spark.py",
+      "line": 33,
+      "old": "mm",
+      "new": "mm_t32_9",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x010": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/teradata.py",
+      "line": 38,
+      "old": "EE",
+      "new": "EE_t32_10",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x011": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/hive.py",
+      "line": 70,
+      "old": "h",
+      "new": "h_t32_11",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x012": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/tsql.py",
+      "line": 74,
+      "old": "weekday",
+      "new": "weekday_t32_12",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x013": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/dremio.py",
+      "line": 22,
+      "old": "yy",
+      "new": "yy_t32_13",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x014": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/exasol.py",
+      "line": 29,
+      "old": "YY",
+      "new": "YY_t32_14",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x015": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/hive.py",
+      "line": 82,
+      "old": "EEE",
+      "new": "EEE_t32_15",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x016": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/hive.py",
+      "line": 58,
+      "old": "yy",
+      "new": "yy_t32_16",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x017": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/postgres.py",
+      "line": 48,
+      "old": "FMHH24",
+      "new": "FMHH24_t32_17",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x018": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/dremio.py",
+      "line": 31,
+      "old": "ddd",
+      "new": "ddd_t32_18",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x019": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/postgres.py",
+      "line": 63,
+      "old": "ss",
+      "new": "ss_t32_19",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x020": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/postgres.py",
+      "line": 73,
+      "old": "ww",
+      "new": "ww_t32_20",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x021": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/teradata.py",
+      "line": 36,
+      "old": "SSSSSS",
+      "new": "SSSSSS_t32_21",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x022": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/teradata.py",
+      "line": 25,
+      "old": "MMM",
+      "new": "MMM_t32_22",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x023": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/drill.py",
+      "line": 36,
+      "old": "H",
+      "new": "H_t32_23",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x024": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/dremio.py",
+      "line": 52,
+      "old": "ampm",
+      "new": "ampm_t32_24",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x025": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/spark2.py",
+      "line": 31,
+      "old": "ss",
+      "new": "ss_t32_25",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x026": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/exasol.py",
+      "line": 32,
+      "old": "MONTH",
+      "new": "MONTH_t32_26",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x027": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/postgres.py",
+      "line": 59,
+      "old": "MI",
+      "new": "MI_t32_27",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x028": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/postgres.py",
+      "line": 78,
+      "old": "YYY",
+      "new": "YYY_t32_28",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    },
+    "t32x029": {
+      "kind": "TIME_MAPPING_key_nonempty_unique",
+      "file": "sqlglot/dialects/dremio.py",
+      "line": 40,
+      "old": "hh24",
+      "new": "hh24_t32_29",
+      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+    }
+  }
+}

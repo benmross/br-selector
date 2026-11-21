@@ -36,7 +36,8 @@ with open(str(output) + ".jsonl", "w") as out, open(str(output) + ".why", "w") a
             remap = {n: ids[tid] for tid, n in m["tests"].items() if tid in ids}
             m["sets"] = [[remap[n] for n in group if n in remap] for group in m["sets"]]
             sel = s.Selector(tests, m)
-            sel.prepare_shared_setup()
+            if hasattr(sel, "prepare_shared_setup"):
+                sel.prepare_shared_setup()
             for patch in sorted((data / "commits").glob("*.patch")):
                 try:
                     chosen, why = s.select_patch(str(patch), sel, tests, float("inf"))

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/teradata.py b/sqlglot/dialects/teradata.py
+--- a/sqlglot/dialects/teradata.py
++++ b/sqlglot/dialects/teradata.py
+@@ -22,7 +22,7 @@
+         "M": "%-M",
+         "MI": "%M",
+         "MM": "%m",
+-        "MMM": "%b",
++        'MMM_t32_22': "%b",
+         "MMMM": "%B",
+         "D": "%-d",
+         "DD": "%d",

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dremio.py b/sqlglot/dialects/dremio.py
+--- a/sqlglot/dialects/dremio.py
++++ b/sqlglot/dialects/dremio.py
+@@ -28,7 +28,7 @@
+         "MONTH": "%B",
+         "month": "%B",
+         "DDD": "%j",
+-        "ddd": "%j",
++        'ddd_t32_18': "%j",
+         "DD": "%d",
+         "dd": "%d",
+         "DY": "%a",

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/spark2.py b/sqlglot/dialects/spark2.py
+--- a/sqlglot/dialects/spark2.py
++++ b/sqlglot/dialects/spark2.py
+@@ -28,7 +28,7 @@
+         "HH": "%H",
+         "hh": "%I",
+         "mm": "%M",
+-        "ss": "%S",
++        'ss_t32_25': "%S",
+     }
+ 
+     # https://spark.apache.org/docs/latest/api/sql/index.html#initcap

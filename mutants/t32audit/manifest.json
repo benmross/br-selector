@@ -219,6 +219,71 @@
     "t32auditimport000": {
       "kind": "at_import",
       "source_dataset": "fresh audit import hook"
+    },
+    "fa911x000": {
+      "kind": "could_raise",
+      "source_dataset": "fresha",
+      "narrowed": true
+    },
+    "fa911x004": {
+      "kind": "could_raise",
+      "source_dataset": "fresha",
+      "narrowed": true
+    },
+    "fa911x039": {
+      "kind": "could_raise",
+      "source_dataset": "fresha",
+      "narrowed": true
+    },
+    "fa911x041": {
+      "kind": "could_raise",
+      "source_dataset": "fresha",
+      "narrowed": true
+    },
+    "fa911x046": {
+      "kind": "could_raise",
+      "source_dataset": "fresha",
+      "narrowed": true
+    },
+    "fa911x048": {
+      "kind": "could_raise",
+      "source_dataset": "fresha",
+      "narrowed": true
+    },
+    "fa911x064": {
+      "kind": "could_raise",
+      "source_dataset": "fresha",
+      "narrowed": true
+    },
+    "fa911x080": {
+      "kind": "could_raise",
+      "source_dataset": "fresha",
+      "narrowed": true
+    },
+    "fa911x088": {
+      "kind": "could_raise",
+      "source_dataset": "fresha",
+      "narrowed": true
+    },
+    "fa911x092": {
+      "kind": "could_raise",
+      "source_dataset": "fresha",
+      "narrowed": true
+    },
+    "fa911x096": {
+      "kind": "could_raise",
+      "source_dataset": "fresha",
+      "narrowed": true
+    },
+    "fa911x102": {
+      "kind": "could_raise",
+      "source_dataset": "fresha",
+      "narrowed": true
+    },
+    "fa911x130": {
+      "kind": "could_raise",
+      "source_dataset": "fresha",
+      "narrowed": true
     }
   }
 }

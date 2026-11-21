@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/hive.py b/sqlglot/dialects/hive.py
+--- a/sqlglot/dialects/hive.py
++++ b/sqlglot/dialects/hive.py
+@@ -55,7 +55,7 @@
+         "YYYY": "%Y",
+         "yyyy": "%Y",
+         "YY": "%y",
+-        "yy": "%y",
++        'yy_t32_16': "%y",
+         "MMMM": "%B",
+         "MMM": "%b",
+         # Hive 4.0+ parses MM/dd/HH/hh/mm/ss strictly (java.time.DateTimeFormatter, see

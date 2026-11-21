@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/exasol.py b/sqlglot/dialects/exasol.py
+--- a/sqlglot/dialects/exasol.py
++++ b/sqlglot/dialects/exasol.py
+@@ -29,7 +29,7 @@
+         "YY": "%y",
+         "mm": "%m",
+         "MM": "%m",
+-        "MONTH": "%B",
++        'MONTH_t32_26': "%B",
+         "MON": "%b",
+         "dd": "%d",
+         "DD": "%d",

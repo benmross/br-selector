@@ -471,6 +471,52 @@ def test_import_time_literal_edits(sandbox, name, before, after, everything):
     assert (answers[name] == ALL) is everything
 
 
+@pytest.mark.parametrize("extra,expected", [
+    ('# RESERVED is only documentation\n', False),
+    ('"""RESERVED\nconfiguration docs\n"""\n', False),
+    ('class Alias:\n    RESERVED = Gen.RESERVED\n', False),
+    ('class Alias:\n    OTHER = Gen.RESERVED\n', True),
+    ('VALUE = getattr(Gen, "RESERVED")[0]\n', True),
+    ('VALUE = "RESERVED"\n', True),
+    ('f"{getattr(Gen, \'RESERVED\')}"\n', True),
+    ('class Alias:\n    RESERVED = Gen.RESERVED["missing"]\n', True),
+])
+def test_literal_proof_ignores_only_inert_name_mentions(sandbox, extra, expected):
+    run, src = sandbox
+    before = SET_ATTR + extra
+    after = before.replace('"between"', '"betweenx"')
+    (src / "sqlglot/other.py").write_text(before)
+    answers, why, _ = run({"literal": diff("sqlglot/other.py", before, after)})
+    assert (answers["literal"] == ALL) is expected, why
+
+
+def test_reference_lines_keeps_code_after_docstring():
+    selector = load_selector()
+    import ast
+    import re
+    text = '"""SETTING docs"""; x = SETTING  # SETTING comment\n'
+    assert selector.name_reference_lines(text, re.compile(r"\bSETTING\b"),
+                                         selector.Scopes(ast.parse(text))) == {1}
+
+
+def test_indexed_inert_intervals_equal_runtime_tokenization():
+    selector = load_selector()
+    import ast
+    import re
+    text = ('"""SETTING is documentation\nincluding another SETTING\n"""\n'
+            '# SETTING comment\n'
+            'VALUE = "SETTING"  # SETTING comment\n'
+            'class C:\n    """SETTING docs"""\n    SETTING = Other.SETTING\n')
+    scopes = selector.Scopes(ast.parse(text))
+    pattern = re.compile(r"\bSETTING\b")
+    intervals = json.loads(json.dumps(selector.inert_name_ranges(text, scopes)))
+    assert selector.name_reference_lines(text, pattern, scopes) == {5, 8}
+    assert selector.name_reference_lines(text, pattern, scopes, intervals) == {5, 8}
+    text = 'VALUE = """# SETTING\nassigned text\n"""\n'
+    assert selector.name_reference_lines(text, re.compile(r"\bSETTING\b"),
+                                         selector.Scopes(ast.parse(text))) == {1}
+
+
 # ---------------------------------------------------------------- comparison profile
 
 CMP_SRC = (
