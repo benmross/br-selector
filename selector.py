@@ -34,12 +34,22 @@ CMP = os.environ.get("CMP_PATH", os.path.join(os.path.dirname(os.path.abspath(__
 CMP_PER_TEST = os.environ.get("CMP_PER_TEST", "0") == "1"
 WORKER_MS = 2000
 MAX_WORKERS = 8
-# Leave ample time to serialize fallbacks before the scorer's 180 s deadline.
-MAX_SELECT_SECONDS = 120
+# The scorer stops a run at 180 s of wall time. Analysis stops at 150 s. The
+# 30 s margin: writing a fallback line takes about 95 us (8.6 KB, measured),
+# so 10,000 leftover commits at ten times that cost take about 10 s; the
+# other 20 s cover container start, interpreter start and exit on a stalled
+# host.
+MAX_SELECT_SECONDS = 150
 MAX_PATCH_BYTES = 4 * 1024 * 1024
 MAX_PATCH_LINES = 50000
 MAX_PATCH_FILES = 256
+# Per-commit limit on the analysis child's own CPU time, enforced by the
+# kernel (RLIMIT_CPU). CPU time, unlike wall time, does not grow when a busy
+# host stalls the child, so an ordinary commit is never cut off by load.
 MAX_COMMIT_SECONDS = 2
+# Wall-time backstop for a child that makes no CPU progress, capped by what is
+# left of the batch budget.
+MAX_COMMIT_WALL_SECONDS = 10
 
 
 def log(*a):
@@ -1816,6 +1826,13 @@ def _analyze_child(connection, patch_path, sel, tests, deadline):
             limit = min(limit, soft)
         resource.setrlimit(resource.RLIMIT_AS, (limit, hard))
         resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+        # SIGXCPU ends the child after MAX_COMMIT_SECONDS of its own CPU time
+        # (a forked child starts from zero); SIGKILL one second later.
+        cpu_soft, cpu_hard = resource.getrlimit(resource.RLIMIT_CPU)
+        cpu = max(1, int(MAX_COMMIT_SECONDS))
+        if cpu_hard != resource.RLIM_INFINITY:
+            cpu = min(cpu, cpu_hard)
+        resource.setrlimit(resource.RLIMIT_CPU, (cpu, cpu + 1 if cpu_hard == resource.RLIM_INFINITY else cpu_hard))
         chosen, why = select_patch(patch_path, sel, tests, deadline)
         # Keep IPC and diagnostics bounded even for many edits or huge paths.
         diagnostics = [message[:500] for message in why[:100]]
@@ -1830,7 +1847,7 @@ def _analyze_child(connection, patch_path, sel, tests, deadline):
 
 def analyze_patch(context, patch_path, sel, tests, deadline):
     """A broken/slow commit cannot reject the rest of the batch."""
-    budget = min(MAX_COMMIT_SECONDS, deadline - time.monotonic())
+    budget = min(MAX_COMMIT_WALL_SECONDS, deadline - time.monotonic())
     if budget <= 0:
         return set(tests), ["batch analysis deadline reached: everything"]
     receiver, sender = context.Pipe(duplex=False)
@@ -1840,7 +1857,11 @@ def analyze_patch(context, patch_path, sel, tests, deadline):
         process.start()
         sender.close()
         if receiver.poll(budget):
-            return receiver.recv()
+            try:
+                return receiver.recv()
+            except EOFError:
+                # Killed without a reply: CPU limit, memory, or a signal.
+                return set(tests), ["commit analysis stopped by a resource limit: everything"]
         return set(tests), ["commit analysis timed out: everything"]
     except Exception as e:
         return set(tests), [f"analysis process failed {type(e).__name__}: everything"]
