@@ -375,6 +375,17 @@ class Selector:
                 users = users | test_readers
             why.append(f"{path}:{line} class {cls} users {len(users)}")
             return users
+        names = assigned_names(stmt) if stmt is not None else None
+        eager = bool(self.import_lines.get(path))
+        if names:
+            code_readers, test_readers = self.readers(names)
+            if code_readers is not None:
+                got = code_readers | test_readers
+                why.append(f"{path}:{line} module constant {','.join(sorted(names))}: {len(got)} read it")
+                return got
+            if eager:
+                why.append(f"{path}:{line} module constant read at import, everything")
+                return set(self.all)
         got = self.file_users(path) | self.module_classes_users(module)
         why.append(f"{path}:{line} module level {len(got)}")
         return got
@@ -433,14 +444,18 @@ class Selector:
         else:
             sites = reference_sites(self._all_sources(), names, self._scopes)
         code = set()
+        unsafe = sites["u"]
         for rel, a, b in sites["c"]:
             code |= self.cov(rel, range(a, b + 1))
+            imp = self.import_lines.get(rel)
+            if imp and any(l in imp for l in range(a, b + 1)):
+                unsafe = True  # read while modules load: its effect outlives any test
         tests = set()
         for rel, a, b in sites["t"]:
             tests |= self.cov(rel, range(a, b + 1))
         for rel in sites["tf"]:
             tests |= self.by_file.get(rel, set())
-        return (None if sites["u"] else code), tests
+        return (None if unsafe else code), tests
 
     _scope_cache = {}
 
@@ -649,7 +664,17 @@ class F(importlib.abc.MetaPathFinder):
         return spec
 sys.meta_path.insert(0, F())
 import sqlglot
-for name in files: importlib.import_module(name)
+for name in files:
+    mod = importlib.import_module(name)
+    # resolve every exported name, so a broken lazy table (PEP 562
+    # __getattr__ over a dict of targets) fails here as it would in a test
+    names = list(getattr(mod, "__all__", []) or [])
+    if hasattr(mod, "__getattr__"):
+        for v in list(vars(mod).values()):
+            if isinstance(v, dict):
+                names += [k for k in v if isinstance(k, str) and k.isidentifier()]
+    for n in names:
+        getattr(mod, n)
 """
 
 

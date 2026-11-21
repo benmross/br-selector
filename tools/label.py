@@ -19,6 +19,35 @@ shard, nshards = (int(x) for x in (sys.argv[4:6] if len(sys.argv) > 5 else ("0",
 tests = {t["id"]: t["number"] for t in json.load(open("/kit/sample/tests.json"))["tests"]}
 answers = json.load(open(out))["commits"] if os.path.exists(out) else {}
 env = dict(os.environ, SKIP_INTEGRATION="0", PYTHONPATH=src, PYTHONDONTWRITEBYTECODE="1")
+
+
+def run_suite():
+    r = subprocess.run(
+        [sys.executable, "-m", "pytest", "tests", "-q", "-n", os.environ.get("LABEL_N", "3"), "-rfE", "-p", "no:cacheprovider",
+         "-o", "addopts=", "--timeout=300"],
+        cwd=src, env=env, capture_output=True, text=True,
+    )
+    failing = set()
+    for line in r.stdout.splitlines():
+        m = re.match(r"(?:FAILED|ERROR|SUBFAILED)\S*\s+(\S+?)(?:\s+-\s.*)?$", line)
+        if m:
+            nid = m.group(1).split("[", 1)[0] if m.group(1).split("[", 1)[0] in tests else m.group(1)
+            if nid in tests:
+                failing.add(tests[nid])
+            elif "::" not in nid:  # a whole file failed to import
+                failing.update(n for i, n in tests.items() if i.startswith(nid + "::"))
+    return failing
+
+
+# Tests that fail on the unmodified source here (memory or time limits of
+# this machine) say nothing about a mutant.
+base_path = out + ".baseline"
+if os.path.exists(base_path):
+    baseline = set(json.load(open(base_path)))
+else:
+    baseline = run_suite()
+    json.dump(sorted(baseline), open(base_path, "w"))
+print("baseline failures:", sorted(baseline), flush=True)
 for k, name in enumerate(sorted(os.listdir(os.path.join(muts, "commits")))):
     cid = name[:-6]
     if k % nshards != shard or cid in answers:
@@ -31,22 +60,9 @@ for k, name in enumerate(sorted(os.listdir(os.path.join(muts, "commits")))):
         new, _, _ = apply(saved[p], fp)
         open(p, "w").write(new)
     t0 = time.time()
-    r = subprocess.run(
-        [sys.executable, "-m", "pytest", "tests", "-q", "-n", "4", "-rfE", "-p", "no:cacheprovider",
-         "-o", "addopts=", "--timeout=300"],
-        cwd=src, env=env, capture_output=True, text=True,
-    )
+    failing = run_suite() - baseline
     for p, t in saved.items():
         open(p, "w").write(t)
-    failing = set()
-    for line in r.stdout.splitlines():
-        m = re.match(r"(?:FAILED|ERROR|SUBFAILED)\S*\s+(\S+?)(?:\s+-\s.*)?$", line)
-        if m:
-            nid = m.group(1).split("[", 1)[0] if m.group(1).split("[", 1)[0] in tests else m.group(1)
-            if nid in tests:
-                failing.add(tests[nid])
-            elif "::" not in nid:  # a whole file failed to import
-                failing.update(n for i, n in tests.items() if i.startswith(nid + "::"))
     answers[cid] = {"failing": sorted(failing), "kind": "mutant"}
     json.dump({"commits": answers}, open(out, "w"))
     print(cid, len(failing), f"{time.time() - t0:.0f}s", flush=True)

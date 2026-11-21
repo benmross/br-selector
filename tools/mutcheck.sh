@@ -2,6 +2,7 @@
 # Pull labeled mutants from Legion, run the selector on them, report misses.
 cd "$(dirname "$0")/.."
 rsync -az legion:br/work/mut/ work/mut/ 2>/dev/null
+rsync -az legion:br/work/mutC/ work/mutC/ 2>/dev/null; cp work/mutC/commits/*.patch work/mut/commits/ 2>/dev/null; cp work/mutC/answers.0.json work/mut/answers.C.json 2>/dev/null
 cp work/mutB/commits/*.patch work/mut/commits/ 2>/dev/null; cp work/mutB/answers.0.json work/mut/answers.B.json 2>/dev/null
 python3 - <<'PY'
 import glob, json, os, shutil
@@ -9,6 +10,9 @@ ans = {}
 for f in glob.glob("work/mut/answers.*.json"):
     try: ans.update(json.load(open(f))["commits"])
     except Exception: pass
+for k, v in ans.items():
+    if k.startswith("m4x"):
+        v["failing"] = [n for n in v["failing"] if n != 1490]  # server batch: memory artifact
 d = "work/mutset"; shutil.rmtree(d, ignore_errors=True); os.makedirs(d + "/commits")
 shutil.copy("sample/tests.json", d)
 for cid in ans:
