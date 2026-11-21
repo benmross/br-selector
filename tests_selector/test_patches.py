@@ -499,6 +499,37 @@ def test_reference_lines_keeps_code_after_docstring():
                                          selector.Scopes(ast.parse(text))) == {1}
 
 
+@pytest.mark.parametrize('alias', ['Gen.RESERVED', '{*Gen.RESERVED, "inner"}'])
+def test_literal_dependency_keeps_disjoint_alias_class_users(sandbox, alias):
+    run, src = sandbox
+    before = SET_ATTR + f'class Alias:\n    RESERVED = {alias}\n'
+    (src / 'sqlglot/other.py').write_text(before)
+    with gzip.open(run.env['MAP_PATH'], 'rt') as f:
+        mapping = json.load(f)
+    mapping['classes'].update({'sqlglot.other:Gen': 3, 'sqlglot.other:Alias': 4})
+    mapping['import_lines']['sqlglot/other.py'] = [1, 2, 3, 4, 6, 7]
+    with gzip.open(run.env['MAP_PATH'], 'wt') as f:
+        json.dump(mapping, f)
+    answers, why, _ = run({'literal': diff('sqlglot/other.py', before,
+                         before.replace('"between"', '"betweenx"'))})
+    assert answers['literal'] == {3, 4}, why
+
+
+def test_literal_dependency_unknown_namespace_stays_broad(sandbox):
+    run, src = sandbox
+    before = SET_ATTR + 'class Alias:\n    RESERVED = Gen.RESERVED\n'
+    (src / 'sqlglot/other.py').write_text(before)
+    with gzip.open(run.env['MAP_PATH'], 'rt') as f:
+        mapping = json.load(f)
+    mapping['classes']['sqlglot.other:Gen'] = 3
+    mapping['import_lines']['sqlglot/other.py'] = [1, 2, 3, 4, 6, 7]
+    with gzip.open(run.env['MAP_PATH'], 'wt') as f:
+        json.dump(mapping, f)
+    answers, why, _ = run({'literal': diff('sqlglot/other.py', before,
+                         before.replace('"between"', '"betweenx"'))})
+    assert answers['literal'] == ALL, why
+
+
 def test_indexed_inert_intervals_equal_runtime_tokenization():
     selector = load_selector()
     import ast

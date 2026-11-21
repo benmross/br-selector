@@ -600,6 +600,7 @@ class Selector:
         return out
 
     def _for_python(self, fp, path, why):
+        self._literal_extra_users = set()
         old_text = None
         if fp.old is not None:
             try:
@@ -807,6 +808,7 @@ class Selector:
                 why.append(f"{path}: possible import failure, everything")
                 return set(self.all)
             why.append(f"{path}: no runtime/data users, stock argparse help stored but never read at import")
+        out |= self._literal_extra_users
         return out
 
     def dedented_blocks(self, fp, old_text, scopes, path, why):
@@ -877,6 +879,7 @@ class Selector:
         runs at import reads that name except the reviewed hooks or a pure
         `{**Base.NAME, ...}` extension. The caller keeps the baseline
         selection (coverage and readers), which handles changed behaviour."""
+        self._literal_extra_users = set()
         diffs = []
 
         def walk(a, b, chain):
@@ -946,15 +949,17 @@ class Selector:
                    and s.value == new.value for s in siblings):
                 return False
             names |= {t.id for t in targets}
-        if not self.import_readers_safe(names):
+        if not self.import_readers_safe(names, why):
             return False
         why.append(f"{path}: only display literals of {','.join(sorted(names))} changed, import cannot fail")
         return True
 
-    def import_readers_safe(self, names):
+    def import_readers_safe(self, names, why=None):
         """No statement that runs at import reads any of names, except the
         reviewed hooks and pure dict/sequence unpacking into another display.
         Reads in tests are their own files' readers and stay selected."""
+        self._literal_extra_users = set()
+        seen_bindings = set()
         pat = re.compile(r"\b(" + "|".join(map(re.escape, sorted(names))) + r")\b")
         for rel, text in self._all_sources().items():
             if not rel.startswith("sqlglot/") or not pat.search(text):
@@ -983,6 +988,25 @@ class Selector:
                     continue
                 if not self._extension_only(node, names):
                     return False
+                value = getattr(node, 'value', None)
+                targets = assigned_names(node)
+                if targets and value is not None and _mentions(value, names):
+                    # Copying a table into an unrelated class carries its
+                    # runtime effects beyond the original class's MRO. Keep
+                    # the normal users/readers of every same-name consumer.
+                    # Different-name copies need a larger dependency closure.
+                    if not targets <= names:
+                        return False
+                    key = (rel, id(node))
+                    if key not in seen_bindings:
+                        seen_bindings.add(key)
+                        module = rel[:-3].replace('/', '.').removesuffix('.__init__')
+                        extra_why = []
+                        users = self.module_level(rel, module, st[5], extra_why, st[0], node)
+                        self._literal_extra_users |= users
+                        if why is not None:
+                            why.extend(extra_why)
+                            why.append(f'{rel}:{st[0]} same-name literal dependency: keep {len(users)} consumer tests')
         return True
 
     def _extension_only(self, node, names):
