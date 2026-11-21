@@ -16,7 +16,8 @@ rows = {}; misses = {}; groups = {}
 lines = ['# t30 real pytest labels', '',
          'Test 1490 is deselected under the 1 GiB cap; collection failures still count it.',
          'TPC-DS baseline subtest 88 is subtracted by subtest key, preserving other new failures.',
-         'A ≥ failure count is a smoke-run lower bound. These controls select every test on main, so a miss is impossible.', '',
+         'A ≥ failure count is a lower bound: an all-selected smoke control, or t30x044 with selected test 1106 omitted after OOM.',
+         'All smoke controls select every test on main. Per-mutant exclusions are recorded in manifest.json.', '',
          '| Mutant | Class | Edit | Failing | Main selected | Main missed | Candidate missed |',
          '| --- | --- | --- | ---: | ---: | ---: | ---: |']
 for cid, meta in manifest.items():
@@ -38,7 +39,7 @@ for cid, meta in manifest.items():
            'candidate_selected':len(candidate[cid]),'candidate_missing':sorted(remaining)}
     rows[cid] = row
     if missed: misses[cid] = row
-    fail_count = ('≥' if 'tests' in meta else '') + str(len(failing))
+    fail_count = ('≥' if 'tests' in meta or meta.get('deselect') else '') + str(len(failing))
     lines.append(f'| {cid} | {meta["kind"]} | {meta["description"]} | {fail_count} | {len(base[cid])} | {len(missed)} | {len(remaining)} |')
 (ROOT/'reviews/t30-matrix.md').write_text('\n'.join(lines)+'\n')
 (ROOT/'reviews/t30-label-summary.json').write_text(json.dumps({'labeled':len(answers),'generated':len(manifest),

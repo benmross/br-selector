@@ -37,15 +37,19 @@ def oom_kills():
         return 0
 
 
-def run_suite(tag, targets=("tests",)):
+def run_suite(tag, targets=("tests",), deselect=()):
     oom_before = oom_kills()
     prefix = out + ".reports/" + tag
+    # A shadow module can fail before pytest_configure clears old reports.
+    for path in glob.glob(prefix + ".*.json"):
+        os.unlink(path)
     suite_env = dict(env, LABEL_REPORT_PREFIX=prefix,
                      LABEL_STOP_AFTER_FILE=out + ".stop-after", LABEL_STOP_REQUEST_FILE=out + ".stop")
+    skipped = [n for n in os.environ.get("LABEL_DESELECT", "").split(",") if n] + list(deselect)
     r = subprocess.run(
         [sys.executable, "-m", "pytest", *targets, "-q", "-n", os.environ.get("LABEL_N", "1"), "--dist", os.environ.get("LABEL_DIST", "load"), "-rfE", "-p", "no:cacheprovider",
          "-o", "addopts=", "--timeout=300", "--tb=no", "-p", "label_trace",
-         *[arg for nodeid in os.environ.get("LABEL_DESELECT", "").split(",") if nodeid
+         *[arg for nodeid in skipped
            for arg in ("--deselect", nodeid)]],
         cwd=src, env=suite_env, capture_output=True, text=True,
     )
@@ -117,7 +121,8 @@ for k, name in enumerate(names):
             if old_path is not None and old_path != new_path:
                 os.unlink(old_path)
         t0 = time.time()
-        failing = run_suite(cid, manifest.get(cid, {}).get("tests") or ["tests"]) - baseline
+        failing = run_suite(cid, manifest.get(cid, {}).get("tests") or ["tests"],
+                            manifest.get(cid, {}).get("deselect", ())) - baseline
     finally:
         for p, text in saved.items():
             if text is None:

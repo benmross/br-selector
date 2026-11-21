@@ -26,7 +26,7 @@ def emit(kind, label, changes):
     manifest[cid] = {'kind': kind, 'description': label, 'paths': [c[0] for c in changes]}
     previous = old_manifest.get(cid,{})
     if previous.get('description') == label:
-        for key in ('tests','label_scope'):
+        for key in ('tests','deselect','label_scope'):
             if key in previous: manifest[cid][key] = previous[key]
 
 def replace(kind, label, path, old, new, count=1):

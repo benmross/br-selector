@@ -2,7 +2,8 @@
 
 Test 1490 is deselected under the 1 GiB cap; collection failures still count it.
 TPC-DS baseline subtest 88 is subtracted by subtest key, preserving other new failures.
-A ≥ failure count is a smoke-run lower bound. These controls select every test on main, so a miss is impossible.
+A ≥ failure count is a lower bound: an all-selected smoke control, or t30x044 with selected test 1106 omitted after OOM.
+All smoke controls select every test on main. Per-mutant exclusions are recorded in manifest.json.
 
 | Mutant | Class | Edit | Failing | Main selected | Main missed | Candidate missed |
 | --- | --- | --- | ---: | ---: | ---: | ---: |
@@ -32,25 +33,25 @@ A ≥ failure count is a smoke-run lower bound. These controls select every test
 | t30x023 | cache | resolver cache key loses only-visible | 2 | 225 | 0 | 0 |
 | t30x024 | cache | dialect registry reload pollutes base | ≥0 | 1620 | 0 | 0 |
 | t30x025 | cache | dialect registry lazy result fallback | 1099 | 1235 | 0 | 0 |
-| t30x026 | infrastructure | identity SQL whitespace literal | pending | 2 | pending | pending |
-| t30x027 | infrastructure | optimizer fixture metadata | pending | 1 | pending | pending |
-| t30x028 | infrastructure | fixture comment becomes statement | pending | 1 | pending | pending |
-| t30x029 | infrastructure | test helper fixture separator | pending | 85 | pending | pending |
-| t30x030 | infrastructure | test helper comment-filter sense | pending | 89 | pending | pending |
-| t30x031 | infrastructure | test infrastructure collection config | pending | 1620 | pending | pending |
-| t30x032 | infrastructure | public re-export changes bound target | pending | 1620 | pending | pending |
-| t30x033 | infrastructure | public re-export removed | pending | 1620 | pending | pending |
-| t30x034 | infrastructure | TYPE_CHECKING made runtime | pending | 1518 | pending | pending |
-| t30x035 | infrastructure | Rust import fallback catch narrowed | pending | 1620 | pending | pending |
-| t30x036 | infrastructure | new module shadows stdlib json | pending | 1620 | pending | pending |
-| t30x037 | infrastructure | new Rust module triggers deprecation warning | pending | 1620 | pending | pending |
-| t30x038 | infrastructure | new conftest fails all setup | pending | 1620 | pending | pending |
-| t30x039 | infrastructure | deleted test support file | pending | 1620 | pending | pending |
-| t30x040 | shape | dataclass field becomes ClassVar | pending | 1620 | pending | pending |
-| t30x041 | shape | dataclass required field becomes InitVar | pending | 1620 | pending | pending |
-| t30x042 | shape | dataclass decorator argument | pending | 53 | pending | pending |
-| t30x043 | shape | dataclass field default factory | pending | 1620 | pending | pending |
-| t30x044 | shape | default argument references changed runtime expression | pending | 94 | pending | pending |
+| t30x026 | infrastructure | identity SQL whitespace literal | 2 | 2 | 0 | 0 |
+| t30x027 | infrastructure | optimizer fixture metadata | 0 | 1 | 0 | 0 |
+| t30x028 | infrastructure | fixture comment becomes statement | 1 | 1 | 0 | 0 |
+| t30x029 | infrastructure | test helper fixture separator | 0 | 85 | 0 | 0 |
+| t30x030 | infrastructure | test helper comment-filter sense | 2 | 89 | 0 | 0 |
+| t30x031 | infrastructure | test infrastructure collection config | ≥0 | 1620 | 0 | 0 |
+| t30x032 | infrastructure | public re-export changes bound target | ≥93 | 1620 | 0 | 0 |
+| t30x033 | infrastructure | public re-export removed | ≥0 | 1620 | 0 | 0 |
+| t30x034 | infrastructure | TYPE_CHECKING made runtime | 0 | 1518 | 0 | 0 |
+| t30x035 | infrastructure | Rust import fallback catch narrowed | ≥0 | 1620 | 0 | 0 |
+| t30x036 | infrastructure | new module shadows stdlib json | ≥1620 | 1620 | 0 | 0 |
+| t30x037 | infrastructure | new Rust module triggers deprecation warning | ≥0 | 1620 | 0 | 0 |
+| t30x038 | infrastructure | new conftest fails all setup | ≥247 | 1620 | 0 | 0 |
+| t30x039 | infrastructure | deleted test support file | ≥248 | 1620 | 0 | 0 |
+| t30x040 | shape | dataclass field becomes ClassVar | ≥50 | 1620 | 0 | 0 |
+| t30x041 | shape | dataclass required field becomes InitVar | ≥8 | 1620 | 0 | 0 |
+| t30x042 | shape | dataclass decorator argument | 0 | 53 | 0 | 0 |
+| t30x043 | shape | dataclass field default factory | ≥50 | 1620 | 0 | 0 |
+| t30x044 | shape | default argument references changed runtime expression | ≥68 | 94 | 0 | 0 |
 | t30x045 | shape | boolean and-or | pending | 89 | pending | pending |
 | t30x046 | shape | membership operator | pending | 1620 | pending | pending |
 | t30x047 | shape | slice bound | pending | 94 | pending | pending |
@@ -85,3 +86,7 @@ A ≥ failure count is a smoke-run lower bound. These controls select every test
 | t30x076 | metaclass | time-map key changes type | pending | 291 | pending | pending |
 | t30x077 | metaclass | quote tuple arity shrinks | pending | 117 | pending | pending |
 | t30x078 | shape | two individually harmless edits fail only together | pending | 1620 | pending | pending |
+| t30x079 | cache | test cleanup snapshots wrong shared parser | 106 | 1 | 106 | 0 |
+| t30x080 | cache | test cleanup restores wrong shared parser | 106 | 1 | 106 | 0 |
+| t30x081 | cache | test cleanup omitted shared parser restoration | 0 | 1 | 0 | 0 |
+| t30x082 | metaclass | test-local dialect class overwrites shared registry | 145 | 1 | 145 | 0 |

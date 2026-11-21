@@ -11,9 +11,18 @@ ROOT = Path(__file__).resolve().parents[1]
 REPO = Path('/home/benmross/herald/projects/blast-radius')
 OUT = Path(os.environ.get('T30_OUT',str(ROOT / 'work/t30-measure')))
 OUT.mkdir(parents=True, exist_ok=True)
+frozen = ROOT/'work/t30-gate238'
+if not frozen.exists():
+    ids = json.load(open(ROOT/'reviews/t30-gate238-ids.json'))
+    original = REPO/'work/mutset'
+    answers = json.load(open(original/'answers.json'))['commits']
+    (frozen/'commits').mkdir(parents=True)
+    for cid in ids: shutil.copy(original/'commits'/(cid+'.patch'),frozen/'commits'/(cid+'.patch'))
+    shutil.copy(REPO/'sample/tests.json',frozen/'tests.json')
+    (frozen/'answers.json').write_text(json.dumps({'commits':{c:answers[c] for c in ids}}))
 sets = {
     'sample': REPO / 'sample',
-    'gate238': REPO / 'work/mutset',
+    'gate238': ROOT / 'work/t30-gate238',
     't3': REPO / 'work/wt/t3/work/t3-recorded',
     't14': ROOT / 'mutants/t14',
     't15': ROOT / 'mutants/t15',
@@ -80,5 +89,8 @@ for name, original in sets.items():
                         'simulated_seconds':execution+300*len(misses)}
     summary[name]=row
     (OUT/f'{name}.summary.json').write_text(json.dumps(row,indent=2)+'\n')
-    print(name,json.dumps(row),flush=True)
+    print(name,json.dumps({'commits':len(a),'base':row['base']['simulated_seconds'],
+          'candidate':row['candidate']['simulated_seconds'],
+          'misses':[len(row[v]['misses']) for v in ('base','candidate')],
+          'widened':wide,'narrowed':nar,'cpu_seconds':cpus}),flush=True)
 (OUT/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')

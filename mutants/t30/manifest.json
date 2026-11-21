@@ -445,7 +445,10 @@
       "paths": [
         "sqlglot/optimizer/optimizer.py"
       ],
-      "label_scope": "full numbered suite except memory-infeasible test 1490"
+      "label_scope": "broad except 1490 and selected test 1106; original 1 GiB run OOM-killed and was rejected",
+      "deselect": [
+        "tests/test_executor.py::TestExecutor::test_execute_tpcds"
+      ]
     },
     "t30x045": {
       "kind": "shape",

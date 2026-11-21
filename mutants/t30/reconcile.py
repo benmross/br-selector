@@ -33,6 +33,7 @@ def main():
         row['kind'] = manifest[cid]['kind']
         row['label_scope'] = manifest[cid].get('label_scope', 'full numbered suite except 1490')
         if 'tests' in manifest[cid]: row['tests_run'] = manifest[cid]['tests']
+        if manifest[cid].get('deselect'): row['additional_deselected'] = manifest[cid]['deselect']
         text = (logs/(cid+'.log')).read_text()
         new = failure_keys(text) - baseline
         failing = failure_numbers({nodeid for _,_,nodeid in new}, tests)
@@ -46,6 +47,9 @@ def main():
     (directory/'label_quality.json').write_text(json.dumps({
         'baseline_failure_keys':sorted(baseline),'added_after_subtest_reconciliation':added,
         'deselected':[1490], 'reason':'Pinned max_nodes OOMs alone with the required 1 GiB cap',
+        'baseline_environment_failure':'TPC-DS 88 exceeds DuckDB reference execution memory (819 MiB); other new subtest failures are counted',
+        'broad_numbered_tests':1619,'smoke_failure_counts_are_lower_bounds':True,
+        'additional_mutant_exclusions':{c:r['deselect'] for c,r in manifest.items() if r.get('deselect')},
         'container':'python:3.13-slim@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90',
         'cpuset':'8-9','memory_bytes':1073741824,'pytest_workers':0},indent=2)+'\n')
     print('recovered',added)

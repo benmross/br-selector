@@ -1,0 +1,182 @@
+{
+  "sample": {
+    "commits": 30,
+    "labeled": 30,
+    "narrowed": [],
+    "widened": [],
+    "cpu_seconds": {
+      "base": 1.1146,
+      "candidate": 1.1227
+    },
+    "base": {
+      "misses": {},
+      "execution_seconds": 116.857,
+      "simulated_seconds": 116.857
+    },
+    "candidate": {
+      "misses": {},
+      "execution_seconds": 116.857,
+      "simulated_seconds": 116.857
+    }
+  },
+  "gate238": {
+    "commits": 238,
+    "labeled": 238,
+    "narrowed": [],
+    "widened": [],
+    "cpu_seconds": {
+      "base": 20.4816,
+      "candidate": 21.8557
+    },
+    "base": {
+      "misses": {},
+      "execution_seconds": 2989.116,
+      "simulated_seconds": 2989.116
+    },
+    "candidate": {
+      "misses": {},
+      "execution_seconds": 2989.116,
+      "simulated_seconds": 2989.116
+    }
+  },
+  "t3": {
+    "commits": 20,
+    "labeled": 20,
+    "narrowed": [],
+    "widened": [],
+    "cpu_seconds": {
+      "base": 1.7977,
+      "candidate": 1.8238
+    },
+    "base": {
+      "misses": {},
+      "execution_seconds": 394.149,
+      "simulated_seconds": 394.149
+    },
+    "candidate": {
+      "misses": {},
+      "execution_seconds": 394.149,
+      "simulated_seconds": 394.149
+    }
+  },
+  "t14": {
+    "commits": 17,
+    "labeled": 17,
+    "narrowed": [],
+    "widened": [],
+    "cpu_seconds": {
+      "base": 3.3687,
+      "candidate": 3.1103
+    },
+    "base": {
+      "misses": {},
+      "execution_seconds": 422.387,
+      "simulated_seconds": 422.387
+    },
+    "candidate": {
+      "misses": {},
+      "execution_seconds": 422.387,
+      "simulated_seconds": 422.387
+    }
+  },
+  "t15": {
+    "commits": 25,
+    "labeled": 25,
+    "narrowed": [],
+    "widened": [],
+    "cpu_seconds": {
+      "base": 2.4959,
+      "candidate": 2.6072
+    },
+    "base": {
+      "misses": {},
+      "execution_seconds": 647.799,
+      "simulated_seconds": 647.799
+    },
+    "candidate": {
+      "misses": {},
+      "execution_seconds": 647.799,
+      "simulated_seconds": 647.799
+    }
+  },
+  "t24a": {
+    "commits": 6,
+    "labeled": 6,
+    "narrowed": [],
+    "widened": [],
+    "cpu_seconds": {
+      "base": 1.5895,
+      "candidate": 1.4984
+    },
+    "base": {
+      "misses": {},
+      "execution_seconds": 193.275,
+      "simulated_seconds": 193.275
+    },
+    "candidate": {
+      "misses": {},
+      "execution_seconds": 193.275,
+      "simulated_seconds": 193.275
+    }
+  },
+  "hid": {
+    "commits": 400,
+    "labeled": 0,
+    "narrowed": [],
+    "widened": [],
+    "cpu_seconds": {
+      "base": 12.7758,
+      "candidate": 13.3244
+    },
+    "base": {
+      "misses": {},
+      "execution_seconds": 3491.011,
+      "simulated_seconds": 3491.011
+    },
+    "candidate": {
+      "misses": {},
+      "execution_seconds": 3491.011,
+      "simulated_seconds": 3491.011
+    }
+  },
+  "fresha": {
+    "commits": 150,
+    "labeled": 0,
+    "narrowed": [],
+    "widened": [],
+    "cpu_seconds": {
+      "base": 39.6964,
+      "candidate": 38.3032
+    },
+    "base": {
+      "misses": {},
+      "execution_seconds": 4551.398,
+      "simulated_seconds": 4551.398
+    },
+    "candidate": {
+      "misses": {},
+      "execution_seconds": 4551.398,
+      "simulated_seconds": 4551.398
+    }
+  },
+  "freshb": {
+    "commits": 50,
+    "labeled": 0,
+    "narrowed": [],
+    "widened": [],
+    "cpu_seconds": {
+      "base": 6.1942,
+      "candidate": 6.1136
+    },
+    "base": {
+      "misses": {},
+      "execution_seconds": 556.021,
+      "simulated_seconds": 556.021
+    },
+    "candidate": {
+      "misses": {},
+      "execution_seconds": 556.021,
+      "simulated_seconds": 556.021
+    }
+  }
+}
