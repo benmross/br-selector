@@ -23,7 +23,7 @@ def failure_keys(text):
 def main():
     directory = Path(__file__).resolve().parent
     tests = {t['id']:t['number'] for t in json.load(open(directory/'tests.json'))['tests']}
-    logs = directory / 'answers.json.logs'
+    logs = Path(sys.argv[1]) if len(sys.argv) > 1 else directory / 'answers.json.logs'
     baseline = failure_keys((logs/'baseline.log').read_text())
     answer_path = directory/'answers.json'
     answers = json.load(open(answer_path))

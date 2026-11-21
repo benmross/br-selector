@@ -8,6 +8,7 @@ Touch <answers>.stop to finish the current mutant and stop with source restored.
 An optional <answers>.order JSON list prioritizes ids for an unsharded run.
 """
 import json
+import glob
 import os
 import subprocess
 import sys
@@ -16,7 +17,7 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, "/kit")
 from selector import apply, parse_patch  # noqa: E402
-from label_reports import report_failures  # noqa: E402
+from label_reports import report_failures, startup_failures  # noqa: E402
 
 muts, src, out = (os.path.abspath(p) for p in sys.argv[1:4])
 shard, nshards = (int(x) for x in (sys.argv[4:6] if len(sys.argv) > 5 else ("0", "1")))
@@ -62,6 +63,11 @@ def run_suite(tag, targets=("tests",)):
         raise RuntimeError(f"OOM during pytest {tag}; refusing an infrastructure-dependent label")
     if r.returncode not in (0, 1, 2):
         raise RuntimeError(f"pytest exited {r.returncode}; see {log_dir}/{tag}.log")
+    if not glob.glob(prefix + ".*.json"):
+        startup = startup_failures(r.stdout + "\n" + r.stderr, r.returncode, src, tests)
+        if startup is not None:
+            print(tag, "pytest startup failed in patched source; all collection users fail", flush=True)
+            return startup
     return report_failures(prefix, tests)
 
 
