@@ -6,7 +6,8 @@ set -u
 R=$HOME/herald/projects/blast-radius
 B=$1; N=$2; O=$3; mkdir -p "$O"
 T15=$O/t15set; rm -rf "$T15"; mkdir -p "$T15"; cp -r "$R/work/wt/t24a/mutants/t15/commits" "$T15/" 2>/dev/null || cp -r "$R/mutants/t15/commits" "$T15/"; cp "$R/sample/tests.json" "$T15/"
-for s in sample:$R/sample mutset:$R/work/mutset t3:$R/work/wt/t3/work/t3-recorded t14:$R/work/wt/t24a/mutants/t14 t15:$T15 t24a:$R/work/wt/t24a/mutants/t24a hid:$R/work/wt/t9/work/t9/hid; do
+SETS=${SETS:-"sample:$R/sample mutset:$R/work/mutset t3:$R/work/wt/t3/work/t3-recorded t14:$R/work/wt/t24a/mutants/t14 t15:$T15 t24a:$R/work/wt/t24a/mutants/t24a hid:$R/work/wt/t9/work/t9/hid fresha:$R/work/wt/t9/work/t9/fresha freshb:$R/work/wt/t9/work/t9/freshb"}
+for s in $SETS; do
   name=${s%%:*}; d=${s#*:}
   for which in base new; do
     m=$B; [ $which = new ] && m=$N
