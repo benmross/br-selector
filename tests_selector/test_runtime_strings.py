@@ -114,3 +114,24 @@ def test_function_doc_keeps_code_constant_observer(sandbox,rel,expected):
     s.SRC=str(src)
     why=[]
     assert obj.for_file(s.parse_patch(diff(rel,before,after))[0],why)==expected
+
+
+def test_changed_callback_uses_its_body_not_sibling_or_class_users(sandbox):
+    run,src=sandbox
+    import gzip,json
+    m=json.load(gzip.open(run.env['MAP_PATH'],'rt'))
+    rel='sqlglot/generators/demo.py'
+    before='class DemoGenerator:\n    TRANSFORMS={\n        1:lambda s,e:"old",\n        2:lambda s,e:"sibling",\n    }\n'
+    p=src/rel;p.parent.mkdir(parents=True,exist_ok=True);p.write_text(before)
+    m['files'][rel]={'3':0,'4':1}
+    m['classes']['sqlglot.generators.demo:DemoGenerator']=3
+    tests=json.load(open(Path(run.env['DATA_DIR'])/'tests.json'))['tests']
+    obj=s.Selector({t['number']:(t['id'],t['file'],1) for t in tests},m)
+    obj.index={'@pinned_string_audit':True,'@generator_string_calls':[['sqlglot/generator.py',1,1]],'@qualified_reads':{}}
+    obj.readers=lambda names:(None,set())
+    obj._single_file_patch=True
+    from test_patches import diff
+    s.SRC=str(src)
+    why=[]
+    got=obj.for_file(s.parse_patch(diff(rel,before,before.replace('old','new')))[0],why)
+    assert got=={0},why

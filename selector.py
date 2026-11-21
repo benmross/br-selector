@@ -607,6 +607,7 @@ class Selector:
 
     def _for_python(self, fp, path, why):
         self._literal_extra_users = set()
+        self._runtime_string_users = None
         old_text = None
         if fp.old is not None:
             try:
@@ -846,6 +847,10 @@ class Selector:
                 why.append(f"{path}: possible import failure, everything")
                 return set(self.all)
             why.append(f"{path}: no runtime/data users, stock argparse help stored but never read at import")
+        if self._runtime_string_users is not None:
+            # These constants cannot affect registration or other callbacks.
+            # Only the changed lambda scopes can observe their values.
+            out = set(self._runtime_string_users)
         out |= self._literal_extra_users
         return out
 
@@ -943,8 +948,11 @@ class Selector:
         for rel, first, last in self.index['@generator_string_calls']:
             if any(line in self.import_lines.get(rel, ()) for line in range(first, last + 1)):
                 return False
-        for node in lambdas or ():
-            self._literal_extra_users |= self.cov(path, range(node.lineno, node.end_lineno + 1))
+        if lambdas:
+            self._literal_extra_users = set()
+            self._runtime_string_users = set()
+            for node in lambdas:
+                self._runtime_string_users |= self.cov(path, range(node.lineno, node.end_lineno + 1))
         kind = 'rename_func closure arguments' if factory else 'lambda-body strings'
         why.append(f'{path}: only stored generator {kind} changed; runtime dispatch coverage retained')
         return True
