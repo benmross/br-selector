@@ -43,6 +43,19 @@ try:
     run('mutant-pair',[primer,later])
 finally:
     path.write_text(before)
+fps = parse_patch((root/'mutants/t30/commits/t30x078.patch').read_text())
+saved = {fp.old:(source/fp.old).read_text() for fp in fps}
+try:
+    for i, fp in enumerate(fps):
+        (source/fp.old).write_text(apply(saved[fp.old],fp)[0])
+        run(f'joint-alone-{i}',['tests/test_diff.py'])
+        (source/fp.old).write_text(saved[fp.old])
+    for fp in fps: (source/fp.old).write_text(apply(saved[fp.old],fp)[0])
+    run('joint-together',['tests/test_diff.py'])
+finally:
+    for name,text in saved.items(): (source/name).write_text(text)
+results['joint_only_failure_confirmed'] = (not results['joint-alone-0']['failing']
+    and not results['joint-alone-1']['failing'] and bool(results['joint-together']['failing']))
 results['order_dependence_confirmed'] = (not results['baseline-pair']['failing']
     and not results['mutant-alone']['failing'] and tests[later] in results['mutant-pair']['failing'])
 (out/'result.json').write_text(json.dumps(results,indent=2)+'\n')

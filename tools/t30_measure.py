@@ -48,8 +48,12 @@ for name, original in sets.items():
     dataset = OUT / ('data-'+name)
     if not dataset.exists():
         dataset.mkdir()
-        shutil.copytree(original/'commits',dataset/'commits')
+        (dataset/'commits').mkdir()
         shutil.copy(REPO/'sample/tests.json',dataset/'tests.json')
+    current = {p.name for p in (original/'commits').glob('*.patch')}
+    for path in (dataset/'commits').glob('*.patch'):
+        if path.name not in current: path.unlink()
+    for path in (original/'commits').glob('*.patch'): shutil.copy(path,dataset/'commits'/path.name)
     if (original/'answers.json').exists(): shutil.copy(original/'answers.json',dataset/'answers.json')
     answers = json.load(open(dataset/'answers.json'))['commits'] if (dataset/'answers.json').exists() else {}
     variants = {}; cpus = {}

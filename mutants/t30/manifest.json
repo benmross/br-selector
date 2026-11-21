@@ -740,6 +740,18 @@
         "sqlglot/dialects/sqlite.py"
       ],
       "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t30x078": {
+      "kind": "shape",
+      "description": "two individually harmless edits fail only together",
+      "paths": [
+        "sqlglot/helper.py",
+        "sqlglot/diff.py"
+      ],
+      "tests": [
+        "tests/test_diff.py"
+      ],
+      "label_scope": "smoke: inserted import-time code makes main select all 1620 tests"
     }
   }
 }

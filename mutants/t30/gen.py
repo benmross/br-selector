@@ -184,6 +184,13 @@ emit('shape','PEP 701 comment in f-string expression',[(p,a,a.replace('f"<pre>SE
 
 replace('metaclass','time-map key changes type','sqlglot/dialects/mysql.py','"%M": "%B"','0: "%B"')
 replace('metaclass','quote tuple arity shrinks','sqlglot/dialects/sqlite.py','("[", "]")','("[",)')
-assert len(manifest) == 78, len(manifest)
+p = 'sqlglot/helper.py'; q = 'sqlglot/diff.py'
+a = (SRC/p).read_text(); b = (SRC/q).read_text()
+emit('shape','two individually harmless edits fail only together',[
+    (p,a,a+'\nseq_get._t30_joint_guard = True\n'),
+    (q,b,b+'\nif getattr(seq_get, "_t30_joint_guard", False):\n    raise RuntimeError("t30 joint guard")\n')])
+manifest['t30x078']['tests'] = ['tests/test_diff.py']
+manifest['t30x078']['label_scope'] = 'smoke: inserted import-time code makes main select all 1620 tests'
+assert len(manifest) == 79, len(manifest)
 (OUT/'manifest.json').write_text(json.dumps({'commits':manifest},indent=2)+'\n')
 print('generated',len(manifest))
