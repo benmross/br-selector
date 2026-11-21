@@ -1,14 +1,14 @@
 | Mutant | Class | Change | Failing | c/nostr selects | c/nostr s | main s | w/t56 = c/nostr | Miss (c/nostr) |
 |---|---:|---|---:|---:|---:|---:|---|---|
-| t56x036 | 1 | MySQL TIME_MAPPING value of %W changed %A to %a (Presto aliases MySQL.TIME_MAPPING) | unlabeled | 444 | 12.7 | 13.4 | yes | - |
+| t56x036 | 1 | MySQL TIME_MAPPING value of %W changed %A to %a (Presto aliases MySQL.TIME_MAPPING) | 4 | 444 | 12.7 | 13.4 | yes | no |
 | t56x038 | 1 | ClickHouse NULL_ORDERING nulls_are_last changed to nulls_are_large | unlabeled | 150 | 11.5 | 36.8 | yes | - |
 | t56x039 | 1 | Drill NULL_ORDERING nulls_are_last changed to nulls_are_small | unlabeled | 36 | 10.7 | 36.8 | yes | - |
 | t56x040 | 1 | Doris TIME_FORMAT changed to include milliseconds | unlabeled | 45 | 10.2 | 36.8 | yes | - |
-| t56x041 | 1 | ClickHouse TIME_MAPPING value of %i changed %M to %m | unlabeled | 150 | 11.5 | 12.9 | yes | - |
+| t56x041 | 1 | ClickHouse TIME_MAPPING value of %i changed %M to %m | 2 | 150 | 11.5 | 12.9 | yes | no |
 | t56x037 | 2 | BigQuery TIME_MAPPING value of %e changed %-d to %d | unlabeled | 293 | 12.7 | 12.7 | yes | - |
 | t56x042 | 2 | BigQuery TIME_MAPPING key %E6S renamed %E3S | unlabeled | 293 | 12.7 | 13.9 | yes | - |
 | t56x043 | 2 | ClickHouse TIME_MAPPING key %W renamed %a | unlabeled | 150 | 11.5 | 12.9 | yes | - |
-| t56x044 | 2 | temporal.py arg_types key unit renamed part (this, unit expression at line 352) | unlabeled | 13 | 5.4 | 36.8 | yes | - |
+| t56x044 | 2 | temporal.py arg_types key unit renamed part (this, unit expression at line 352) | 5 | 13 | 5.4 | 36.8 | yes | no |
 | t56x045 | 3 | base FUNCTIONS key SORT_ARRAY renamed SORTARRAY (value build_sort_array) | unlabeled | 1620 | 36.8 | 36.8 | yes | - |
 | t56x046 | 3 | base FUNCTIONS key ARRAY_APPEND renamed ARRAY_PUSH_BACK (value build_array_append) | unlabeled | 1620 | 36.8 | 36.8 | yes | - |
 | t56x047 | 3 | MySQL FUNCTIONS key STR_TO_DATE renamed STRTODATE (value _str_to_date) | unlabeled | 298 | 9.8 | 36.8 | yes | - |
@@ -60,7 +60,7 @@
 | t56x068 | 4 | DuckDB generator TRANSFORMS rename_func("LIST_FILTER") changed to "ARRAY_FILTER" | 7 | 377 | 27.5 | 36.8 | yes | no |
 | t56x051 | 5 | Presto RESERVED_KEYWORDS member alter renamed analyze (Trino/Athena inherit) | unlabeled | 180 | 8.5 | 8.5 | yes | - |
 | t56x052 | 5 | Redshift RESERVED_KEYWORDS member aes128 renamed aes192 | unlabeled | 87 | 7.9 | 7.9 | yes | - |
-| t56x053 | 5 | array.py ArrayContains _sql_names ARRAY_HAS renamed ARRAY_HAS_ANY | unlabeled | 11 | 6.3 | 36.8 | yes | - |
+| t56x053 | 5 | array.py ArrayContains _sql_names ARRAY_HAS renamed ARRAY_HAS_ANY | 0 | 11 | 6.3 | 36.8 | yes | no |
 | t56x054 | 5 | array.py ArraySize _sql_names ARRAY_LENGTH renamed ARRAY_LEN | unlabeled | 27 | 8.6 | 36.8 | yes | - |
 | t56x055 | 5 | DuckDB FUNCTIONS_WITH_ALIASED_ARGS member STRUCT_PACK renamed ROW_PACK | unlabeled | 247 | 12.5 | 36.8 | yes | - |
 | t56x056 | 6 | Hive generator SAFE_JSON_PATH_KEY_RE drops the hyphen (Spark family inherits) | unlabeled | 304 | 12.7 | 36.8 | yes | - |
