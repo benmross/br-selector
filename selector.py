@@ -551,6 +551,17 @@ class Selector:
                 why.append(f"{path}: source encoding changed semantics, everything")
                 return set(self.all)
         touched = set(changed) | set(inserts) | {i + 1 for i in inserts}
+        # Lines inserted after blank or comment lines can extend the block that
+        # ends at the last code line before them (a statement appended to a
+        # function, a method appended to a class). That block must be compared
+        # too, although it ends before the insertion point.
+        old_lines = old_text.split("\n")
+        for ins in inserts:
+            q = ins
+            while q >= 1 and (not old_lines[q - 1].strip() or old_lines[q - 1].lstrip().startswith("#")):
+                q -= 1
+            if q >= 1:
+                touched.add(q)
         if same_ast(old_tree.body, new_tree.body, min(touched or {0}), max(touched or {0})):
             why.append(f"{path}: syntax tree unchanged")
             return set()
@@ -614,6 +625,7 @@ class Selector:
                 points.add(ins if ins >= 1 else 1)
                 points.add(ins + 1)
                 import_level = True
+        out |= self.dedented_blocks(fp, old_text, scopes, path, why)
         for line in sorted(points):
             s = scopes.at(line)
             if s is None:
@@ -637,6 +649,58 @@ class Selector:
             # output. Unknown import effects need a conservative selection.
             why.append(f"{path}: possible import failure, everything")
             return set(self.all)
+        return out
+
+    def dedented_blocks(self, fp, old_text, scopes, path, why):
+        """An added line indented less than the old code line it follows or
+        replaces belongs to an outer block (a statement appended after a nested
+        if/for, or moved out of one). It runs whenever that outer block runs,
+        not only when the inner line did."""
+        old_lines = old_text.split("\n")
+
+        def indent(text):
+            return len(text) - len(text.lstrip(" \t"))
+
+        def code(text):
+            body = text.strip()
+            return bool(body) and not body.startswith("#")
+
+        out = set()
+        for start, lines in fp.hunks:
+            pos = start - 1 if start else 0  # old lines consumed so far
+            ref = pos
+            while ref >= 1 and not code(old_lines[ref - 1]):
+                ref -= 1
+            for l in lines:
+                tag, body = l[:1], l[1:].rstrip("\n")
+                if tag in (" ", "-"):
+                    pos += 1
+                    if code(body):
+                        ref = pos
+                    continue
+                if not code(body) or ref < 1 or indent(body) >= indent(old_lines[ref - 1]):
+                    continue
+                d = indent(body)
+                parent = None
+                for st in scopes.stmts:
+                    node = st[3]
+                    blocks = [b for f in ("body", "orelse", "finalbody") for b in [getattr(node, f, None)] if b]
+                    if st[0] <= ref <= st[1] and any(b[0].col_offset == d for b in blocks if isinstance(b[0], ast.stmt)):
+                        if parent is None or st[1] - st[0] <= parent[1] - parent[0]:
+                            parent = st
+                if parent is None:
+                    continue
+                node = parent[3]
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    first = node.body[0]
+                    span = range(first.lineno, first.end_lineno + 1)
+                elif parent[4]:
+                    span = range(parent[0], min(parent[2], parent[1]) + 1)
+                else:
+                    continue
+                got = self.cov(path, span)
+                why.append(f"{path}:{ref} dedented line runs with its outer block: {len(got)}")
+                out |= got | self.at_import(path, span, why)
         return out
 
     def at_import(self, path, span, why):
@@ -667,6 +731,17 @@ class Selector:
                 # a nested Tokenizer's settings are read through its dialect
                 users |= self.class_users(module, ".".join(parts[:i]))
             names = assigned_names(stmt) if stmt is not None else None
+            if not any(f"{module}:{'.'.join(parts[:i])}" in self.m["classes"]
+                       for i in range(1, len(parts) + 1)):
+                # No test ever instantiated this class (an Enum, a namespace
+                # read through the class, __members__ or a metaclass), so its
+                # instance users cannot narrow anything.
+                if self.import_lines.get(path):
+                    why.append(f"{path}:{line} class {cls} never instantiated, module runs at import: everything")
+                    return set(self.all)
+                got = self.file_users(path) | self.module_classes_users(module)
+                why.append(f"{path}:{line} class {cls} never instantiated: module users {len(got)}")
+                return got
             if names and any(n.startswith("__") and n.endswith("__") for n in names):
                 # Python reads protocol attributes implicitly (e.g. __slots__
                 # during type construction). Explicit name readers cannot
