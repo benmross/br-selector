@@ -844,6 +844,8 @@ class Selector:
                 unused = not self.broad(path) and not self.fixture_users(path)
                 safe_help = unused and unread
             if not safe_help:
+                if CENSUS_MODE == 5 and could_raise_trigger(fp, old_text, new_text) == "tok-str":
+                    why.append(f"{path}{CENSUS_MARK}{census_string_class(fp, old_tree, new_tree)}")
                 why.append(f"{path}: possible import failure, everything")
                 return set(self.all)
             why.append(f"{path}: no runtime/data users, stock argparse help stored but never read at import")
@@ -2503,6 +2505,87 @@ def could_raise(fp, old_text=None, new_text=None):
             return got
     return True
 
+def could_raise_trigger(fp, old_text=None, new_text=None):
+    """Census 4 only: which branch of could_raise returned True, the first
+    that matches in could_raise's own order. Selections never read this.
+      tok-word  a changed code token is a RISKY_WORDS keyword
+      tok-op    a changed code token holds a RISKY_OPS operator, or does not
+                tokenize as Python (ERRORTOKEN)
+      tok-name  a changed code NAME absent from the removed lines
+      tok-str   only a word inside a changed string literal is new
+      lex-word, lex-op, lex-name  the file version did not tokenize, so the
+                lexical reading decided: risky word, risky operator, new
+                identifier
+    None when could_raise is False."""
+    import tokenize
+
+    removed_l, added_l = [], []
+    for _, lines in fp.hunks:
+        for l in lines:
+            if l[:1] == "-":
+                removed_l.append(l[1:])
+            elif l[:1] == "+":
+                added_l.append(l[1:])
+    lex_before = set(IDENT.findall("\n".join(removed_l)))
+    added_text = "\n".join(added_l)
+    lex_after = set(IDENT.findall(added_text))
+    if lex_after & RISKY_WORDS:
+        lex = "lex-word"
+    elif any(op in added_text for op in RISKY_OPS):
+        lex = "lex-op"
+    elif (lex_after - KEYWORDS) - lex_before:
+        lex = "lex-name"
+    else:
+        return None
+    if old_text is None or new_text is None:
+        return lex
+    removed, added = set(), set()
+    for (start, lines), (old_count, new_start, _) in zip(fp.hunks, fp.ranges):
+        o = start if old_count else start + 1
+        n = new_start
+        for l in lines:
+            if l[:1] == " ":
+                o += 1
+                n += 1
+            elif l[:1] == "-":
+                removed.add(o)
+                o += 1
+            elif l[:1] == "+":
+                added.add(n)
+                n += 1
+    old_toks = _changed_tokens(old_text, removed) if removed else []
+    new_toks = _changed_tokens(new_text, added) if added else []
+    if old_toks is None or new_toks is None:
+        return lex
+    strings = {tokenize.STRING} | {getattr(tokenize, k) for k in ("FSTRING_MIDDLE", "TSTRING_MIDDLE")
+                                   if hasattr(tokenize, k)}
+
+    def words(toks):
+        code, data = set(), set()
+        for t in toks:
+            if t.type == tokenize.NAME:
+                code.add(t.string)
+            elif t.type in strings:
+                data |= set(IDENT.findall(t.string))
+            elif t.type == tokenize.OP and any(op in t.string for op in RISKY_OPS):
+                code.add("<op>")
+            elif t.type == tokenize.ERRORTOKEN:
+                code.add("<op>")
+        return code, data
+
+    before_code, before_data = words(old_toks)
+    after_code, after_data = words(new_toks)
+    before = before_code | before_data
+    if after_code & RISKY_WORDS:
+        return "tok-word"
+    if "<op>" in after_code:
+        return "tok-op"
+    if (after_code - KEYWORDS - {"<op>"}) - before:
+        return "tok-name"
+    if after_data - before:
+        return "tok-str"
+    return None
+
 
 def _lexical_could_raise(fp):
     removed, added = [], []
@@ -2885,6 +2968,158 @@ def analyze_patch(context, patch_path, sel, tests, deadline):
             process.close()
 
 
+
+# ---------------------------------------------------------------- census 5
+
+# Diagnostic entry, never a candidate. The analysis runs unchanged, but every
+# commit's line holds every test, so no miss is possible, packed so that the
+# commit costs exactly the optimal all-tests cost (36.817 s) plus x. Only
+# commits that could_raise sends to everything through its tok-str branch
+# (after every literal proof declined) carry x: in output order, the first
+# adds c1 s and the second 8 x c2 s, c = census_string_class (1..7); a third
+# or later one, and every other commit, adds 0.
+CENSUS_MODE = 5
+CENSUS_FALLBACKS = ("commit analysis timed out", "commit analysis stopped", "analysis process failed",
+                    "batch analysis deadline", "analysis error", "map unavailable")
+CENSUS_MARK = ": census5 tok-str class "
+CENSUS_WEIGHTS = (1000, 8000)
+
+
+def census_string_class(fp, old_tree, new_tree):
+    """Census 5 only: where the first changed string literal on an added
+    line (file order, outside function bodies) sits. Reads the parsed ASTs,
+    never executes anything; any error is class 7.
+      1 value in a dict literal (the string is the value or inside a
+        non-call value expression)
+      2 key in a dict literal, or a member of a set, tuple or list
+      3 inside a lambda, or an argument of a call that is a dict value or
+        set/tuple/list member (stored callable tables)
+      4 argument of a call outside tables, a default argument or decorator
+      5 docstring or bare string statement
+      6 the whole value of an assignment (constant, enum member, name)
+      7 anything else, or no such string found"""
+    try:
+        return _census_string_class(fp, old_tree, new_tree)
+    except Exception:
+        return 7
+
+
+def _census_string_class(fp, old_tree, new_tree):
+    added = set()
+    for (start, lines), (old_count, new_start, _) in zip(fp.hunks, fp.ranges):
+        n = new_start
+        for l in lines:
+            if l[:1] == " ":
+                n += 1
+            elif l[:1] == "+":
+                added.add(n)
+                n += 1
+    old_strings = {}
+    for node in ast.walk(old_tree):
+        if isinstance(node, ast.Constant) and isinstance(node.value, str):
+            old_strings[node.value] = old_strings.get(node.value, 0) + 1
+    parent = {}
+    for node in ast.walk(new_tree):
+        for child in ast.iter_child_nodes(node):
+            parent[child] = node
+    best = None
+    for node in ast.walk(new_tree):
+        if not (isinstance(node, ast.Constant) and isinstance(node.value, str)):
+            continue
+        if node.lineno not in added and getattr(node, "end_lineno", node.lineno) not in added:
+            continue
+        # outside function bodies (import level); lambdas count
+        p, child, inside_def = parent.get(node), node, False
+        while p is not None:
+            if isinstance(p, (ast.FunctionDef, ast.AsyncFunctionDef)) and child in p.body:
+                inside_def = True
+                break
+            child, p = p, parent.get(p)
+        if inside_def:
+            continue
+        key = (node.value in old_strings, node.lineno, node.col_offset)
+        if best is None or key < best[0]:
+            best = (key, node)
+    if best is None:
+        return 7
+    node = best[1]
+    p = parent.get(node)
+    if isinstance(p, ast.Expr):
+        return 5
+    chain, child, p = [], node, parent.get(node)
+    while p is not None and not isinstance(p, (ast.stmt, ast.Lambda)):
+        chain.append((p, child))
+        child, p = p, parent.get(p)
+    if isinstance(p, ast.Lambda):
+        return 3
+    calls = [(a, c) for a, c in chain if isinstance(a, ast.Call) and c is not a.func]
+    tables = [(a, c) for a, c in chain if isinstance(a, (ast.Dict, ast.Set, ast.Tuple, ast.List))]
+    if calls and tables and chain.index(calls[0]) < chain.index(tables[0]):
+        return 3
+    if tables:
+        a, c = tables[0]
+        if isinstance(a, ast.Dict):
+            return 2 if any(k is c for k in a.keys) else 1
+        return 2
+    if calls:
+        return 4
+    if isinstance(p, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+        return 4  # default argument, decorator or class keyword
+    if isinstance(p, (ast.Assign, ast.AnnAssign)) and p.value is node:
+        return 6
+    return 7
+
+
+def census_x(why, tests, chosen, seen):
+    """Milliseconds to add to this commit's cost; seen counts earlier
+    tok-str fallback commits in output order."""
+    if not (len(chosen) == len(tests) and chosen == set(tests)):
+        return 0
+    if any(w.startswith(CENSUS_FALLBACKS) for w in why):
+        return 0
+    deciding = [w for w in why if w.endswith("everything")]
+    if not deciding or not deciding[-1].endswith("possible import failure, everything"):
+        return 0
+    marks = [w for w in why if CENSUS_MARK in w]
+    if not marks:
+        return None  # not a tok-str fallback
+    c = int(marks[-1].rsplit(" ", 1)[1])
+    if not 1 <= c <= 7:
+        c = 7
+    return CENSUS_WEIGHTS[seen] * c if seen < len(CENSUS_WEIGHTS) else 0
+
+
+def census_workers(tests, x):
+    """Every test once over 4 workers: the worker with the heaviest test is
+    filled to exactly heaviest + x ms, the other three stay below it. Cost =
+    heaviest + x + 4 * WORKER_MS. None when that cannot be met exactly."""
+    order = sorted(tests, key=lambda n: (-tests[n][2], n))
+    heavy = order[0]
+    target = tests[heavy][2] + x
+    first, left = [heavy], x
+    rest = []
+    for n in order[1:]:
+        ms = tests[n][2]
+        if left > 0 and ms <= left and ms > 0:
+            first.append(n)
+            left -= ms
+        else:
+            rest.append(n)
+    if left != 0:
+        return None
+    loads, bins = [0, 0, 0], [[], [], []]
+    for n in rest:
+        i = min(range(3), key=loads.__getitem__)
+        loads[i] += tests[n][2]
+        bins[i].append(n)
+    if max(loads) >= target or not all(bins):
+        return None
+    workers = [sorted(first)] + [sorted(b) for b in bins]
+    assert sorted(n for w in workers for n in w) == sorted(tests)
+    assert max(sum(tests[n][2] for n in w) for w in workers) + WORKER_MS * len(workers) == target + 4 * WORKER_MS
+    return workers
+
+
 def main():
     import multiprocessing
 
@@ -2915,12 +3150,24 @@ def main():
     paths = [os.path.join(cdir, name) for name in sorted(os.listdir(cdir)) if name.endswith(".patch")]
 
     emitted = set()
+    census, census_seen = {}, [0]
 
     def emit(path, chosen, why):
         if path in emitted:  # one line per commit, whatever happens
             return
         cid = os.path.basename(path)[: -len(".patch")]
         workers = fallback_workers if chosen == everything else pack(chosen, tests)
+        if CENSUS_MODE:
+            try:
+                x = census_x(why, tests, chosen, census_seen[0])
+                if x is not None:
+                    census_seen[0] += 1
+                x = x or 0
+                if x not in census:
+                    census[x] = census_workers(tests, x)
+                workers = census[x] or fallback_workers
+            except Exception:
+                workers = fallback_workers
         log(cid, len(chosen), "tests;", "; ".join(why))
         sys.stdout.write(json.dumps({"commit": cid, "workers": workers}) + "\n")
         emitted.add(path)
