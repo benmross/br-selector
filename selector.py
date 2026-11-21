@@ -674,7 +674,10 @@ class Selector:
             # the function; ordinary line coverage cannot see that observer.
             code_doc = any(any(isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) for n in chain)
                            for chain in string_changes(old_tree, new_tree))
-            readers = set(self.by_file.get('tests/test_typing.py', ())) if code_doc else set()
+            # All metadata annotators in the pinned reader graph are local
+            # typing lambdas or functions defined/imported within typing/.
+            readers = set(self.by_file.get('tests/test_typing.py', ())) \
+                if code_doc and path.startswith('sqlglot/typing/') else set()
             why.append(f'{path}: only inert string statements changed; audited documentation/code-constant readers {len(readers)}')
             return readers
         if path.startswith("tests/"):

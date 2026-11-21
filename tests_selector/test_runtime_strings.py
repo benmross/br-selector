@@ -88,12 +88,14 @@ def test_rename_factory_is_only_an_unchanged_closure_constructor(before,allowed)
     assert s.runtime_rename_changes(ast.parse(before),ast.parse(before.replace('OLD','NEW'))) is allowed
 
 
-def test_function_doc_keeps_code_constant_observer(sandbox):
+@pytest.mark.parametrize('rel,expected',[('sqlglot/typing/local.py',{4}),('sqlglot/other.py',set())])
+def test_function_doc_keeps_code_constant_observer(sandbox,rel,expected):
     run, src = sandbox
     mapping = run.env["MAP_PATH"]
     # TestTyping reads the function's code constant without calling it, so
     # its ID has no runtime coverage of the changed function.
-    p=src/'sqlglot/other.py'
+    p=src/rel
+    p.parent.mkdir(parents=True,exist_ok=True)
     before='def other():\n    "old"\n    return 3\n'
     after=before.replace('old','new')
     p.write_text(before)
@@ -111,4 +113,4 @@ def test_function_doc_keeps_code_constant_observer(sandbox):
     from test_patches import diff
     s.SRC=str(src)
     why=[]
-    assert obj.for_file(s.parse_patch(diff('sqlglot/other.py',before,after))[0],why)=={4}
+    assert obj.for_file(s.parse_patch(diff(rel,before,after))[0],why)==expected
