@@ -668,7 +668,7 @@ class Selector:
             why.append(f"{path}: syntax tree unchanged")
             return set()
         if self._single_file_patch and (self.index or {}).get('@pinned_string_audit') \
-                and inert_string_changes(old_tree, new_tree) and self.docstrings_unobserved():
+                and inert_string_changes(old_tree, new_tree) and self.docstrings_unobserved(path, old_tree, new_tree):
             why.append(f'{path}: only inert string statements changed; audited doc consumers have no numbered runtime users')
             return set()
         if path.startswith("tests/"):
@@ -892,12 +892,20 @@ class Selector:
                 out |= got | self.at_import(path, span, why)
         return out
 
-    def docstrings_unobserved(self):
+    def docstrings_unobserved(self, path, old_tree, new_tree):
         # Complete source-tree fingerprint guards this closed reader audit.
         # pytest does not collect unittest.load_tests; test_docs has no
         # numbered tests. leakcheck reads its own module doc only in main(),
         # which no numbered test invokes. Expr.__init_subclass__ copies a
         # nonempty __doc__ or ""; no runtime code consumes that content.
+        if path.startswith('sqlglot/expressions/'):
+            for chain in string_changes(old_tree, new_tree):
+                owner = chain[-3] if len(chain) >= 3 else None
+                if isinstance(owner, ast.ClassDef) and owner.body[0] is chain[-2]:
+                    # Expr's hook reads even inherited class documentation.
+                    # Keep the fallback rather than assume a metadata copy is
+                    # unobservable for every descendant.
+                    return False
         for rel in ('tests/test_docs.py', 'tests/leakcheck.py'):
             if self.by_file.get(rel) or self.file_users(rel) or self.fixture_users(rel):
                 return False
