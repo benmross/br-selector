@@ -9,7 +9,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO = Path('/home/benmross/herald/projects/blast-radius')
-OUT = ROOT / 'work/t30-measure'
+OUT = Path(os.environ.get('T30_OUT',str(ROOT / 'work/t30-measure')))
 OUT.mkdir(parents=True, exist_ok=True)
 sets = {
     'sample': REPO / 'sample',
@@ -25,7 +25,8 @@ sets = {
 }
 tests = {t['number']: round(t['seconds']*1000) for t in json.load(open(REPO/'sample/tests.json'))['tests']}
 baseline = OUT / 'baseline.py'
-baseline.write_bytes(subprocess.check_output(['git','show','be28115d6b491536992e294aff9ae9b1d2a27dee:selector.py'],cwd=ROOT))
+base_ref = os.environ.get('T30_BASELINE_COMMIT','be28115d6b491536992e294aff9ae9b1d2a27dee')
+baseline.write_bytes(subprocess.check_output(['git','show',base_ref+':selector.py'],cwd=ROOT))
 
 def usage():
     u = resource.getrusage(resource.RUSAGE_CHILDREN)

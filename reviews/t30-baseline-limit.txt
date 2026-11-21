@@ -1,0 +1,25 @@
+.               [100%]
+=================================== FAILURES ===================================
+_________________ TestExecutor.test_execute_tpcds [tpc-ds 88] __________________
+tests/test_executor.py:168: in subtestHelper
+    a = self.cached_execute(sql, tpch=tpch)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_executor.py:129: in cached_execute
+    self.cache[sql] = conn.execute(transpile(sql, write="duckdb")[0]).fetchdf()
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   _duckdb.OutOfMemoryException: Out of Memory Error: could not allocate block of size 30.5 MiB (795.2 MiB/819.1 MiB used)
+E   
+E   Possible solutions:
+E   * Reducing the number of threads (SET threads=X)
+E   * Disabling insertion-order preservation (SET preserve_insertion_order=false)
+E   * Increasing the memory limit (SET memory_limit='...GB')
+E   
+E   See also https://duckdb.org/docs/current/guides/performance/how_to_tune_workloads
+E   
+E   LINE 1: ... FROM store_sales, household_demographics, time_dim, store WHERE ss_sold_time_sk = time_dim.t_time_sk AND ss_hdemo_sk...
+E                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+=========================== short test summary info ============================
+SUBFAILED[tpc-ds 88] tests/test_executor.py::TestExecutor::test_execute_tpcds
+1 failed, 1 passed, 56 subtests passed in 31.84s
+
+STDERR

@@ -1,0 +1,21 @@
+diff --git a/tests/dialects/test_dialect.py b/tests/dialects/test_dialect.py
+--- a/tests/dialects/test_dialect.py
++++ b/tests/dialects/test_dialect.py
+@@ -6119,7 +6119,7 @@
+ 
+     @unittest.skipIf(_PARSER_IS_COMPILED, "mypyc compiled parsers cannot be subclassed")
+     def test_custom_dialect(self):
+-        class MyDialect(Dialect):
++        class Snowflake(Dialect):
+             class Parser(SnowflakeParser):
+                 FUNCTIONS = {
+                     **SnowflakeParser.FUNCTIONS,
+@@ -6129,7 +6129,7 @@
+                     ),
+                 }
+ 
+-        result = parse_one("SELECT DOUBLE_IT(5)", dialect=MyDialect)
++        result = parse_one("SELECT DOUBLE_IT(5)", dialect=Snowflake)
+         self.assertIsInstance(result.expressions[0], exp.Mul)
+         self.assertEqual(result.sql(), "SELECT 2 * 5")
+ 

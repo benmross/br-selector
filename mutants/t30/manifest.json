@@ -752,6 +752,38 @@
         "tests/test_diff.py"
       ],
       "label_scope": "smoke: inserted import-time code makes main select all 1620 tests"
+    },
+    "t30x079": {
+      "kind": "cache",
+      "description": "test cleanup snapshots wrong shared parser",
+      "paths": [
+        "tests/dialects/test_dialect.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t30x080": {
+      "kind": "cache",
+      "description": "test cleanup restores wrong shared parser",
+      "paths": [
+        "tests/dialects/test_dialect.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t30x081": {
+      "kind": "cache",
+      "description": "test cleanup omitted shared parser restoration",
+      "paths": [
+        "tests/dialects/test_dialect.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t30x082": {
+      "kind": "metaclass",
+      "description": "test-local dialect class overwrites shared registry",
+      "paths": [
+        "tests/dialects/test_dialect.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     }
   }
 }

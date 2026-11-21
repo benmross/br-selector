@@ -191,6 +191,19 @@ emit('shape','two individually harmless edits fail only together',[
     (q,b,b+'\nif getattr(seq_get, "_t30_joint_guard", False):\n    raise RuntimeError("t30 joint guard")\n')])
 manifest['t30x078']['tests'] = ['tests/test_diff.py']
 manifest['t30x078']['label_scope'] = 'smoke: inserted import-time code makes main select all 1620 tests'
-assert len(manifest) == 79, len(manifest)
+p = 'tests/dialects/test_dialect.py'
+replace('cache','test cleanup snapshots wrong shared parser',p,
+        'original = Snowflake.parser_class','original = Dialect.parser_class')
+replace('cache','test cleanup restores wrong shared parser',p,
+        '            Snowflake.parser_class = original','            Snowflake.parser_class = Dialect.parser_class')
+replace('cache','test cleanup omitted shared parser restoration',p,
+        '            Snowflake.parser_class = original','            pass')
+a = (SRC/p).read_text(); tree = ast.parse(a)
+n = next(n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef) and n.name=='test_custom_dialect')
+old = ''.join(a.splitlines(True)[n.lineno-1:n.end_lineno])
+emit('metaclass','test-local dialect class overwrites shared registry',[(p,a,a.replace(old,old.replace('MyDialect','Snowflake'),1))])
+for i in range(79,83):
+    manifest[f't30x{i:03d}']['label_scope'] = 'full numbered suite except memory-infeasible test 1490'
+assert len(manifest) == 83, len(manifest)
 (OUT/'manifest.json').write_text(json.dumps({'commits':manifest},indent=2)+'\n')
 print('generated',len(manifest))
