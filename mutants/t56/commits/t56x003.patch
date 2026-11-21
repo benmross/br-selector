@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -1584,7 +1584,7 @@
+     NO_PAREN_FUNCTION_PARSERS: t.ClassVar = {
+         "ANY": lambda self: self.expression(exp.Any(this=self._parse_bitwise())),
+         "CASE": lambda self: self._parse_case(),
+-        "CONNECT_BY_ROOT": lambda self: self.expression(
++        "CONNECTBYROOT": lambda self: self.expression(
+             exp.ConnectByRoot(this=self._parse_column())
+         ),
+         "IF": lambda self: self._parse_if(),

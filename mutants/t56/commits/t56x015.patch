@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/postgres.py b/sqlglot/parsers/postgres.py
+--- a/sqlglot/parsers/postgres.py
++++ b/sqlglot/parsers/postgres.py
+@@ -124,7 +124,7 @@
+     PROPERTY_PARSERS = {
+         **{k: v for k, v in parser.Parser.PROPERTY_PARSERS.items() if k != "INPUT"},
+         "SET": lambda self: self.expression(exp.SetConfigProperty(this=self._parse_set())),
+-        "TABLESPACE": lambda self: self.expression(
++        "TABLE_SPACE": lambda self: self.expression(
+             exp.TableSpaceProperty(this=self._parse_id_var())
+         ),
+     }

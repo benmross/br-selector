@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -1632,7 +1632,7 @@
+         "TRIM": lambda self: self._parse_trim(),
+         "TRY_CAST": lambda self: self._parse_cast(False, safe=True),
+         "TRY_CONVERT": lambda self: self._parse_convert(False, safe=True),
+-        "WEIGHT_STRING": lambda self: self._parse_weight_string(),
++        "WEIGHTSTRING": lambda self: self._parse_weight_string(),
+         "XMLELEMENT": lambda self: self._parse_xml_element(),
+         "XMLTABLE": lambda self: self._parse_xml_table(),
+     }

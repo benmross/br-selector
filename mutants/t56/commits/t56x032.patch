@@ -1,0 +1,12 @@
+diff --git a/sqlglot/executor/env.py b/sqlglot/executor/env.py
+--- a/sqlglot/executor/env.py
++++ b/sqlglot/executor/env.py
+@@ -283,7 +283,7 @@
+     "EXTRACT": null_if_any(lambda this, e: getattr(e, this)),
+     "GT": null_if_any(lambda this, e: this > e),
+     "GTE": null_if_any(lambda this, e: this >= e),
+-    "IF": lambda predicate, true, false: true if predicate else false,
++    "IIF": lambda predicate, true, false: true if predicate else false,
+     "IN": sql_in,
+     "INT": null_if_any(int),
+     "INTDIV": intdiv,

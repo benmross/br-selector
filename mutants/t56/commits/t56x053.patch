@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/array.py b/sqlglot/expressions/array.py
+--- a/sqlglot/expressions/array.py
++++ b/sqlglot/expressions/array.py
+@@ -118,7 +118,7 @@
+ 
+ class ArrayContains(Expression, Binary, Predicate, Func):
+     arg_types = {"this": True, "expression": True, "ensure_variant": False, "check_null": False}
+-    _sql_names = ["ARRAY_CONTAINS", "ARRAY_HAS"]
++    _sql_names = ["ARRAY_CONTAINS", "ARRAY_HAS_ANY"]
+ 
+ 
+ class ArrayContainsAll(Expression, Binary, Predicate, Func):

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/presto.py b/sqlglot/generators/presto.py
+--- a/sqlglot/generators/presto.py
++++ b/sqlglot/generators/presto.py
+@@ -453,7 +453,7 @@
+     }
+ 
+     RESERVED_KEYWORDS = {
+-        "alter",
++        "analyze",
+         "and",
+         "as",
+         "between",

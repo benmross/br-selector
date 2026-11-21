@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/clickhouse.py b/sqlglot/dialects/clickhouse.py
+--- a/sqlglot/dialects/clickhouse.py
++++ b/sqlglot/dialects/clickhouse.py
+@@ -15,7 +15,7 @@
+ class ClickHouse(Dialect):
+     INDEX_OFFSET = 1
+     NORMALIZE_FUNCTIONS: bool | str = False
+-    NULL_ORDERING = "nulls_are_last"
++    NULL_ORDERING = "nulls_are_large"
+     SUPPORTS_USER_DEFINED_TYPES = False
+     LOG_BASE_FIRST: bool | None = None
+     FORCE_EARLY_ALIAS_REF_EXPANSION = True

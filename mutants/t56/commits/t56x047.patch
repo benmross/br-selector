@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -158,7 +158,7 @@
+         "DATABASE": exp.CurrentSchema.from_arg_list,
+         "STD": exp.StddevPop.from_arg_list,
+         "STDDEV": exp.StddevPop.from_arg_list,
+-        "STR_TO_DATE": _str_to_date,
++        "STRTODATE": _str_to_date,
+         "TIMESTAMPADD": _build_timestampadd,
+         "TIMESTAMPDIFF": build_date_delta(exp.TimestampDiff),
+         "TO_DAYS": lambda args: exp.paren(

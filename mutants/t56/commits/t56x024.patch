@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -440,7 +440,7 @@
+         exp.DateFromParts: rename_func("DATE"),
+         exp.DateStrToDate: datestrtodate_sql,
+         exp.DateSub: date_add_interval_sql("DATE", "SUB"),
+-        exp.DatetimeAdd: date_add_interval_sql("DATETIME", "ADD"),
++        exp.DatetimeAdd: date_add_interval_sql("TIMESTAMP", "ADD"),
+         exp.DatetimeSub: date_add_interval_sql("DATETIME", "SUB"),
+         exp.DateFromUnixDate: rename_func("DATE_FROM_UNIX_DATE"),
+         exp.Day: _extract_part("DAY"),

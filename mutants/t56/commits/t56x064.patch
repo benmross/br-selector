@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/snowflake.py b/sqlglot/parsers/snowflake.py
+--- a/sqlglot/parsers/snowflake.py
++++ b/sqlglot/parsers/snowflake.py
+@@ -453,7 +453,7 @@
+             this=seq_get(args, 0),
+             check_null=True,
+         ),
+-        "ARRAY_GENERATE_RANGE": lambda args: exp.GenerateSeries(
++        "ARRAY_GENERATE_RANGES": lambda args: exp.GenerateSeries(
+             # Snowflake has exclusive end semantics
+             start=seq_get(args, 0),
+             end=seq_get(args, 1),

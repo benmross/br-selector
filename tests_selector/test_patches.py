@@ -442,6 +442,8 @@ def test_pathological_ast_does_not_break_program(sandbox, expression):
     assert elapsed < 5
 
 
+# Tests that import sqlglot/other.py in the sandbox map.
+OTHER_USERS = {3}
 SET_ATTR = 'class Gen:\n    RESERVED = {\n        "between",\n        "full",\n    }\n'
 LITERAL_CASES = [
     # narrowed: a new word in a set display that nothing reads at import
@@ -457,8 +459,10 @@ LITERAL_CASES = [
     ("dunder", '__all__ = [\n    "first",\n]\n', '__all__ = [\n    "firstx",\n]\n', True),
     ("enum", 'from enum import Enum\nclass E(Enum):\n    A = "a"\n',
      'from enum import Enum\nclass E(Enum):\n    A = "ax"\n', True),
-    ("duplicate-key", 'M = {\n    "a": 1,\n    "ax": 2,\n}\n', 'M = {\n    "ax": 1,\n    "ax": 2,\n}\n', True),
-    ("empty-string", 'S = [\n    "a",\n    "b",\n]\n', 'S = [\n    "",\n    "bx",\n]\n', True),
+    # A duplicate key drops an entry and an empty member changes only the
+    # table: both reach the table's readers, here the module's one user (t56).
+    ("duplicate-key", 'M = {\n    "a": 1,\n    "ax": 2,\n}\n', 'M = {\n    "ax": 1,\n    "ax": 2,\n}\n', "users"),
+    ("empty-string", 'S = [\n    "a",\n    "b",\n]\n', 'S = [\n    "",\n    "bx",\n]\n', "users"),
     ("comprehension", 'S = [\n    k for k in "ab" if k != "a"\n]\n', 'S = [\n    k for k in "ab" if k == "a"\n]\n', True),
 ]
 
@@ -468,19 +472,22 @@ def test_import_time_literal_edits(sandbox, name, before, after, everything):
     run, src = sandbox
     (src / "sqlglot/other.py").write_text(before)
     answers, _, _ = run({name: diff("sqlglot/other.py", before, after)})
-    assert (answers[name] == ALL) is everything
+    if everything == "users":
+        assert answers[name] == OTHER_USERS
+    else:
+        assert (answers[name] == ALL) is everything
 
 
 @pytest.mark.parametrize("extra,expected", [
     ('# RESERVED is only documentation\n', False),
     ('"""RESERVED\nconfiguration docs\n"""\n', False),
     ('class Alias:\n    RESERVED = Gen.RESERVED\n', False),
-    ('class Alias:\n    OTHER = Gen.RESERVED\n', True),
-    ('class Alias:\n    OTHER = {*Gen.RESERVED}\n', True),
-    ('VALUE = getattr(Gen, "RESERVED")[0]\n', True),
-    ('VALUE = "RESERVED"\n', True),
-    ('f"{getattr(Gen, \'RESERVED\')}"\n', True),
-    ('class Alias:\n    RESERVED = Gen.RESERVED["missing"]\n', True),
+    ('class Alias:\n    OTHER = Gen.RESERVED\n', "users"),
+    ('class Alias:\n    OTHER = {*Gen.RESERVED}\n', "users"),
+    ('VALUE = getattr(Gen, "RESERVED")[0]\n', "users"),
+    ('VALUE = "RESERVED"\n', "users"),
+    ('f"{getattr(Gen, \'RESERVED\')}"\n', "users"),
+    ('class Alias:\n    RESERVED = Gen.RESERVED["missing"]\n', "users"),
 ])
 def test_literal_proof_ignores_only_inert_name_mentions(sandbox, extra, expected):
     run, src = sandbox
@@ -488,7 +495,12 @@ def test_literal_proof_ignores_only_inert_name_mentions(sandbox, extra, expected
     after = before.replace('"between"', '"betweenx"')
     (src / "sqlglot/other.py").write_text(before)
     answers, why, _ = run({"literal": diff("sqlglot/other.py", before, after)})
-    assert (answers["literal"] == ALL) is expected, why
+    if expected == "users":
+        # Words in strings are data (t56): any reference to the changed table
+        # is inside the module, so its importers are every possible observer.
+        assert answers["literal"] == OTHER_USERS, why
+    else:
+        assert (answers["literal"] == ALL) is expected, why
 
 
 def test_reference_lines_keeps_code_after_docstring():
@@ -601,7 +613,9 @@ def test_argparse_help_keeps_observed_module_conservative(sandbox):
     (src / 'sqlglot/other.py').write_text(ARGPARSE_SRC)
     answers, why, _ = run({'help': diff('sqlglot/other.py', ARGPARSE_SRC,
                          ARGPARSE_SRC.replace('return the query', 'print the query'))})
-    assert answers['help'] == ALL, why
+    # Help text is read only by --help or a usage error, inside the module:
+    # its importers are every possible observer (t56).
+    assert answers['help'] == OTHER_USERS, why
 
 
 def test_argparse_help_narrows_only_unobserved_module(sandbox):
@@ -622,10 +636,14 @@ def test_literal_import_proofs_do_not_cross_another_changed_file(sandbox, before
     dependency = CORE.replace('    return 1', '    import sqlglot.unused\n    return 1')
     patch = diff('sqlglot/unused.py', before, after) + diff('sqlglot/core.py', CORE, dependency)
     answers, why, _ = run({'joint': patch})
-    assert answers['joint'] == ALL, why
+    # The only new observer of unused.py is the new import inside core.first;
+    # its run-time users are selected through the core.py change (t56).
+    assert answers['joint'] == {0}, why
 
 
-@pytest.mark.parametrize('imported_line,expected', [(3, set()), (4, ALL)])
+# Line 4 (parse_args) in the preload pass: no test imports the module, so no
+# test can observe its help text either way (t56; was ALL under tok-str).
+@pytest.mark.parametrize('imported_line,expected', [(3, set()), (4, set())])
 def test_argparse_help_import_registration_is_distinct_from_reading(sandbox, imported_line, expected):
     run, src = sandbox
     (src / 'sqlglot/unused.py').write_text(ARGPARSE_SRC)

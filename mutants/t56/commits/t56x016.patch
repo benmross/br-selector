@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/oracle.py b/sqlglot/parsers/oracle.py
+--- a/sqlglot/parsers/oracle.py
++++ b/sqlglot/parsers/oracle.py
+@@ -83,7 +83,7 @@
+         **parser.Parser.NO_PAREN_FUNCTION_PARSERS,
+         "NEXT": lambda self: self._parse_next_value_for(),
+         "PRIOR": lambda self: self.expression(exp.Prior(this=self._parse_bitwise())),
+-        "SYSDATE": lambda self: self.expression(exp.CurrentTimestamp(sysdate=True)),
++        "SYS_DATE": lambda self: self.expression(exp.CurrentTimestamp(sysdate=True)),
+         "DBMS_RANDOM": lambda self: self._parse_dbms_random(),
+     }
+ 

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/snowflake.py b/sqlglot/parsers/snowflake.py
+--- a/sqlglot/parsers/snowflake.py
++++ b/sqlglot/parsers/snowflake.py
+@@ -482,7 +482,7 @@
+         ),
+         "ARRAY_SORT": _build_array_sort,
+         "ARRAY_FLATTEN": exp.Flatten.from_arg_list,
+-        "ARRAY_TO_STRING": lambda args: exp.ArrayToString(
++        "ARRAY_TOSTRING": lambda args: exp.ArrayToString(
+             this=seq_get(args, 0),
+             expression=seq_get(args, 1),
+             null_is_empty=True,

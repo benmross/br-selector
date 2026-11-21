@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/doris.py b/sqlglot/dialects/doris.py
+--- a/sqlglot/dialects/doris.py
++++ b/sqlglot/dialects/doris.py
+@@ -15,7 +15,7 @@
+     }
+     DATE_FORMAT = "'yyyy-MM-dd'"
+     DATEINT_FORMAT = "'yyyyMMdd'"
+-    TIME_FORMAT = "'yyyy-MM-dd HH:mm:ss'"
++    TIME_FORMAT = "'yyyy-MM-dd HH:mm:ss.SSS'"
+ 
+     class Tokenizer(MySQL.Tokenizer):
+         DASH_COMMENT_REQUIRES_BOUNDARY = False

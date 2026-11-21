@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -428,7 +428,7 @@
+             coalesce=dialect.CONCAT_WS_COALESCE,
+         ),
+         "CONVERT_TIMEZONE": build_convert_timezone,
+-        "DATE_TO_DATE_STR": lambda args: exp.Cast(
++        "DATE_TO_DATESTR": lambda args: exp.Cast(
+             this=seq_get(args, 0),
+             to=exp.DataType(this=exp.DType.TEXT),
+         ),

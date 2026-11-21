@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/clickhouse.py b/sqlglot/dialects/clickhouse.py
+--- a/sqlglot/dialects/clickhouse.py
++++ b/sqlglot/dialects/clickhouse.py
+@@ -121,7 +121,7 @@
+             "UINT16": TokenType.USMALLINT,
+             "UINT32": TokenType.UINT,
+             "UINT64": TokenType.UBIGINT,
+-            "UINT8": TokenType.UTINYINT,
++            "UINT08": TokenType.UTINYINT,
+             "IPV4": TokenType.IPV4,
+             "IPV6": TokenType.IPV6,
+             "PASTE": TokenType.PASTE,

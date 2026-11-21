@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -2591,7 +2591,7 @@
+             if part is not None
+         )
+ 
+-    def table_sql(self, expression: exp.Table, sep: str = " AS ") -> str:
++    def table_sql(self, expression: exp.Table, sep: str = " as ") -> str:
+         table = self.table_parts(expression)
+         only = "ONLY " if expression.args.get("only") else ""
+         partition = self.sql(expression, "partition")

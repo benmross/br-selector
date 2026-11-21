@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/postgres.py b/sqlglot/dialects/postgres.py
+--- a/sqlglot/dialects/postgres.py
++++ b/sqlglot/dialects/postgres.py
+@@ -153,7 +153,7 @@
+             "INOUT": TokenType.INOUT,
+         }
+         KEYWORDS.pop("/*+")
+-        KEYWORDS.pop("DIV")
++        KEYWORDS.pop("DIVIDE")
+ 
+         SINGLE_TOKENS = {
+             **tokens.Tokenizer.SINGLE_TOKENS,

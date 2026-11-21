@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/postgres.py b/sqlglot/parsers/postgres.py
+--- a/sqlglot/parsers/postgres.py
++++ b/sqlglot/parsers/postgres.py
+@@ -199,7 +199,7 @@
+ 
+     FUNCTION_PARSERS = {
+         **parser.Parser.FUNCTION_PARSERS,
+-        "DATE_PART": lambda self: self._parse_date_part(),
++        "DATEPART": lambda self: self._parse_date_part(),
+         "JSON_AGG": lambda self: self.expression(
+             exp.JSONArrayAgg(this=self._parse_lambda(), order=self._parse_order())
+         ),

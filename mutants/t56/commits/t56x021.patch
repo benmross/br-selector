@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/databricks.py b/sqlglot/generators/databricks.py
+--- a/sqlglot/generators/databricks.py
++++ b/sqlglot/generators/databricks.py
+@@ -49,7 +49,7 @@
+         for k, v in {
+             **SparkGenerator.TRANSFORMS,
+             exp.CurrentVersion: lambda *_: "CURRENT_VERSION()",
+-            exp.DateAdd: date_delta_sql("DATEADD"),
++            exp.DateAdd: date_delta_sql("DATE_ADD"),
+             exp.DateDiff: date_delta_sql("DATEDIFF"),
+             exp.DatetimeAdd: lambda self, e: self.func(
+                 "TIMESTAMPADD", e.unit, e.expression, e.this

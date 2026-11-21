@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/postgres.py b/sqlglot/parsers/postgres.py
+--- a/sqlglot/parsers/postgres.py
++++ b/sqlglot/parsers/postgres.py
+@@ -152,7 +152,7 @@
+             this=seq_get(args, 0), expression=seq_get(args, 1), zero_is_msb=True
+         ),
+         "JSON_EXTRACT_PATH": build_json_extract_path(exp.JSONExtract),
+-        "JSON_EXTRACT_PATH_TEXT": build_json_extract_path(exp.JSONExtractScalar),
++        "JSON_EXTRACT_PATH_TXT": build_json_extract_path(exp.JSONExtractScalar),
+         "LENGTH": lambda args: exp.Length(this=seq_get(args, 0), encoding=seq_get(args, 1)),
+         "MAKE_INTERVAL": _build_make_interval,
+         "MAKE_TIME": exp.TimeFromParts.from_arg_list,

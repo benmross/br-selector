@@ -1,0 +1,12 @@
+diff --git a/sqlglot/typing/snowflake.py b/sqlglot/typing/snowflake.py
+--- a/sqlglot/typing/snowflake.py
++++ b/sqlglot/typing/snowflake.py
+@@ -564,7 +564,7 @@
+     },
+     exp.ArgMax: {"annotator": _annotate_arg_max_min},
+     exp.ArgMin: {"annotator": _annotate_arg_max_min},
+-    exp.ConcatWs: {"annotator": lambda self, e: self._annotate_by_args(e, "expressions")},
++    exp.ConcatWs: {"annotator": lambda self, e: self._annotate_by_args(e, "this")},
+     exp.ConvertTimezone: {
+         "annotator": lambda self, e: self._set_type(
+             e,

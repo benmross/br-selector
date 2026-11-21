@@ -833,10 +833,24 @@ class Selector:
                 out |= self.module_level(path, module, cls, why, line, node)
                 out |= self.qualified_consumers(cls, node, why, path=path)
                 import_level = True
-        if import_level and could_raise(fp, old_text, new_text) and not self.literal_only(path, old_tree, new_tree, why) \
+        raises = import_level and could_raise(fp, old_text, new_text)
+        kept = None
+        if import_level and not raises and not path.startswith("tests/"):
+            # A test module's module-level edits already select every test
+            # that imports it, which is all an import failure there can reach.
+            kept = string_edit_kept_broad(old_tree, new_tree, fp)
+            if kept:
+                why.append(f"{path}:{kept}")
+        if raises:
+            # t46's proofs (c/int6) clear a lexical could_raise trigger.
+            fallback = not self.literal_only(path, old_tree, new_tree, why) \
                 and not self.runtime_strings_safe(path, old_tree, new_tree, why) \
                 and not self.generator_table_strings_safe(path, old_tree, new_tree, why) \
-                and not self.dialect_keyword_strings_safe(path, old_tree, new_tree, why):
+                and not self.dialect_keyword_strings_safe(path, old_tree, new_tree, why)
+        else:
+            # t56's string shapes that can still fail at import (c024416).
+            fallback = bool(kept) and not self.literal_only(path, old_tree, new_tree, why)
+        if fallback:
             # Never execute patch-supplied code in the selector. Even an
             # innocent import may loop, fork, write files, or produce unlimited
             # output. Unknown import effects need a conservative selection.
@@ -2599,6 +2613,85 @@ def changed_call_at_import(new_tree, fp):
         if ok is not True:
             return True
     return False
+
+
+# Import-time callees audited in the pinned source that cannot raise on a
+# changed string argument (logger names, type variable names, unsupported
+# argument lists, token texts, getattr with a default, warning texts). Parse
+# and validate calls are PARSE_CALLS (changed_call_at_import); pop/del/index
+# lookups are lookup_at_import; argparse help is argparse_help_only.
+SAFE_IMPORT_CALLEES = {"TypeVar", "ParamSpec", "getLogger", "unsupported_args", "frozenset", "fromkeys",
+                       "Token", "getattr", "warn", "error", "null_if_any", "pop", "add_argument",
+                       "ArgumentParser"}
+_DISPLAYS = (ast.Dict, ast.List, ast.Set, ast.Tuple, ast.DictComp, ast.ListComp, ast.SetComp, ast.GeneratorExp)
+
+
+def string_edit_kept_broad(old_tree, new_tree, fp):
+    """Where a changed string can still fail the module at import, although
+    words inside strings no longer count as new names. Returns a reason or
+    None. Three shapes, outside function and lambda bodies:
+    - an argument of an import-time call that is not part of a table display
+      and whose callee is neither audited (SAFE_IMPORT_CALLEES) nor checked by
+      another rule (PARSE_CALLS): an unknown callee may look the string up;
+    - the value of a dunder assignment (__all__, __slots__): import * and
+      attribute assignment resolve these names;
+    - the value of an Enum member: members are looked up by value, and a
+      duplicate value silently turns a member into an alias."""
+    added = _added_lines(fp)
+    if not added:
+        return None
+    removed = set()
+    for (start, lines), (old_count, _, _) in zip(fp.hunks, fp.ranges):
+        o = start if old_count else start + 1
+        for l in lines:
+            if l[:1] == "-":
+                removed.add(o)
+            if l[:1] in (" ", "-"):
+                o += 1
+    old_strings = {c.value for c in ast.walk(old_tree) if isinstance(c, ast.Constant)
+                   and isinstance(c.value, str) and getattr(c, "lineno", 0) in removed}
+    parents = {child: parent for parent in ast.walk(new_tree) for child in ast.iter_child_nodes(parent)}
+    for c in ast.walk(new_tree):
+        if not (isinstance(c, ast.Constant) and isinstance(c.value, str)
+                and getattr(c, "lineno", 0) in added and c.value not in old_strings):
+            continue
+        node, call, display = c, None, False
+        while node in parents and not isinstance(node, ast.stmt):
+            parent = parents[node]
+            if isinstance(parent, ast.Lambda):
+                break
+            if isinstance(parent, _DISPLAYS):
+                display = True
+            if isinstance(parent, ast.Call) and node is not parent.func and call is None:
+                call = parent
+            node = parent
+        else:
+            # A walk that stops at a def came from its decorators or defaults,
+            # which run at import; a string inside a function body is runtime.
+            stmt = node
+            up, inside_def = stmt, False
+            while up in parents:
+                up = parents[up]
+                if isinstance(up, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)):
+                    inside_def = True
+                    break
+            if inside_def:
+                continue
+            if call is not None and not display:
+                func = call.func
+                name = func.attr if isinstance(func, ast.Attribute) else getattr(func, "id", "")
+                if name not in SAFE_IMPORT_CALLEES and name not in PARSE_CALLS:
+                    return f"{c.lineno} changed string argument of import-time call {name or '?'}"
+            if isinstance(stmt, (ast.Assign, ast.AnnAssign, ast.AugAssign)):
+                targets = stmt.targets if isinstance(stmt, ast.Assign) else [stmt.target]
+                if any(isinstance(t, ast.Name) and t.id.startswith("__") and t.id.endswith("__") for t in targets):
+                    return f"{c.lineno} changed string in a dunder assignment"
+                owner = parents.get(stmt)
+                if isinstance(owner, ast.ClassDef) and any(
+                        (b.attr if isinstance(b, ast.Attribute) else getattr(b, "id", "")).endswith(("Enum", "Flag"))
+                        or getattr(b, "id", "") == "AutoName" for b in owner.bases):
+                    return f"{c.lineno} changed string value of an Enum member"
+    return None
 
 
 def _try_sub(n):
