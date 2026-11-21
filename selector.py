@@ -657,7 +657,7 @@ class Selector:
                 out |= self.cov(path, range(start, end + 1))
                 out |= self.module_level(path, module, cls, why, line, node)
                 import_level = True
-        if import_level and could_raise(fp):
+        if import_level and could_raise(fp, old_text, new_text) and not self.literal_only(path, old_tree, new_tree, why):
             # Never execute patch-supplied code in the selector. Even an
             # innocent import may loop, fork, write files, or produce unlimited
             # output. Unknown import effects need a conservative selection.
@@ -716,6 +716,162 @@ class Selector:
                 why.append(f"{path}:{ref} dedented line runs with its outer block: {len(got)}")
                 out |= got | self.at_import(path, span, why)
         return out
+
+    # Import-time hooks reviewed at the pinned commit. Given non-empty strings
+    # of unchanged type and no lost dict keys, they cannot raise on a changed
+    # setting value: they build tries, inverse maps and sets, and test
+    # membership. Any other import-time reader fails the proof.
+    HOOKS = {("sqlglot/dialects/dialect.py", "__new__"), ("sqlglot/tokens.py", "__init_subclass__"),
+             ("sqlglot/expressions/core.py", "__init_subclass__")}
+    ENUM_BASES = {"Enum", "IntEnum", "StrEnum", "Flag", "IntFlag", "AutoName"}
+    DISPLAYS = (ast.Dict, ast.List, ast.Tuple, ast.Set)
+
+    def literal_only(self, path, old_tree, new_tree, why):
+        """True when the patch provably cannot make the module fail to import:
+        every difference is a same-type constant inside a plain display that a
+        module or class body assigns to a non-dunder name, and no code that
+        runs at import reads that name except the reviewed hooks or a pure
+        `{**Base.NAME, ...}` extension. The caller keeps the baseline
+        selection (coverage and readers), which handles changed behaviour."""
+        diffs = []
+
+        def walk(a, b, chain):
+            if type(a) is not type(b):
+                return False
+            if isinstance(a, ast.Constant):
+                if type(a.value) is type(b.value) and a.value == b.value and a.kind == b.kind:
+                    return True
+                if type(a.value) is not type(b.value) or type(a.value) not in (bool, int, float, str) \
+                        or a.kind != b.kind:
+                    return False
+                if isinstance(a.value, str) and not (a.value and b.value):
+                    return False
+                diffs.append((chain + [a], b))
+                return True
+            for field in a._fields:
+                va, vb = getattr(a, field, None), getattr(b, field, None)
+                if isinstance(va, list) or isinstance(vb, list):
+                    if not (isinstance(va, list) and isinstance(vb, list)) or len(va) != len(vb):
+                        return False
+                    pairs = zip(va, vb)
+                else:
+                    pairs = [(va, vb)]
+                for x, y in pairs:
+                    if isinstance(x, ast.AST) or isinstance(y, ast.AST):
+                        if not walk(x, y, chain + [a]):
+                            return False
+                    elif x != y or type(x) is not type(y):
+                        return False
+            return True
+
+        if not walk(old_tree, new_tree, []) or not diffs:
+            return False
+        names = set()
+        for chain, new in diffs:
+            i = max(k for k, n in enumerate(chain) if isinstance(n, ast.stmt))
+            stmt, outer, inner = chain[i], chain[:i], chain[i + 1:]
+            if not isinstance(outer[0], ast.Module) or not all(isinstance(n, ast.ClassDef) for n in outer[1:]):
+                return False
+            for c in outer[1:]:
+                bases = {b.id if isinstance(b, ast.Name) else getattr(b, "attr", None) for b in c.bases}
+                if c.decorator_list or c.keywords or None in bases or bases & self.ENUM_BASES \
+                        or any(b.endswith("Enum") for b in bases):
+                    return False
+            if isinstance(stmt, ast.Assign):
+                targets = stmt.targets
+            elif isinstance(stmt, ast.AnnAssign) and stmt.value is not None:
+                targets = [stmt.target]
+            else:
+                return False
+            if not all(isinstance(t, ast.Name) and not t.id.startswith("__") for t in targets):
+                return False
+            if inner[0] is not stmt.value or not all(isinstance(n, self.DISPLAYS) for n in inner[:-1]):
+                return False
+            const, parent = inner[-1], inner[-2] if len(inner) > 1 else None
+            if isinstance(parent, ast.Dict):
+                if any(v is const for v in parent.keys):
+                    siblings = parent.keys
+                else:
+                    siblings = []
+            elif isinstance(parent, (ast.Set, ast.List, ast.Tuple)):
+                siblings = parent.elts
+            else:
+                siblings = []
+            # a duplicate key or element would shrink the built dict or set
+            if any(isinstance(s, ast.Constant) and s is not const and type(s.value) is type(new.value)
+                   and s.value == new.value for s in siblings):
+                return False
+            names |= {t.id for t in targets}
+        if not self.import_readers_safe(names):
+            return False
+        why.append(f"{path}: only display literals of {','.join(sorted(names))} changed, import cannot fail")
+        return True
+
+    def import_readers_safe(self, names):
+        """No statement that runs at import reads any of names, except the
+        reviewed hooks and pure dict/sequence unpacking into another display.
+        Reads in tests are their own files' readers and stay selected."""
+        pat = re.compile(r"\b(" + "|".join(map(re.escape, sorted(names))) + r")\b")
+        for rel, text in self._all_sources().items():
+            if not rel.startswith("sqlglot/") or not pat.search(text):
+                continue
+            try:
+                scopes = self._scopes(rel, text)
+            except SyntaxError:
+                return False
+            imp = self.import_lines.get(rel) or set()
+            lines = text.split("\n")
+            for ln in sorted({text.count("\n", 0, m.start()) + 1 for m in pat.finditer(text)}):
+                st = scopes.at(ln)
+                if st is None:
+                    return False
+                node, runtime = st[3], st[4]
+                if runtime:
+                    if ln in imp and not any(rel == f and scopes.in_func(ln, {fn}) for f, fn in self.HOOKS):
+                        return False
+                    if DYNAMIC.search(lines[ln - 1]) and ln in imp:
+                        return False
+                    continue
+                if not self._extension_only(node, names):
+                    return False
+        return True
+
+    def _extension_only(self, node, names):
+        """A module or class statement that mentions names only as its own
+        assignment target or as **NAME / *NAME unpacked into a display."""
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            # the name sits on a decorator, base or default: evaluated at import
+            heads = list(node.decorator_list) + list(getattr(node, "bases", [])) + \
+                list(getattr(node, "keywords", []))
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                heads += list(node.args.defaults) + [d for d in node.args.kw_defaults if d] + \
+                    ([node.returns] if node.returns else [])
+                heads += [a.annotation for a in node.args.args + node.args.kwonlyargs if a.annotation]
+            return not any(_mentions(h, names) for h in heads)
+        if isinstance(node, ast.Assign):
+            targets, value = node.targets, node.value
+        elif isinstance(node, ast.AnnAssign):
+            targets, value = [node.target], node.value
+        else:
+            return False
+        if not all(isinstance(t, ast.Name) for t in targets):
+            return False
+        if value is None:
+            return True
+        ok = []
+
+        def unpacked(n):
+            # **Base.NAME in a dict display, *Base.NAME in a list, set or tuple
+            if isinstance(n, ast.Dict):
+                for k, v in zip(n.keys, n.values):
+                    if k is None and _is_ref(v, names):
+                        ok.append(v)
+            elif isinstance(n, (ast.List, ast.Set, ast.Tuple)):
+                for e in n.elts:
+                    if isinstance(e, ast.Starred) and _is_ref(e.value, names):
+                        ok.append(e.value)
+        unpacked(value)
+        return not _mentions(value, names, skip=ok)
 
     def at_import(self, path, span, why):
         """A function line that also ran while modules were imported (a
@@ -969,6 +1125,24 @@ def reshaped_names(old_scopes, new_scopes):
                 out.add(key)
     return out
 
+def _is_ref(node, names):
+    return (isinstance(node, ast.Name) and node.id in names) or \
+        (isinstance(node, ast.Attribute) and node.attr in names)
+
+
+def _mentions(node, names, skip=()):
+    """Does node read any of names: a Name, an attribute, or a string that a
+    getattr could use? Subtrees in skip are exempt."""
+    stack = [node]
+    while stack:
+        n = stack.pop()
+        if any(n is s for s in skip):
+            continue
+        if _is_ref(n, names) or (isinstance(n, ast.Constant) and n.value in names):
+            return True
+        stack.extend(ast.iter_child_nodes(n))
+    return False
+
 
 def assigned_names(node):
     """Names set by a plain assignment statement, or None."""
@@ -1174,8 +1348,27 @@ IDENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
 KEYWORDS = set(__import__("keyword").kwlist)
 
 
-def could_raise(fp):
-    """Conservatively flag new import effects, without executing patch code."""
+RISKY_WORDS = {"import", "while", "for", "raise", "assert", "del", "with", "try",
+               "yield", "await", "return", "global", "nonlocal"}
+RISKY_OPS = ("/", "%", "**", "<<", ">>")
+
+
+def could_raise(fp, old_text=None, new_text=None):
+    """Conservatively flag new import effects, without executing patch code.
+    With both file versions, comments and string contents are read as data:
+    a '/' in a comment or 'return' in a help string is not code. Words in a
+    changed string still count as new names (a renamed key can fail a
+    lookup at import). The token reading can only clear a lexical flag."""
+    if not _lexical_could_raise(fp):
+        return False
+    if old_text is not None and new_text is not None:
+        got = _token_could_raise(fp, old_text, new_text)
+        if got is not None:
+            return got
+    return True
+
+
+def _lexical_could_raise(fp):
     removed, added = [], []
     for _, lines in fp.hunks:
         for l in lines:
@@ -1186,13 +1379,74 @@ def could_raise(fp):
     before = set(IDENT.findall("\n".join(removed)))
     added_text = "\n".join(added)
     after = set(IDENT.findall(added_text))
-    if after & {"import", "while", "for", "raise", "assert", "del", "with", "try",
-                "yield", "await", "return", "global", "nonlocal"}:
+    if after & RISKY_WORDS:
         return True
-    if any(op in added_text for op in ("/", "%", "**", "<<", ">>")):
+    if any(op in added_text for op in RISKY_OPS):
         return True
     after -= KEYWORDS
     return bool(after - before)
+
+
+def _changed_tokens(text, lines):
+    """Tokens of text that touch any of the given 1-based lines, or None if
+    the text does not tokenize."""
+    import io
+    import tokenize
+
+    out = []
+    try:
+        for tok in tokenize.generate_tokens(io.StringIO(text).readline):
+            if any(tok.start[0] <= l <= tok.end[0] for l in lines):
+                out.append(tok)
+    except (tokenize.TokenError, SyntaxError, ValueError):
+        return None
+    return out
+
+
+def _token_could_raise(fp, old_text, new_text):
+    import tokenize
+
+    removed, added = set(), set()
+    for (start, lines), (old_count, new_start, _) in zip(fp.hunks, fp.ranges):
+        o = start if old_count else start + 1
+        n = new_start
+        for l in lines:
+            if l[:1] == " ":
+                o += 1
+                n += 1
+            elif l[:1] == "-":
+                removed.add(o)
+                o += 1
+            elif l[:1] == "+":
+                added.add(n)
+                n += 1
+    old_toks = _changed_tokens(old_text, removed) if removed else []
+    new_toks = _changed_tokens(new_text, added) if added else []
+    if old_toks is None or new_toks is None:
+        return None
+    strings = {tokenize.STRING} | {getattr(tokenize, k) for k in ("FSTRING_MIDDLE", "TSTRING_MIDDLE")
+                                   if hasattr(tokenize, k)}
+
+    def words(toks):
+        code, data = set(), set()
+        for t in toks:
+            if t.type == tokenize.NAME:
+                code.add(t.string)
+            elif t.type in strings:
+                data |= set(IDENT.findall(t.string))
+            elif t.type == tokenize.OP and any(op in t.string for op in RISKY_OPS):
+                code.add("<op>")
+            elif t.type == tokenize.ERRORTOKEN:
+                code.add("<op>")  # unknown: treat as risky
+        return code, data
+
+    before_code, before_data = words(old_toks)
+    after_code, after_data = words(new_toks)
+    if after_code & (RISKY_WORDS | {"<op>"}):
+        return True
+    # A string's words count even when they spell a keyword ("in", "or").
+    after = (after_code - KEYWORDS - {"<op>"}) | after_data
+    return bool(after - before_code - before_data)
 
 
 # ---------------------------------------------------------------- packing

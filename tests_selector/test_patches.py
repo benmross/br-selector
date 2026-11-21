@@ -379,3 +379,32 @@ def test_pathological_ast_does_not_break_program(sandbox, expression):
     assert answers["a-ast"] == ALL
     assert answers["z-normal"] == {0}
     assert elapsed < 5
+
+
+SET_ATTR = 'class Gen:\n    RESERVED = {\n        "between",\n        "full",\n    }\n'
+LITERAL_CASES = [
+    # narrowed: a new word in a set display that nothing reads at import
+    ("display-literal", SET_ATTR, SET_ATTR.replace('"between"', '"betweenx"'), False),
+    # narrowed: '/' in a comment or '%' in a string is not code
+    ("comment-slash", "FLAG = False  # on / off\n", "FLAG = True  # on / off\n", False),
+    ("string-percent", 'FMT = {\n    "0": "%d/%m",\n}\n', 'FMT = {\n    "1": "%d/%m",\n}\n', False),
+    # kept broad: real division, keys read at import, calls, dunders, enums, duplicates
+    ("code-division", "VALUE = 10 / 2\n", "VALUE = 10 / 0\n", True),
+    ("read-at-import", 'TABLE = {\n    "a": 1,\n}\nVALUE = TABLE["a"]\n',
+     'TABLE = {\n    "ax": 1,\n}\nVALUE = TABLE["a"]\n', True),
+    ("call-argument", 'X = dict(\n    a="foo",\n)\n', 'X = dict(\n    a="foox",\n)\n', True),
+    ("dunder", '__all__ = [\n    "first",\n]\n', '__all__ = [\n    "firstx",\n]\n', True),
+    ("enum", 'from enum import Enum\nclass E(Enum):\n    A = "a"\n',
+     'from enum import Enum\nclass E(Enum):\n    A = "ax"\n', True),
+    ("duplicate-key", 'M = {\n    "a": 1,\n    "ax": 2,\n}\n', 'M = {\n    "ax": 1,\n    "ax": 2,\n}\n', True),
+    ("empty-string", 'S = [\n    "a",\n    "b",\n]\n', 'S = [\n    "",\n    "bx",\n]\n', True),
+    ("comprehension", 'S = [\n    k for k in "ab" if k != "a"\n]\n', 'S = [\n    k for k in "ab" if k == "a"\n]\n', True),
+]
+
+
+@pytest.mark.parametrize("name,before,after,everything", LITERAL_CASES, ids=[c[0] for c in LITERAL_CASES])
+def test_import_time_literal_edits(sandbox, name, before, after, everything):
+    run, src = sandbox
+    (src / "sqlglot/other.py").write_text(before)
+    answers, _, _ = run({name: diff("sqlglot/other.py", before, after)})
+    assert (answers[name] == ALL) is everything
