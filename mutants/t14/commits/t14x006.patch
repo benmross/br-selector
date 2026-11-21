@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -315,7 +315,7 @@
+     IGNORE_NULLS_BEFORE_ORDER = True
+ 
+     # Whether locking reads (i.e. SELECT ... FOR UPDATE/SHARE) are supported
+-    LOCKING_READS_SUPPORTED = False
++    LOCKING_READS_SUPPORTED = True
+ 
+     # Whether the EXCEPT and INTERSECT operations can return duplicates
+     EXCEPT_INTERSECT_SUPPORT_ALL_CLAUSE = True

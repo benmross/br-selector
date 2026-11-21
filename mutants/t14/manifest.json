@@ -1,0 +1,71 @@
+{
+ "commits": {
+  "t14x000": {
+   "kind": "append_after_block",
+   "file": "sqlglot/dialects/dialect.py"
+  },
+  "t14x001": {
+   "kind": "append_after_block",
+   "file": "sqlglot/parser.py"
+  },
+  "t14x002": {
+   "kind": "dedent_statement",
+   "file": "sqlglot/parser.py"
+  },
+  "t14x003": {
+   "kind": "widen_except",
+   "file": "sqlglot/parser.py"
+  },
+  "t14x004": {
+   "kind": "enum_value_swap",
+   "file": "sqlglot/dialects/dialect.py"
+  },
+  "t14x005": {
+   "kind": "class_number_constant",
+   "file": "sqlglot/dialects/postgres.py"
+  },
+  "t14x006": {
+   "kind": "base_class_flag_flip",
+   "file": "sqlglot/generator.py"
+  },
+  "t14x007": {
+   "kind": "module_constant_default_arg",
+   "file": "sqlglot/errors.py"
+  },
+  "t14x008": {
+   "kind": "test_class_attribute",
+   "file": "tests/dialects/test_presto.py"
+  },
+  "t14x009": {
+   "kind": "module_dict_reorder",
+   "file": "sqlglot/generator.py"
+  },
+  "t14x011": {
+   "kind": "decorator_argument",
+   "file": "sqlglot/generators/duckdb.py"
+  },
+  "t14x012": {
+   "kind": "guard_removal",
+   "file": "sqlglot/generator.py"
+  },
+  "t14x013": {
+   "kind": "subtest_case_edit",
+   "file": "tests/test_transforms.py"
+  },
+  "t14x014": {
+   "kind": "import_time_empty_table",
+   "file": "sqlglot/dialects/hive.py"
+  },
+  "t14x015": {
+   "kind": "redundant_override_drop",
+   "file": "sqlglot/generators/redshift.py"
+  },
+  "t14x016": {
+   "kind": "append_method_to_class",
+   "file": "sqlglot/generators/drill.py"
+  },
+  "t14x010": {
+   "kind": "fixture_rename"
+  }
+ }
+}

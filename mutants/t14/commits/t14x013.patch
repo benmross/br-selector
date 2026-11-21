@@ -1,0 +1,12 @@
+diff --git a/tests/test_transforms.py b/tests/test_transforms.py
+--- a/tests/test_transforms.py
++++ b/tests/test_transforms.py
+@@ -179,7 +179,7 @@
+             ),
+             (
+                 "CREATE TABLE t (a INT, UNIQUE (a), PRIMARY KEY (a), FOREIGN KEY (a) REFERENCES u (b))",
+-                "CREATE TABLE t (a INT, PRIMARY KEY (a), FOREIGN KEY (a) REFERENCES u (b))",
++                "CREATE TABLE t (a INT, UNIQUE (a), PRIMARY KEY (a), FOREIGN KEY (a) REFERENCES u (b))",
+             ),
+         ):
+             with self.subTest(sql):

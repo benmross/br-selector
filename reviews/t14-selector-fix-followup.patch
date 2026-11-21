@@ -1,0 +1,74 @@
+--- a/selector.py
++++ b/selector.py
+@@ -556,7 +556,10 @@
+         # function, a method appended to a class). That block must be compared
+         # too, although it ends before the insertion point.
+         old_lines = old_text.split("\n")
+-        for ins in inserts:
++        # A blank or comment line replaced by code is the same hazard.
++        for ins in set(inserts) | {c for c in changed
++                                   if not old_lines[c - 1].strip()
++                                   or old_lines[c - 1].lstrip().startswith("#")}:
+             q = ins
+             while q >= 1 and (not old_lines[q - 1].strip() or old_lines[q - 1].lstrip().startswith("#")):
+                 q -= 1
+@@ -587,6 +590,17 @@
+             # other tests never execute the old function/class themselves.
+             why.append(f"{path}: definition names changed, import/collection users")
+             return self.broad(path) | self.importers(path)
++        reshaped = reshaped_names(scopes, new_scopes)
++        if reshaped:
++            # A table emptied or turned into another kind of value can make
++            # the class's own construction fail (a metaclass indexing [0]),
++            # which breaks importing the module and every test file that
++            # imports it at collection. Only a read at import can do that.
++            names = {n for _, n in reshaped}
++            code, _ = self.readers(names)
++            if code is None:
++                why.append(f"{path}: import-time value of {','.join(sorted(names))} changed shape, everything")
++                return set(self.all)
+         removed = bound_names(scopes) - bound_names(new_scopes)
+         removed_readers = set()
+         if removed:
+@@ -921,6 +935,41 @@
+     return out
+ 
+ 
++def _shape(value):
++    """Kind and emptiness of a literal value; None for anything computed."""
++    if isinstance(value, (ast.List, ast.Tuple, ast.Set)):
++        return (type(value).__name__, bool(value.elts))
++    if isinstance(value, ast.Dict):
++        return ("Dict", bool(value.keys))
++    if isinstance(value, ast.Constant):
++        # Numbers and flags may become 0 or False harmlessly; strings and
++        # containers that become empty are what construction code indexes.
++        v = value.value
++        return (type(v).__name__, bool(v) if isinstance(v, (str, bytes)) else True)
++    return None
++
++
++def reshaped_names(old_scopes, new_scopes):
++    """(class, name) assigned at import whose literal value changed kind or
++    became empty, such as IDENTIFIERS = ["`"] -> IDENTIFIERS = []."""
++    def values(sc):
++        out = {}
++        for start, end, header_end, node, runtime, cls in sc.stmts:
++            if runtime or not cls or not isinstance(node, (ast.Assign, ast.AnnAssign)):
++                continue
++            names = assigned_names(node)
++            if names and len(names) == 1 and node.value is not None:
++                out[(cls, next(iter(names)))] = _shape(node.value)
++        return out
++    old, new = values(old_scopes), values(new_scopes)
++    out = set()
++    for key, shape in old.items():
++        if key in new and shape is not None and new[key] != shape:
++            if new[key] is None or new[key][0] != shape[0] or (shape[1] and not new[key][1]):
++                out.add(key)
++    return out
++
++
+ def assigned_names(node):
+     """Names set by a plain assignment statement, or None."""
+     if isinstance(node, ast.Assign):

@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_presto.py b/tests/dialects/test_presto.py
+--- a/tests/dialects/test_presto.py
++++ b/tests/dialects/test_presto.py
+@@ -6,7 +6,7 @@
+ 
+ 
+ class TestPresto(Validator):
+-    dialect = "presto"
++    dialect = "trino"
+ 
+     def test_approx_percentile(self):
+         expression = self.validate_identity("APPROX_PERCENTILE(x, 0.5, 0.01)")

@@ -1,0 +1,13 @@
+diff --git a/sqlglot/generators/drill.py b/sqlglot/generators/drill.py
+--- a/sqlglot/generators/drill.py
++++ b/sqlglot/generators/drill.py
+@@ -127,6 +127,9 @@
+         ilike = self.func("ILIKE", expression.this, expression.expression, escape)
+         return f"NOT {ilike}" if expression.args.get("negate") else ilike
+ 
++    def interval_sql(self, expression: exp.Interval) -> str:
++        return f"INTERVAL {self.sql(expression, 'this')} {self.sql(expression, 'unit')}S"
++
+ 
+ def _drill_dateint_format() -> str:
+     from sqlglot.dialects.drill import Drill

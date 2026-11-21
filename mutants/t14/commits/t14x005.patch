@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/postgres.py b/sqlglot/dialects/postgres.py
+--- a/sqlglot/dialects/postgres.py
++++ b/sqlglot/dialects/postgres.py
+@@ -10,7 +10,7 @@
+ 
+ class Postgres(Dialect):
+     EXPRESSION_METADATA = EXPRESSION_METADATA.copy()
+-    INDEX_OFFSET = 1
++    INDEX_OFFSET = 0
+     ASCII_ONLY_NORMALIZATION = True
+     # Normalizing `x IS NOT NULL` to `NOT x IS NULL` is unsafe due to row values,
+     # e.g. `ROW(1, NULL) IS NOT NULL` is false whereas `NOT ROW(1, NULL) IS NULL` is true

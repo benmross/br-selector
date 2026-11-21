@@ -1,0 +1,17 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -59,12 +59,12 @@
+ 
+ 
+ AFTER_HAVING_MODIFIER_TRANSFORMS: dict[str, t.Any] = {
++    "qualify": lambda self, e: self.sql(e, "qualify"),
+     "windows": lambda self, e: (
+         self.seg("WINDOW ") + self.expressions(e, key="windows", flat=True)
+         if e.args.get("windows")
+         else ""
+     ),
+-    "qualify": lambda self, e: self.sql(e, "qualify"),
+ }
+ 
+ 

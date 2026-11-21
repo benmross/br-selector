@@ -1,0 +1,14 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -3232,10 +3232,6 @@
+         return f"PRAGMA {self.sql(expression, 'this')}"
+ 
+     def lock_sql(self, expression: exp.Lock) -> str:
+-        if not self.LOCKING_READS_SUPPORTED:
+-            self.unsupported("Locking reads using 'FOR UPDATE/SHARE' are not supported")
+-            return ""
+-
+         update = expression.args["update"]
+         key = expression.args.get("key")
+         if update:

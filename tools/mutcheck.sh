@@ -10,6 +10,11 @@ fi
 rsync -az legion:br/work/mut/ work/mut/ 2>/dev/null
 rsync -az legion:br/work/mutC/ work/mutC/ 2>/dev/null; cp work/mutC/commits/*.patch work/mut/commits/ 2>/dev/null; cp work/mutC/answers.0.json work/mut/answers.C.json 2>/dev/null
 cp work/mutB/commits/*.patch work/mut/commits/ 2>/dev/null; cp work/mutB/answers.0.json work/mut/answers.B.json 2>/dev/null
+# Tracked review mutants (t14 and later): labeled answers live beside their patches.
+for d in mutants/*/; do
+    [ -f "$d/answers.json" ] || continue
+    cp "$d"commits/*.patch work/mut/commits/ && cp "$d/answers.json" "work/mut/answers.$(basename "$d").json" || echo "mutcheck: cannot copy $d" >&2
+done
 python3 - <<'PY'
 import glob, json, os, shutil
 ans = {}

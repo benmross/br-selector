@@ -1,0 +1,14 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -123,8 +123,8 @@
+     RISINGWAVE = "risingwave"
+     SNOWFLAKE = "snowflake"
+     SOLR = "solr"
+-    SPARK = "spark"
+-    SPARK2 = "spark2"
++    SPARK = "spark2"
++    SPARK2 = "spark"
+     SQLITE = "sqlite"
+     STARROCKS = "starrocks"
+     TABLEAU = "tableau"

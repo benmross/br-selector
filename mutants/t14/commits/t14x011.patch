@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -3609,7 +3609,7 @@
+ 
+         return self.func("REGEXP_MATCHES", this, pattern, flag)
+ 
+-    @unsupported_args("ins_cost", "del_cost", "sub_cost")
++    @unsupported_args("ins_cost", "del_cost")
+     def levenshtein_sql(self, expression: exp.Levenshtein) -> str:
+         this = expression.this
+         expr = expression.expression

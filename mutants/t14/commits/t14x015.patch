@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generators/redshift.py b/sqlglot/generators/redshift.py
+--- a/sqlglot/generators/redshift.py
++++ b/sqlglot/generators/redshift.py
+@@ -20,7 +20,6 @@
+ 
+ class RedshiftGenerator(PostgresGenerator):
+     LOCKING_READS_SUPPORTED = False
+-    QUERY_HINTS = False
+     CAST_TO_INT_ROUNDS = True
+     VALUES_AS_TABLE = False
+     TZ_TO_WITH_TIME_ZONE = True

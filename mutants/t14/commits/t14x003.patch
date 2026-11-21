@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -2214,7 +2214,7 @@
+         self.error_level = ErrorLevel.IMMEDIATE
+         try:
+             this = parse_method()
+-        except ParseError:
++        except Exception:
+             this = None
+         finally:
+             if not this or retreat:
