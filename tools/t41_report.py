@@ -27,6 +27,8 @@ def selections(path):
 
 main = selections(os.path.join(ROOT, 'mutants/t41/main.jsonl'))
 dc = selections(os.path.join(ROOT, 'mutants/t41/dc91341.jsonl'))
+# main with could_raise cleared (work/t41/cleared.py): what a tok-str narrowing would select
+clr = selections(os.path.join(ROOT, 'mutants/t41/main-cleared.jsonl'))
 why = {}
 for line in open(os.path.join(T, 'main-select.why')):
     m = re.match(r'(t41x\d+) \d+ tests; (.*)', line)
@@ -45,26 +47,29 @@ for cid in sorted(manifest):
     agg[s]['patches'] += 1
     agg[s]['main fallbacks'] += 'possible import failure, everything' in why.get(cid, '')
     if cid not in answers:
-        rows.append((s, cid, v['description'], 'unlabeled', '', len(main[cid]), why.get(cid, ''), len(dc[cid]), ''))
+        rows.append((s, cid, v['description'], 'unlabeled', '', len(main[cid]), why.get(cid, ''), len(dc[cid]), '', len(clr[cid]), ''))
         continue
     fail = set(answers[cid]['failing'])
     agg[s]['labeled'] += 1
     agg[s]['breaking'] += bool(fail)
     missed = fail - dc[cid]
     agg[s]['dc91341 misses'] += bool(missed)
+    cmiss = fail - clr[cid]
+    agg[s]['cleared misses'] += bool(cmiss)
     names = ', '.join(short(n) for n in sorted(fail)[:4]) + (f' (+{len(fail) - 4})' if len(fail) > 4 else '')
     rows.append((s, cid, v['description'], str(len(fail)), names, len(main[cid]), why.get(cid, ''),
-                 len(dc[cid]), f'MISS {len(missed)}: ' + ', '.join(short(n) for n in sorted(missed)[:3]) if missed else 'no'))
+                 len(dc[cid]), f'MISS {len(missed)}: ' + ', '.join(short(n) for n in sorted(missed)[:3]) if missed else 'no',
+                 len(clr[cid]), f'MISS {len(cmiss)}: ' + ', '.join(short(n) for n in sorted(cmiss)[:3]) if cmiss else 'no'))
 
 out = ['# t41 string-literal labels', '',
-       '| Stratum | Patches | Labeled | Breaking | Main fallbacks | dc91341 misses |', '|---|---:|---:|---:|---:|---:|']
+       '| Stratum | Patches | Labeled | Breaking | Main fallbacks | dc91341 misses | Main-cleared misses |', '|---|---:|---:|---:|---:|---:|---:|']
 for s in sorted(agg):
     a = agg[s]
-    out.append(f"| {s} | {a['patches']} | {a['labeled']} | {a['breaking']} | {a['main fallbacks']} | {a['dc91341 misses']} |")
+    out.append(f"| {s} | {a['patches']} | {a['labeled']} | {a['breaking']} | {a['main fallbacks']} | {a['dc91341 misses']} | {a['cleared misses']} |")
 tot = sum(agg.values(), Counter())
-out.append(f"| all | {tot['patches']} | {tot['labeled']} | {tot['breaking']} | {tot['main fallbacks']} | {tot['dc91341 misses']} |")
-out += ['', '| Stratum | Patch | Change | Failing | Failing tests | Main selects | Main reason | dc91341 selects | dc91341 miss |',
-        '|---|---|---|---:|---|---:|---|---:|---|']
+out.append(f"| all | {tot['patches']} | {tot['labeled']} | {tot['breaking']} | {tot['main fallbacks']} | {tot['dc91341 misses']} | {tot['cleared misses']} |")
+out += ['', '| Stratum | Patch | Change | Failing | Failing tests | Main selects | Main reason | dc91341 selects | dc91341 miss | Main cleared selects | Main cleared miss |',
+        '|---|---|---|---:|---|---:|---|---:|---|---:|---|']
 for r in rows:
     out.append('| ' + ' | '.join(str(x).replace('|', '/') for x in r) + ' |')
 os.makedirs(os.path.join(ROOT, 'reviews'), exist_ok=True)
