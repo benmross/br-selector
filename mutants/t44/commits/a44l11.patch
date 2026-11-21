@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/mysql.py b/sqlglot/dialects/mysql.py
+--- a/sqlglot/dialects/mysql.py
++++ b/sqlglot/dialects/mysql.py
+@@ -54,7 +54,7 @@
+         "%l": "%-I",
+         "%r": "%I:%M:%S %p",
+         "%T": "%H:%M:%S",
+-        "%W": "%A",
++        "%M": "%A",
+         "%x": "%G",
+         # %v (ISO week) is unmapped due to collision with %V (roundtrip issue)
+     }

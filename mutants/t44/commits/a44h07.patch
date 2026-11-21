@@ -1,0 +1,19 @@
+diff --git a/sqlglot/__main__.py b/sqlglot/__main__.py
+--- a/sqlglot/__main__.py
++++ b/sqlglot/__main__.py
+@@ -38,13 +38,13 @@
+     "--no-pretty",
+     dest="pretty",
+     action="store_false",
+-    help="Compress sql",
++    help="Compress sql {pretty}\nsingle line",
+ )
+ parser.add_argument(
+     "--parse",
+     dest="parse",
+     action="store_true",
+-    help="Parse and return the expression tree",
++    help="Parse {and} return the AST",
+ )
+ parser.add_argument(
+     "--tokenize",

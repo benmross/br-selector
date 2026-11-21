@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/clickhouse.py b/sqlglot/dialects/clickhouse.py
+--- a/sqlglot/dialects/clickhouse.py
++++ b/sqlglot/dialects/clickhouse.py
+@@ -89,7 +89,7 @@
+         COMMENTS_TERMINATE_AT_NEWLINE_ONLY = True
+         IDENTIFIERS = ['"', "`"]
+         IDENTIFIER_ESCAPES = ["\\"]
+-        STRING_ESCAPES = ["'", "\\"]
++        STRING_ESCAPES = ["'", "~"]
+         BIT_STRINGS = [("0b", "")]
+         HEX_STRINGS = [("0x", ""), ("0X", "")]
+         HEREDOC_STRINGS = ["$"]

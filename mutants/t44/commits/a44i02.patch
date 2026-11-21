@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/array.py b/sqlglot/expressions/array.py
+--- a/sqlglot/expressions/array.py
++++ b/sqlglot/expressions/array.py
+@@ -172,7 +172,7 @@
+ 
+ class ArraySize(Expression, Func):
+     arg_types = {"this": True, "expression": False}
+-    _sql_names = ["ARRAY_SIZE", "ARRAY_LENGTH"]
++    _sql_names = ["ARRAY_SIZEX", "ARRAY_LENGTH"]
+ 
+ 
+ class ArraySum(Expression, Func):

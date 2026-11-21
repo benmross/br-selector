@@ -797,6 +797,7 @@ class Selector:
                     out |= got | self.at_import(path, body, why)
                 out |= self.cov(path, range(start, end + 1))
                 out |= self.module_level(path, module, cls, why, line, node)
+                out |= self.qualified_consumers(cls, node, why)
                 import_level = True
         if import_level and could_raise(fp, old_text, new_text) and not self.literal_only(path, old_tree, new_tree, why):
             # Never execute patch-supplied code in the selector. Even an
@@ -1076,6 +1077,52 @@ class Selector:
         # tests that never run the line themselves. Only everything is safe.
         why.append(f"{path}:{span.start} also runs at import, everything")
         return set(self.all)
+
+    def qualified_consumers(self, cls, node, why, depth=3):
+        """Code that reads this class attribute through its class name.
+
+        presto.py binds `TIME_MAPPING = MySQL.TIME_MAPPING` in its class
+        body, so a MySQL TIME_MAPPING edit changes Presto, whose tests are not
+        MySQL's users (t44x a44l01: TestPresto::test_to_char and
+        TestHive::test_time fail). This applies whether or not the edit could
+        fail at import. An import-time copy keeps the copying statement's own
+        users and is followed again under its new class and name; a runtime
+        read keeps the coverage of its function. Widening only."""
+        if not cls or not isinstance(node, (ast.Assign, ast.AnnAssign)):
+            return set()
+        frontier = [(cls, n) for n in sorted(assigned_names(node) or ())]
+        seen, out = set(frontier), set()
+        while frontier and depth > 0:
+            depth -= 1
+            nxt = []
+            pat = re.compile("|".join(r"\b" + re.escape(f"{c}.{n}") + r"\b" for c, n in frontier))
+            for rel, text in self._all_sources().items():
+                if not rel.startswith("sqlglot/") or not pat.search(text):
+                    continue
+                try:
+                    scopes = self._scopes(rel, text)
+                except SyntaxError:
+                    continue
+                module = rel[:-3].replace("/", ".").removesuffix(".__init__")
+                for ln in sorted({text.count("\n", 0, m.start()) + 1 for m in pat.finditer(text)}):
+                    st = scopes.at(ln)
+                    if st is None:
+                        continue
+                    if st[4]:
+                        got = self.cov(rel, range(st[0], st[1] + 1))
+                        why.append(f"{rel}:{ln} runtime read of a changed class attribute {len(got)}")
+                        out |= got
+                        continue
+                    got = self.module_level(rel, module, st[5], why, ln, st[3])
+                    why.append(f"{rel}:{ln} copies a changed class attribute: keep {len(got)} consumer tests")
+                    out |= got
+                    if st[5]:
+                        for t in sorted(assigned_names(st[3]) or ()):
+                            if (st[5], t) not in seen:
+                                seen.add((st[5], t))
+                                nxt.append((st[5], t))
+            frontier = nxt
+        return out
 
     def module_level(self, path, module, cls, why, line, stmt=None):
         """A statement that runs at import: a class attribute, decorator,

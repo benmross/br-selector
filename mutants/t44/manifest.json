@@ -1,0 +1,200 @@
+{
+ "commits": {
+  "a44h01": {
+   "kind": "help",
+   "paths": [
+    "sqlglot/__main__.py"
+   ],
+   "description": "help set to argparse.SUPPRESS sentinel text"
+  },
+  "a44h02": {
+   "kind": "help",
+   "paths": [
+    "sqlglot/__main__.py"
+   ],
+   "description": "help with a percent format (rendered at --help, checked at add_argument on 3.14)"
+  },
+  "a44h03": {
+   "kind": "help",
+   "paths": [
+    "sqlglot/__main__.py"
+   ],
+   "description": "non-ASCII help"
+  },
+  "a44h04": {
+   "kind": "help",
+   "paths": [
+    "sqlglot/__main__.py"
+   ],
+   "description": "parser description plus a help string"
+  },
+  "a44h05": {
+   "kind": "help",
+   "paths": [
+    "sqlglot/__main__.py"
+   ],
+   "description": "help on the --version argument, whose version= is not a constant"
+  },
+  "a44h06": {
+   "kind": "help",
+   "paths": [
+    "sqlglot/__main__.py"
+   ],
+   "description": "metavar plus a help string"
+  },
+  "a44h07": {
+   "kind": "help",
+   "paths": [
+    "sqlglot/__main__.py"
+   ],
+   "description": "two help strings with braces and an escaped newline"
+  },
+  "a44h08": {
+   "kind": "help",
+   "paths": [
+    "sqlglot/__main__.py"
+   ],
+   "description": "help emptied"
+  },
+  "a44h09": {
+   "kind": "help",
+   "paths": [
+    "sqlglot/__main__.py"
+   ],
+   "description": "positional help plus a comment"
+  },
+  "a44h10": {
+   "kind": "help",
+   "paths": [
+    "sqlglot/__main__.py"
+   ],
+   "description": "dest string changed (behavior: args.identify no longer exists)"
+  },
+  "a44i01": {
+   "kind": "inert",
+   "paths": [
+    "sqlglot/expressions/array.py"
+   ],
+   "description": "_sql_names alias renamed: ARRAY_CAT no longer parses to ArrayConcat (registry built at import)"
+  },
+  "a44i02": {
+   "kind": "inert",
+   "paths": [
+    "sqlglot/expressions/array.py"
+   ],
+   "description": "_sql_names primary renamed: generated function name changes"
+  },
+  "a44i03": {
+   "kind": "inert",
+   "paths": [
+    "sqlglot/expressions/array.py"
+   ],
+   "description": "_sql_names alias renamed"
+  },
+  "a44i04": {
+   "kind": "inert",
+   "paths": [
+    "sqlglot/expressions/string.py"
+   ],
+   "description": "arg_types flag: Concat.safe becomes required; ConcatWs extends it"
+  },
+  "a44i05": {
+   "kind": "inert",
+   "paths": [
+    "sqlglot/expressions/query.py"
+   ],
+   "description": "arg_types key rename in Grant (parser passes grant_option=)"
+  },
+  "a44i06": {
+   "kind": "inert",
+   "paths": [
+    "sqlglot/dialects/clickhouse.py"
+   ],
+   "description": "ClickHouse tokenizer STRING_ESCAPES; dialect metaclass derives STRINGS_SUPPORT_ESCAPED_SEQUENCES"
+  },
+  "a44i07": {
+   "kind": "inert",
+   "paths": [
+    "sqlglot/dialects/databricks.py"
+   ],
+   "description": "Databricks tokenizer IDENTIFIERS"
+  },
+  "a44i08": {
+   "kind": "inert",
+   "paths": [
+    "sqlglot/dialects/bigquery.py"
+   ],
+   "description": "BigQuery tokenizer QUOTES"
+  },
+  "a44l01": {
+   "kind": "table",
+   "paths": [
+    "sqlglot/dialects/mysql.py"
+   ],
+   "description": "MySQL TIME_MAPPING value; changes MySQL.INVERSE_TIME_MAPPING read by SingleStore as MYSQL_INVERSE_TIME_MAPPING and Presto's alias"
+  },
+  "a44l02": {
+   "kind": "table",
+   "paths": [
+    "sqlglot/dialects/mysql.py"
+   ],
+   "description": "MySQL TIME_MAPPING value with a lax %I followed by a word character (generic all-dialect vocabulary test)"
+  },
+  "a44l03": {
+   "kind": "table",
+   "paths": [
+    "sqlglot/dialects/hive.py"
+   ],
+   "description": "Hive strict month to lax; Spark2/Spark extend Hive.TIME_MAPPING, test_time checks strict MM"
+  },
+  "a44l04": {
+   "kind": "table",
+   "paths": [
+    "sqlglot/dialects/tsql.py"
+   ],
+   "description": "TSQL TIME_MAPPING value; tsql parser/generator read TSQL.TIME_MAPPING and TSQL.INVERSE_TIME_MAPPING by class"
+  },
+  "a44l05": {
+   "kind": "table",
+   "paths": [
+    "sqlglot/dialects/oracle.py"
+   ],
+   "description": "Oracle TIME_MAPPING value (Oracle-derived dialects)"
+  },
+  "a44l07": {
+   "kind": "table",
+   "paths": [
+    "sqlglot/dialects/dialect.py"
+   ],
+   "description": "STRICT_TIME_FORMATS value, read inside _with_strict_time_inverse at import"
+  },
+  "a44l08": {
+   "kind": "table",
+   "paths": [
+    "sqlglot/expressions/string.py"
+   ],
+   "description": "Expression arg_types flag: optional arg becomes required (validation at parse)"
+  },
+  "a44l09": {
+   "kind": "table",
+   "paths": [
+    "sqlglot/expressions/query.py"
+   ],
+   "description": "Expression arg_types key rename (builders pass the old key)"
+  },
+  "a44l10": {
+   "kind": "table",
+   "paths": [
+    "sqlglot/dialects/snowflake.py"
+   ],
+   "description": "Snowflake class INVERSE_TIME_MAPPING value next to a comment mention; hook reads it via __dict__.get"
+  },
+  "a44l11": {
+   "kind": "table",
+   "paths": [
+    "sqlglot/dialects/mysql.py"
+   ],
+   "description": "MySQL TIME_MAPPING key collides with an existing key"
+  }
+ }
+}

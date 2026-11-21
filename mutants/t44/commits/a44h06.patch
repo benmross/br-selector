@@ -1,0 +1,21 @@
+diff --git a/sqlglot/__main__.py b/sqlglot/__main__.py
+--- a/sqlglot/__main__.py
++++ b/sqlglot/__main__.py
+@@ -9,7 +9,7 @@
+ parser = argparse.ArgumentParser(description="Transpile SQL")
+ parser.add_argument(
+     "sql",
+-    metavar="sql",
++    metavar="query",
+     type=str,
+     help="SQL statement(s) to transpile, or - to parse stdin.",
+ )
+@@ -50,7 +50,7 @@
+     "--tokenize",
+     dest="tokenize",
+     action="store_true",
+-    help="Tokenize and return the tokens list",
++    help="Tokenize only",
+ )
+ parser.add_argument(
+     "--error-level",

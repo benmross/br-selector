@@ -1,0 +1,12 @@
+diff --git a/sqlglot/__main__.py b/sqlglot/__main__.py
+--- a/sqlglot/__main__.py
++++ b/sqlglot/__main__.py
+@@ -63,7 +63,7 @@
+     "--version",
+     action="version",
+     version=sqlglot.__version__,
+-    help="Display the SQLGlot version",
++    help="Show the installed version",
+ )
+ 
+ 

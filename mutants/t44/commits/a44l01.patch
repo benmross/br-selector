@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/mysql.py b/sqlglot/dialects/mysql.py
+--- a/sqlglot/dialects/mysql.py
++++ b/sqlglot/dialects/mysql.py
+@@ -47,7 +47,7 @@
+         "%c": "%-m",
+         "%e": "%-d",
+         "%h": "%I",
+-        "%i": "%M",
++        "%i": "%-M",
+         "%s": "%S",
+         "%u": "%W",
+         "%k": "%-H",

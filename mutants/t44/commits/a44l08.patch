@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/string.py b/sqlglot/expressions/string.py
+--- a/sqlglot/expressions/string.py
++++ b/sqlglot/expressions/string.py
+@@ -32,7 +32,7 @@
+ 
+ 
+ class ConcatWs(Concat):
+-    arg_types = {**Concat.arg_types, "flatten": False}
++    arg_types = {**Concat.arg_types, "flatten": True}
+     _sql_names = ["CONCAT_WS"]
+ 
+ 

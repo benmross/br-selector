@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/array.py b/sqlglot/expressions/array.py
+--- a/sqlglot/expressions/array.py
++++ b/sqlglot/expressions/array.py
+@@ -61,7 +61,7 @@
+ 
+ class ArrayFilter(Expression, Func):
+     arg_types = {"this": True, "expression": True}
+-    _sql_names = ["FILTER", "ARRAY_FILTER"]
++    _sql_names = ["FILTER", "ARRAY_FILTERS"]
+ 
+ 
+ class ArrayInsert(Expression, Func):

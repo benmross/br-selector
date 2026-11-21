@@ -1,0 +1,12 @@
+diff --git a/sqlglot/__main__.py b/sqlglot/__main__.py
+--- a/sqlglot/__main__.py
++++ b/sqlglot/__main__.py
+@@ -57,7 +57,7 @@
+     dest="error_level",
+     type=str,
+     default="IMMEDIATE",
+-    help="IGNORE, WARN, RAISE, IMMEDIATE (default)",
++    help="",
+ )
+ parser.add_argument(
+     "--version",

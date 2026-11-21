@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/array.py b/sqlglot/expressions/array.py
+--- a/sqlglot/expressions/array.py
++++ b/sqlglot/expressions/array.py
+@@ -54,7 +54,7 @@
+ 
+ 
+ class ArrayConcat(Expression, Func):
+-    _sql_names = ["ARRAY_CONCAT", "ARRAY_CAT"]
++    _sql_names = ["ARRAY_CONCAT", "ARRAY_CATX"]
+     arg_types = {"this": True, "expressions": False, "null_propagation": False}
+     is_var_len_args = True
+ 

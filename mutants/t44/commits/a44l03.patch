@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/hive.py b/sqlglot/dialects/hive.py
+--- a/sqlglot/dialects/hive.py
++++ b/sqlglot/dialects/hive.py
+@@ -60,7 +60,7 @@
+         "MMM": "%b",
+         # Hive 4.0+ parses MM/dd/HH/hh/mm/ss strictly (java.time.DateTimeFormatter, see
+         # HIVE-25458/HIVE-25576)
+-        "MM": "%mstrict",
++        "MM": "%m",
+         "M": "%-m",
+         "dd": "%dstrict",
+         "d": "%-d",

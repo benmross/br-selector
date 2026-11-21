@@ -1,0 +1,20 @@
+diff --git a/sqlglot/__main__.py b/sqlglot/__main__.py
+--- a/sqlglot/__main__.py
++++ b/sqlglot/__main__.py
+@@ -1,6 +1,6 @@
+ from __future__ import annotations
+ 
+-import argparse
++import argparse  # stdlib parser
+ import sys
+ 
+ import sqlglot
+@@ -11,7 +11,7 @@
+     "sql",
+     metavar="sql",
+     type=str,
+-    help="SQL statement(s) to transpile, or - to parse stdin.",
++    help="SQL to transpile; - reads stdin.",
+ )
+ parser.add_argument(
+     "--read",

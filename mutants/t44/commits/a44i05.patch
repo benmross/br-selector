@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/query.py b/sqlglot/expressions/query.py
+--- a/sqlglot/expressions/query.py
++++ b/sqlglot/expressions/query.py
+@@ -633,7 +633,7 @@
+         "kind": False,
+         "securable": True,
+         "principals": True,
+-        "grant_option": False,
++        "grant_opt": False,
+     }
+ 
+ 

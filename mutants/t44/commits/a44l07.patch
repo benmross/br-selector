@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -194,7 +194,7 @@
+     "%dstrict": "%d",
+     "%Hstrict": "%H",
+     "%Istrict": "%I",
+-    "%Mstrict": "%M",
++    "%Mstrict": "%-M",
+     "%Sstrict": "%S",
+ }
+ 
