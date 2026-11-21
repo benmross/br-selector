@@ -370,6 +370,8 @@ def fingerprint(root, src, tpch, expect=None):
         blobs, duck, meta, st_parent = parent_side(tpch, roots)
         if expect is not None and hashlib.sha1(json.dumps([duck, meta]).encode()).hexdigest()[:16] != expect["duck"]:
             raise Doubt("duckdb sql differs")
+        if expect is not None and st_parent[:16] != expect["sp"]:
+            raise Doubt("parent module state differs")
         _send(w1, (blobs, meta))
         res = _recv(r2)
     finally:
