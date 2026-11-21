@@ -10,7 +10,7 @@ OUT.mkdir(parents=True, exist_ok=True)
 T9 = REPO / 'work/wt/t9/work/t9'
 sets = {'sample': REPO / 'sample', 'hid': T9 / 'hid', 'fresha': T9 / 'fresha', 'freshb': T9 / 'freshb',
         't41': REPO / 'mutants/t41', 't46': ROOT / 'mutants/t46', 't56': REPO / 'work/wt/t56/mutants/t56',
-        't59': ROOT / 'mutants/t59'}
+        't59': ROOT / 'mutants/t59', 't59x': ROOT / 'mutants/t59x'}
 ref, variant = sys.argv[1], sys.argv[2]
 script = OUT / (variant + '.py')
 if ref == 'WORKTREE':
@@ -24,7 +24,7 @@ for name, ds in sets.items():
     if not (ds / 'commits').exists():
         continue
     answers = json.load(open(ds / 'answers.json'))['commits'] if (ds / 'answers.json').exists() else {}
-    if not (ds / 'tests.json').exists() or name in ('t56', 't59'):  # copy so every patch is priced
+    if not (ds / 'tests.json').exists() or name in ('t56', 't59', 't59x'):  # copy so every patch is priced
         d = OUT / f'{name}-data'; (d / 'commits').mkdir(parents=True, exist_ok=True)
         for p in (d / 'commits').glob('*.patch'): p.unlink()
         for p in (ds / 'commits').glob('*.patch'): shutil.copy(p, d / 'commits')

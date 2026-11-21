@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/hive.py b/sqlglot/parsers/hive.py
+--- a/sqlglot/parsers/hive.py
++++ b/sqlglot/parsers/hive.py
+@@ -81,7 +81,7 @@
+         **parser.Parser.FUNCTIONS,
+         "BASE64": exp.ToBase64.from_arg_list,
+         "COLLECT_LIST": lambda args: exp.ArrayAgg(this=seq_get(args, 0), nulls_excluded=True),
+-        "COLLECT_SET": exp.ArrayUniqueAgg.from_arg_list,
++        "COLLECT_SET": exp.ArrayUniqueAgg.from_arg_list([]),
+         "CONCAT_WS": lambda args, dialect: exp.ConcatWs(
+             expressions=args,
+             safe=not dialect.STRICT_STRING_CONCAT,

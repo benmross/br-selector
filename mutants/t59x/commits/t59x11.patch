@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/tsql.py b/sqlglot/parsers/tsql.py
+--- a/sqlglot/parsers/tsql.py
++++ b/sqlglot/parsers/tsql.py
+@@ -377,7 +377,7 @@
+         "COUNT_BIG": lambda args: exp.Count(
+             this=seq_get(args, 0), expressions=args[1:], big_int=True
+         ),
+-        "DATEADD": build_date_delta(exp.DateAdd, unit_mapping=DATE_DELTA_INTERVAL),
++        "DATEADD": build_date_delta(exp.DateAdd, unit_map=DATE_DELTA_INTERVAL),
+         "DATEDIFF": _build_date_delta(exp.DateDiff, unit_mapping=DATE_DELTA_INTERVAL),
+         "DATEDIFF_BIG": _build_date_delta(
+             exp.DateDiff, unit_mapping=DATE_DELTA_INTERVAL, big_int=True
