@@ -89,7 +89,57 @@ if src:
     sys.path.insert(0, src)
     import sqlglot.expressions as E
     res['exp_names'] = sorted(n for n, o in vars(E).items() if isinstance(o, type) and o.__name__ == n)
+# Facts of the pinned source the selector would otherwise recompute in every
+# forked commit: (1) per attribute, the reads that run at import outside the
+# traced class tables (a copy the trace cannot follow), (2) which module-level
+# sqlglot functions only build values when called at import.
+if src:
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    os.environ['SQLGLOT_SRC'] = src
+    import selector as S
+    sources = S.Selector._load_sources()
+    m = json.load(gzip.open(os.environ.get('MAP_PATH', os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'map.json.gz'))))
+    import_lines = {f: set(v) for f, v in m.get('import_lines', {}).items()}
+    unsafe = {}
+    qual = {}
+    for rel, text in sources.items():
+        if not rel.startswith('sqlglot/'): continue
+        for mm in S.QUALIFIED_READ.finditer(text):
+            parts, ln = mm.group(0).split('.'), text.count('\n', 0, mm.start()) + 1
+            for i in range(1, len(parts)):
+                if parts[i] in S.KEY_TABLES:
+                    qual.setdefault(parts[i], set()).add((rel, ln))
+    scopes = {}
+    for attr, sites in qual.items():
+        for rel, ln in sorted(sites):
+            sc = scopes.get(rel) or scopes.setdefault(rel, S.Scopes(ast.parse(sources[rel])))
+            st = sc.at(ln)
+            why = None
+            if st is None:
+                why = 'module level'
+            elif st[4]:
+                if ln in import_lines.get(rel, ()) and '.pop(' not in sources[rel].split('\n')[ln - 1]:
+                    why = 'function line run at import'
+            else:
+                names = S.assigned_names(st[3]) if isinstance(st[3], (ast.Assign, ast.AnnAssign)) else None
+                tn = sorted((names or set()) & set(S.KEY_TABLES))
+                mod = rel[:-3].replace('/', '.').removesuffix('.__init__')
+                if not (st[5] and tn and f'{mod}:{st[5]}.{tn[0]}' in groups):
+                    why = 'class body outside a traced table'
+            if why:
+                unsafe.setdefault(attr, []).append([rel, ln, why])
+    res['import_reads'] = {a: unsafe.get(a, []) for a in S.KEY_TABLES}
+    # Keys the parser probed while sqlglot imported (tools/import_probes.py):
+    # parser.py's function lookups also run at import, before the trace.
+    ip = json.load(open(os.environ['IMPORT_PROBES']))
+    res['import_probes'] = {a: ip[a] for a in ('FUNCTIONS', 'FUNCTION_PARSERS')}
+    for a in ('FUNCTIONS', 'FUNCTION_PARSERS'):  # covered by import_probes
+        res['import_reads'][a] = [r for r in res['import_reads'][a]
+                                  if not (r[0] == 'sqlglot/parser.py' and r[2] == 'function line run at import')]
+    defs = S._defs_by_name(sources)
+    res['pure'] = {name: [all(S._def_pure(d, defs, 3, set()) for d in ds),
+                          all(S._def_pure(d, defs, 3, set(), nested=True) for d in ds)] for name, ds in defs.items()}
 with gzip.open(out, 'wt') as f:
     json.dump(res, f, separators=(',', ':'))
-print('spawn', len(spawn), 'tables', len(res['tables']), 'ran', len(ran), 'of', len(tests), 'unknown ids', len(unknown), sorted(unknown)[:5],
+print('import_reads', {a: len(v) for a, v in res.get('import_reads', {}).items()}, 'pure', sum(v[0] for v in res.get('pure', {}).values()), 'of', len(res.get('pure', {})), 'spawn', len(spawn), 'tables', len(res['tables']), 'ran', len(ran), 'of', len(tests), 'unknown ids', len(unknown), sorted(unknown)[:5],
       'global', {t: (len(v['p']), v['w']) for t, v in res['global'].items()})

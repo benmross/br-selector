@@ -996,36 +996,11 @@ class Selector:
         if not changed or changed & (old_dups | new_dups):
             return None  # order or layout only, or a repeated key: keep today
         # Any import-time read of this attribute outside the traced class
-        # tables (a module constant built from Parser.FUNCTIONS) holds values
-        # the trace cannot follow.
-        reads = (self.index or {}).get("@qualified_reads")
-        if reads is None:
+        # tables (a module constant built from Parser.FUNCTIONS, a metaclass
+        # copy) holds values the trace cannot follow. Precomputed from the
+        # pinned source by tools/build_keys.py.
+        if "import_reads" not in K or K["import_reads"].get(attr):
             return None
-        for rel, ln, chain in reads.get(attr, ()):
-            try:
-                with open(os.path.join(SRC, rel), encoding="utf-8") as f:
-                    sc = self._scopes(rel, f.read())
-            except (OSError, SyntaxError):
-                return None
-            st = sc.at(ln)
-            if st is None:
-                return None
-            if st[4]:
-                imp = self.import_lines.get(rel, ())
-                if ln in imp:
-                    # A function line that also ran while modules loaded (a
-                    # metaclass). Only the dialect metaclass's removal of
-                    # unsupported JSON path transforms is known: a removed
-                    # key is absent from the traced table, which keeps today.
-                    src_line = self._all_sources().get(rel, "").split("\n")[ln - 1]
-                    if ".pop(" not in src_line:
-                        return None
-                continue  # runtime read: probes the live table, traced
-            if not (st[5] and isinstance(st[3], (ast.Assign, ast.AnnAssign))
-                    and (assigned_names(st[3]) or set()) & set(KEY_TABLES)
-                    and f"{rel[:-3].replace('/', '.').removesuffix('.__init__')}:{st[5]}."
-                        f"{next(iter(assigned_names(st[3]) & set(KEY_TABLES)))}" in K["tables"]):
-                return None
         # The class body itself may read the table by name after building
         # it (a derived set or trie): that copy is not traced.
         for tree_cls, skip in ((old_cls, [node] + old_re), (new_cls, [new_node] + new_re)):
@@ -1036,10 +1011,9 @@ class Selector:
                     return None
         # Calls in the changed entries that run at import must only build a
         # value (closure factories); lambda bodies run when probed.
-        defs = Selector.__dict__.get("_defs_cache")
+        defs = K.get("pure")
         if defs is None:
-            defs = _defs_by_name(self._all_sources())
-            Selector._defs_cache = defs
+            return None
         for ks in changed:
             for m in (old_map, new_map):
                 if ks not in m:
@@ -1080,6 +1054,18 @@ class Selector:
                     for k2, g2 in v["g"].items():
                         if g2 == gid:
                             keys_by_table.setdefault(t, set()).add(k2)
+        # The parser also looks functions up while sqlglot imports (SQL
+        # parsed at module level); those results outlive the import.
+        probed_at_import = K.get("import_probes")
+        if attr in ("FUNCTIONS", "FUNCTION_PARSERS"):
+            if probed_at_import is None:
+                return None
+            names_at_import = {"s:" + n for a in ("FUNCTIONS", "FUNCTION_PARSERS") for n in probed_at_import.get(a, ())}
+            hit = sorted({k for t, ks in keys_by_table.items() for k in ks
+                          if t.rsplit(".", 1)[-1] in ("FUNCTIONS", "FUNCTION_PARSERS")} & names_at_import)
+            if hit:
+                why.append(f"{path}:{start} {','.join(hit)[:80]} looked up while sqlglot imports, keep class users")
+                return None
         sel = set()
         for t, ks in keys_by_table.items():
             gl = glob.get(t)
@@ -1707,17 +1693,19 @@ def _defs_by_name(sources):
     return out
 
 
-def import_call_pure(call, defs, depth=3, seen=None):
+def import_call_pure(call, pure):
     """A call in a class-table literal that runs at import (rename_func("X"),
     transforms.preprocess([...]), unsupported_args(...)(f)) builds a value and
-    changes no shared state: every sqlglot function it reaches, outside the
-    closures it returns, stores no attribute, subscript or global and calls no
-    mutating method. Unresolved names and calls through attributes of local
-    values count as pure only for builtins and class constructors (exp.X)."""
-    seen = set() if seen is None else seen
+    changes no shared state. pure maps each module-level sqlglot function to
+    [audited flat, audited with its closures] (tools/build_keys.py, _def_pure:
+    no global, attribute or subscript store outside containers it created, no
+    mutating or exec-like call, three calls deep). Calls through attributes
+    count as pure only for class constructors (exp.X) and known readers."""
     fn = call.func
     if isinstance(fn, ast.Call):  # a decorator factory applied at import
-        return import_call_pure(fn, defs, depth, seen) and _body_pure(fn, defs, depth, seen, nested=True)
+        inner = fn.func
+        name = inner.id if isinstance(inner, ast.Name) else inner.attr if isinstance(inner, ast.Attribute) else None
+        return import_call_pure(fn, pure) and name in pure and pure[name][1]
     if isinstance(fn, ast.Attribute):
         if fn.attr in MUTATING_CALLS:
             return False
@@ -1730,20 +1718,10 @@ def import_call_pure(call, defs, depth=3, seen=None):
         if name in IMPURE_BUILTINS:
             return False
         if name in SAFE_BUILTINS or name[:1].isupper() or name == "partial":
-            return name not in defs or all(_def_pure(d, defs, depth, seen) for d in defs[name])
+            return name not in pure or pure[name][0]
     else:
         return False
-    if name not in defs:
-        return False
-    return all(_def_pure(d, defs, depth, seen) for d in defs[name])
-
-
-def _body_pure(call, defs, depth, seen, nested):
-    fn = call.func
-    name = fn.id if isinstance(fn, ast.Name) else fn.attr if isinstance(fn, ast.Attribute) else None
-    if name is None or name not in defs:
-        return False
-    return all(_def_pure(d, defs, depth, seen, nested=nested) for d in defs[name])
+    return name in pure and pure[name][0]
 
 
 def _def_pure(d, defs, depth, seen, nested=False):
