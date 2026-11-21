@@ -3,13 +3,13 @@
 | Stratum | Patches | Labeled | Breaking | Main fallbacks | dc91341 misses |
 |---|---:|---:|---:|---:|---:|
 | a | 14 | 8 | 8 | 14 | 0 |
-| b | 12 | 7 | 6 | 12 | 0 |
-| c | 11 | 7 | 6 | 11 | 0 |
-| d | 10 | 7 | 1 | 10 | 0 |
-| e | 13 | 7 | 6 | 13 | 3 |
+| b | 12 | 8 | 7 | 12 | 0 |
+| c | 11 | 8 | 6 | 11 | 0 |
+| d | 10 | 8 | 2 | 10 | 1 |
+| e | 13 | 8 | 7 | 13 | 3 |
 | f | 12 | 7 | 5 | 12 | 1 |
 | g | 10 | 7 | 0 | 10 | 0 |
-| all | 82 | 50 | 32 | 82 | 4 |
+| all | 82 | 54 | 35 | 82 | 5 |
 
 | Stratum | Patch | Change | Failing | Failing tests | Main selects | Main reason | dc91341 selects | dc91341 miss |
 |---|---|---|---:|---|---:|---|---:|---|
@@ -34,7 +34,7 @@
 | b | t41x018 | singlestore linestring type | 1 | TestSingleStore::test_types | 1620 | sqlglot/generators/singlestore.py:357 class SingleStoreGenerator users 34; sqlglot/generators/singlestore.py: possible import failure, everything | 34 | no |
 | b | t41x021 | bigquery binary type | 2 | TestBigQuery::test_bigquery, TestDialect::test_cast | 1620 | sqlglot/generators/bigquery.py:566 class BigQueryGenerator users 226; sqlglot/generators/bigquery.py: possible import failure, everything | 226 | no |
 | b | t41x022 | mysql hour format value | 0 |  | 1620 | sqlglot/dialects/mysql.py:49 class MySQL users 291; sqlglot/dialects/mysql.py: possible import failure, everything | 291 | no |
-| b | t41x023 | duckdb iso dow rename | unlabeled |  | 1620 | sqlglot/generators/duckdb.py:1709 class DuckDBGenerator users 377; sqlglot/generators/duckdb.py: possible import failure, everything | 377 |  |
+| b | t41x023 | duckdb iso dow rename | 6 | TestClickhouse::test_clickhouse, TestDuckDB::test_time, TestPresto::test_time, TestSnowflake::test_next_day (+2) | 1620 | sqlglot/generators/duckdb.py:1709 class DuckDBGenerator users 377; sqlglot/generators/duckdb.py: possible import failure, everything | 377 | no |
 | b | t41x024 | bigquery json bool rename | unlabeled |  | 1620 | sqlglot/generators/bigquery.py:466 class BigQueryGenerator users 226; sqlglot/generators/bigquery.py: possible import failure, everything | 226 |  |
 | b | t41x025 | clickhouse current database rename | unlabeled |  | 1620 | sqlglot/generators/clickhouse.py:321 class ClickHouseGenerator users 123; sqlglot/generators/clickhouse.py: possible import failure, everything | 123 |  |
 | b | t41x026 | snowflake manhattan distance rename | unlabeled |  | 1620 | sqlglot/generators/snowflake.py:523 class SnowflakeGenerator users 283; sqlglot/generators/snowflake.py: possible import failure, everything | 283 |  |
@@ -46,7 +46,7 @@
 | c | t41x032 | tsql output keyword | 2 | TestTSQL::test_ddl, TestTSQL::test_tsql | 1620 | sqlglot/dialects/tsql.py:179 class TSQL.Tokenizer users 171; sqlglot/dialects/tsql.py: possible import failure, everything | 171 | no |
 | c | t41x033 | snowflake byteint keyword | 1 | TestSnowflake::test_snowflake | 1620 | sqlglot/dialects/snowflake.py:143 class Snowflake.Tokenizer users 358; sqlglot/dialects/snowflake.py: possible import failure, everything | 358 | no |
 | c | t41x034 | oracle subpartition keyword | 2 | TestOracle::test_flashback, TestOracle::test_partition_selection | 1620 | sqlglot/dialects/oracle.py:115 class Oracle.Tokenizer users 137; sqlglot/dialects/oracle.py: possible import failure, everything | 137 | no |
-| c | t41x035 | trino refresh keyword | unlabeled |  | 1620 | sqlglot/dialects/trino.py:17 class Trino.Tokenizer users 143; sqlglot/dialects/trino.py: possible import failure, everything | 143 |  |
+| c | t41x035 | trino refresh keyword | 0 |  | 1620 | sqlglot/dialects/trino.py:17 class Trino.Tokenizer users 143; sqlglot/dialects/trino.py: possible import failure, everything | 143 | no |
 | c | t41x036 | base anti keyword | unlabeled |  | 1620 | sqlglot/tokens.py:264 class Tokenizer users 1564; sqlglot/tokens.py: possible import failure, everything | 1564 |  |
 | c | t41x037 | base asof keyword | unlabeled |  | 1620 | sqlglot/tokens.py:268 class Tokenizer users 1564; sqlglot/tokens.py: possible import failure, everything | 1564 |  |
 | c | t41x039 | optimizer lazy export key | unlabeled |  | 1620 | sqlglot/optimizer/__init__.py:44 module constant read at import, everything; sqlglot/optimizer/__init__.py: possible import failure, everything | 1620 |  |
@@ -57,7 +57,7 @@
 | d | t41x044 | interval unit allows underscore | 0 |  | 1620 | sqlglot/expressions/builders.py:347 module constant INTERVAL_STRING_RE: 55 read it; sqlglot/expressions/builders.py: possible import failure, everything | 55 | no |
 | d | t41x045 | camel case split before lowercase | 3 | TestDuckDB::test_duckdb, TestSnowflake::test_snowflake, TestOptimizer::test_annotate_funcs | 1620 | sqlglot/helper.py:37 module constant read at import, everything; sqlglot/helper.py: possible import failure, everything | 1620 | no |
 | d | t41x046 | high byte range includes delete | 0 |  | 1620 | sqlglot/generator.py:28 module constant _HIGH_BYTE_RE: 3 read it; sqlglot/generator.py: possible import failure, everything | 3 | no |
-| d | t41x047 | mysql time mapping key in trie | unlabeled |  | 1620 | sqlglot/dialects/mysql.py:50 class MySQL users 291; sqlglot/dialects/mysql.py: possible import failure, everything | 291 |  |
+| d | t41x047 | mysql time mapping key in trie | 7 | TestClickhouse::test_clickhouse, TestDuckDB::test_time, TestHive::test_time, TestMySQL::test_date_format (+3) | 1620 | sqlglot/dialects/mysql.py:50 class MySQL users 291; sqlglot/dialects/mysql.py: possible import failure, everything | 291 | MISS 2: TestHive::test_time, TestPresto::test_to_char |
 | d | t41x048 | mysql month-name key in trie | unlabeled |  | 1620 | sqlglot/dialects/mysql.py:46 class MySQL users 291; sqlglot/dialects/mysql.py: possible import failure, everything | 291 |  |
 | d | t41x049 | test canonical atom regex | unlabeled |  | 1620 | tests/test_time.py:9 test module level 4; tests/test_time.py: possible import failure, everything | 4 |  |
 | e | t41x050 | tsql dialect registry name | 1 | TestGenerator::test_generator_memory | 1620 | sqlglot/dialects/dialect.py:133 class Dialects never instantiated, module runs at import: everything; sqlglot/dialects/dialect.py: possible import failure, everything | 2 | MISS 1: TestGenerator::test_generator_memory |
@@ -67,7 +67,7 @@
 | e | t41x054 | optimizer lazy optimize attribute | 146 | TestPostgres::test_alter_drop_column, TestPostgres::test_alter_mixed_actions, TestPostgres::test_analyze, TestPostgres::test_array_length (+142) | 1620 | sqlglot/optimizer/__init__.py:40 module constant read at import, everything; sqlglot/optimizer/__init__.py: possible import failure, everything | 1620 | no |
 | e | t41x055 | ceil function alias | 0 |  | 1620 | sqlglot/expressions/math.py:136 class Ceil users 10; sqlglot/expressions/math.py: possible import failure, everything | 10 | no |
 | e | t41x056 | isinf function name | 3 | TestClickhouse::test_clickhouse, TestDuckDB::test_isinf, TestOptimizer::test_annotate_funcs | 1620 | sqlglot/expressions/math.py:152 class IsInf users 5; sqlglot/expressions/math.py: possible import failure, everything | 5 | no |
-| e | t41x057 | sign function alias | unlabeled |  | 1620 | sqlglot/expressions/math.py:194 class Sign users 4; sqlglot/expressions/math.py: possible import failure, everything | 4 |  |
+| e | t41x057 | sign function alias | 1 | TestPresto::test_signum | 1620 | sqlglot/expressions/math.py:194 class Sign users 4; sqlglot/expressions/math.py: possible import failure, everything | 4 | no |
 | e | t41x058 | getbit function alias | unlabeled |  | 1620 | sqlglot/expressions/math.py:285 class Getbit users 8; sqlglot/expressions/math.py: possible import failure, everything | 8 |  |
 | e | t41x059 | trunc function alias | unlabeled |  | 1620 | sqlglot/expressions/math.py:203 class Trunc users 19; sqlglot/expressions/math.py: possible import failure, everything | 19 |  |
 | e | t41x060 | skip integration env name | unlabeled |  | 1620 | tests/helpers.py:66 test module level 1377; tests/helpers.py: possible import failure, everything | 96 |  |
