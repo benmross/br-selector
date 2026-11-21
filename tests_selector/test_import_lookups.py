@@ -57,3 +57,22 @@ def test_lookup_at_import_sees_changed_pop_literal_only():
     annotated = ast.parse("class A:\n    X: t.ClassVar[dict] = {\n        'a': 1,\n    }\n")
     node = annotated.body[0].body[0]
     assert not sel.lookup_at_import(node, 2, [2])
+
+
+class _FP:
+    def __init__(self, before, after):
+        import difflib
+        text = "diff --git a/m.py b/m.py\n" + "".join(difflib.unified_diff(
+            before.splitlines(True), after.splitlines(True), "a/m.py", "b/m.py"))
+        fp = sel.parse_patch(text)[0]
+        self.hunks, self.ranges = fp.hunks, fp.ranges
+
+
+def test_import_time_regex_that_no_longer_compiles():
+    before = 'import re\nP = re.compile(r"a(b)?")\n'
+    bad = before.replace('(b)?', '(b?')
+    good = before.replace('(b)?', '(c)?')
+    tree = ast.parse(before)
+    node = tree.body[1]
+    assert sel.bad_regex_at_import(node, 2, [2], ast.parse(bad), _FP(before, bad))
+    assert not sel.bad_regex_at_import(node, 2, [2], ast.parse(good), _FP(before, good))

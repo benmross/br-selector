@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -49,7 +49,7 @@
+ 
+ # Regex to detect time zones in timestamps of the form [+|-]TT[:tt]
+ # The pattern matches timezone offsets that appear after the time portion
+-TIMEZONE_PATTERN = re.compile(r":\d{2}.*?[+\-]\d{2}(?::\d{2})?")
++TIMEZONE_PATTERN = re.compile(r":\d{2}.*?[+\-]\d{2}(?::\d{2}?")
+ 
+ # Characters that must be escaped when building regex expressions in INITCAP
+ REGEX_ESCAPE_REPLACEMENTS = {

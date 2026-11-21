@@ -80,6 +80,10 @@
    "kind": "lambda_sort_key",
    "file": "sqlglot/errors.py"
   },
+  "t15x022": {
+   "kind": "import_time_regex_literal",
+   "file": "sqlglot/generators/duckdb.py"
+  },
   "t15x021": {
    "kind": "lambda_body_parser_table",
    "file": "sqlglot/parser.py"
