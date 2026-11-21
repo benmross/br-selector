@@ -1937,7 +1937,12 @@ def pack(nums, tests):
 
 
 def read_patch(patch_path):
-    with open(patch_path, "rb") as f:
+    # O_NONBLOCK: opening a FIFO for reading waits for a writer forever, and
+    # this runs in the parent (prepare_batch), which has no time limit.
+    import stat
+    with os.fdopen(os.open(patch_path, os.O_RDONLY | os.O_NONBLOCK), "rb") as f:
+        if not stat.S_ISREG(os.fstat(f.fileno()).st_mode):
+            raise ValueError("patch is not a regular file")
         raw = f.read(MAX_PATCH_BYTES + 1)
     if len(raw) > MAX_PATCH_BYTES:
         raise ValueError("patch exceeds size limit")
