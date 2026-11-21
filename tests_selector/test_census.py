@@ -49,3 +49,41 @@ def test_census_x_rules():
     assert selector.census_x(3, {1, 2}, [], tests) == 12000
     assert selector.census_x(3, {0}, [], tests) == 0
     assert selector.census_x(3, everything, [], tests) == 0
+
+
+def test_census_x_mode4_trigger_classes():
+    selector = load_selector()
+    tests = {0: ("a", "f", 1), 1: ("b", "f", 1)}
+    everything = set(tests)
+    fell = "p.py: possible import failure, everything"
+    assert selector.census_x(4, everything, ["p.py: could_raise trigger tok-str", fell], tests) == 1000
+    assert selector.census_x(4, everything, ["p.py: could_raise trigger tok-word", fell], tests) == 7000
+    for other in ("tok-op", "tok-name", "lex-word", "lex-op", "lex-name"):
+        assert selector.census_x(4, everything, [f"p.py: could_raise trigger {other}", fell], tests) == 49000
+    assert selector.census_x(4, everything, ["p.py:3 also runs at import, everything"], tests) == 0
+    assert selector.census_x(4, everything, ["commit analysis timed out: everything"], tests) == 0
+    assert selector.census_x(4, {0}, [], tests) == 0
+
+
+def _fp(selector, old, new):
+    import difflib
+    diff = "".join(difflib.unified_diff(old.splitlines(True), new.splitlines(True), "a/p.py", "b/p.py"))
+    text = "diff --git a/p.py b/p.py\n" + diff
+    return selector.parse_patch(text)[0]
+
+
+def test_could_raise_trigger_branches_match_could_raise():
+    selector = load_selector()
+    cases = [
+        ('X = {"a": 1}\n', 'X = {"b": 1}\n', "tok-str"),
+        ("X = 1\n", "X = [i for i in Y]\n", "tok-word"),
+        ("X = 4\n", "X = 4 / 2\n", "tok-op"),
+        ("X = A\n", "X = B\n", "tok-name"),
+        ("X = 1\n", "X = 1  # see foo/bar\n", None),
+        ('X = "a b"\n', 'X = "b a"\n', None),
+    ]
+    for old, new, want in cases:
+        fp = _fp(selector, old, new)
+        got = selector.could_raise_trigger(fp, old, new)
+        assert got == want, (old, new, got)
+        assert bool(got) == selector.could_raise(fp, old, new)

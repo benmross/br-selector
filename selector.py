@@ -791,6 +791,8 @@ class Selector:
             # Never execute patch-supplied code in the selector. Even an
             # innocent import may loop, fork, write files, or produce unlimited
             # output. Unknown import effects need a conservative selection.
+            if CENSUS_MODE == 4:
+                why.append(f"{path}: could_raise trigger {could_raise_trigger(fp, old_text, new_text)}")
             why.append(f"{path}: possible import failure, everything")
             return set(self.all)
         return out
@@ -1800,6 +1802,88 @@ def could_raise(fp, old_text=None, new_text=None):
     return True
 
 
+def could_raise_trigger(fp, old_text=None, new_text=None):
+    """Census 4 only: which branch of could_raise returned True, the first
+    that matches in could_raise's own order. Selections never read this.
+      tok-word  a changed code token is a RISKY_WORDS keyword
+      tok-op    a changed code token holds a RISKY_OPS operator, or does not
+                tokenize as Python (ERRORTOKEN)
+      tok-name  a changed code NAME absent from the removed lines
+      tok-str   only a word inside a changed string literal is new
+      lex-word, lex-op, lex-name  the file version did not tokenize, so the
+                lexical reading decided: risky word, risky operator, new
+                identifier
+    None when could_raise is False."""
+    import tokenize
+
+    removed_l, added_l = [], []
+    for _, lines in fp.hunks:
+        for l in lines:
+            if l[:1] == "-":
+                removed_l.append(l[1:])
+            elif l[:1] == "+":
+                added_l.append(l[1:])
+    lex_before = set(IDENT.findall("\n".join(removed_l)))
+    added_text = "\n".join(added_l)
+    lex_after = set(IDENT.findall(added_text))
+    if lex_after & RISKY_WORDS:
+        lex = "lex-word"
+    elif any(op in added_text for op in RISKY_OPS):
+        lex = "lex-op"
+    elif (lex_after - KEYWORDS) - lex_before:
+        lex = "lex-name"
+    else:
+        return None
+    if old_text is None or new_text is None:
+        return lex
+    removed, added = set(), set()
+    for (start, lines), (old_count, new_start, _) in zip(fp.hunks, fp.ranges):
+        o = start if old_count else start + 1
+        n = new_start
+        for l in lines:
+            if l[:1] == " ":
+                o += 1
+                n += 1
+            elif l[:1] == "-":
+                removed.add(o)
+                o += 1
+            elif l[:1] == "+":
+                added.add(n)
+                n += 1
+    old_toks = _changed_tokens(old_text, removed) if removed else []
+    new_toks = _changed_tokens(new_text, added) if added else []
+    if old_toks is None or new_toks is None:
+        return lex
+    strings = {tokenize.STRING} | {getattr(tokenize, k) for k in ("FSTRING_MIDDLE", "TSTRING_MIDDLE")
+                                   if hasattr(tokenize, k)}
+
+    def words(toks):
+        code, data = set(), set()
+        for t in toks:
+            if t.type == tokenize.NAME:
+                code.add(t.string)
+            elif t.type in strings:
+                data |= set(IDENT.findall(t.string))
+            elif t.type == tokenize.OP and any(op in t.string for op in RISKY_OPS):
+                code.add("<op>")
+            elif t.type == tokenize.ERRORTOKEN:
+                code.add("<op>")
+        return code, data
+
+    before_code, before_data = words(old_toks)
+    after_code, after_data = words(new_toks)
+    before = before_code | before_data
+    if after_code & RISKY_WORDS:
+        return "tok-word"
+    if "<op>" in after_code:
+        return "tok-op"
+    if (after_code - KEYWORDS - {"<op>"}) - before:
+        return "tok-name"
+    if after_data - before:
+        return "tok-str"
+    return None
+
+
 def _lexical_could_raise(fp):
     removed, added = [], []
     for _, lines in fp.hunks:
@@ -2170,13 +2254,18 @@ def analyze_patch(context, patch_path, sel, tests, deadline):
 #      failure"); 0 for any other reason.
 #   3: when the analysis did not select every test: 1 s if the selection has
 #      test_execute_tpcds, plus 11 s if it has TestParser::test_max_nodes.
-CENSUS_MODE = 2
+#   4: only when could_raise decided ("possible import failure"), by the
+#      branch that fired (could_raise_trigger): 1 s tok-str, 7 s tok-word,
+#      49 s any other branch (tok-op, tok-name, lex-*); 0 for every other commit.
+CENSUS_MODE = 4
 CENSUS_FALLBACKS = ("commit analysis timed out", "commit analysis stopped", "analysis process failed",
                     "batch analysis deadline", "analysis error", "map unavailable")
 CENSUS_CLASSES = (("also runs at import, everything", 1000), ("read at import, everything", 7000),
                   ("possible import failure, everything", 49000))
 CENSUS_TPCDS = "tests/test_executor.py::TestExecutor::test_execute_tpcds"
 CENSUS_MAX_NODES = "tests/test_parser.py::TestParser::test_max_nodes"
+CENSUS_TRIGGERS = {"tok-str": 1000, "tok-word": 7000}
+CENSUS_TRIGGER_OTHER = 49000
 
 
 def census_x(mode, chosen, why, tests):
@@ -2200,6 +2289,15 @@ def census_x(mode, chosen, why, tests):
             return 0
         ids = {tests[n][0] for n in chosen if n in tests}
         return (1000 if CENSUS_TPCDS in ids else 0) + (11000 if CENSUS_MAX_NODES in ids else 0)
+    if mode == 4:
+        if not everything or fallback:
+            return 0
+        deciding = [w for w in why if w.endswith("everything")]
+        if not deciding or not deciding[-1].endswith("possible import failure, everything"):
+            return 0
+        marks = [w for w in why if ": could_raise trigger " in w]
+        trigger = marks[-1].rsplit(" ", 1)[1] if marks else None
+        return CENSUS_TRIGGERS.get(trigger, CENSUS_TRIGGER_OTHER)
     return 0
 
 
