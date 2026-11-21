@@ -345,9 +345,11 @@ class Selector:
         imp = self.import_lines.get(path)
         if not imp or not any(l in imp for l in span):
             return set()
-        got = self.broad(path)
-        why.append(f"{path}:{span.start} also runs at import, module users {len(got)}")
-        return got
+        # It ran while sqlglot or a test module was loading, before any test:
+        # whatever it computed then (tables, parsed SQL at collection) reaches
+        # tests that never run the line themselves. Only everything is safe.
+        why.append(f"{path}:{span.start} also runs at import, everything")
+        return set(self.all)
 
     def module_level(self, path, module, cls, why, line, stmt=None):
         """A statement that runs at import: a class attribute, decorator,

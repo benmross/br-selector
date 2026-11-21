@@ -39,9 +39,27 @@ def _hook(event, args):
 sys.addaudithook(_hook)
 
 
+def _phase(item, phase):
+    # setUpClass and class or module fixtures run inside the first test's
+    # setup; tag those observations so the map can credit the whole class
+    _current[0] = item.nodeid if phase == "call" else f"{item.nodeid}|{phase}"
+
+
 @pytest.hookimpl(hookwrapper=True)
-def pytest_runtest_protocol(item, nextitem):
-    _current[0] = item.nodeid
+def pytest_runtest_setup(item):
+    _phase(item, "setup")
+    yield
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_call(item):
+    _phase(item, "call")
+    yield
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_teardown(item, nextitem):
+    _phase(item, "teardown")
     yield
     _current[0] = None
 

@@ -17,6 +17,26 @@ def main(cov_dir, tests_json, out):
     num = {t["id"]: t["number"] for t in tests}
     unknown = set()
 
+    by_scope = {}
+    for t in tests:
+        parts = t["id"].split("::")
+        scope = "::".join(parts[:-1]) if len(parts) > 2 else parts[0]
+        by_scope.setdefault(scope, set()).add(t["number"])
+
+    def to_nums(ctx):
+        """A context's tests. Setup and teardown run class-level setup
+        (setUpClass, class and module fixtures) for every test in the class,
+        so they count for all of them."""
+        nodeid, _, phase = ctx.partition("|")
+        n = to_num(nodeid)
+        if n is None:
+            return set()
+        if phase in ("setup", "teardown"):
+            parts = nodeid.split("[", 1)[0].split("::")
+            scope = "::".join(parts[:-1]) if len(parts) > 2 else parts[0]
+            return by_scope.get(scope, {n}) | {n}
+        return {n}
+
     def to_num(ctx):
         nodeid = ctx.rsplit("|", 1)[0]
         n = num.get(nodeid)
@@ -48,7 +68,10 @@ def main(cov_dir, tests_json, out):
         by_line = data.contexts_by_lineno(path)
         lines, imp = {}, []
         for line, ctxs in by_line.items():
-            nums = {n for c in ctxs if c for n in [to_num(c)] if n is not None}
+            nums = set()
+            for c in ctxs:
+                if c:
+                    nums |= to_nums(c)
             if nums:
                 lines[line] = sid(nums)
             if "" in ctxs:
@@ -59,22 +82,22 @@ def main(cov_dir, tests_json, out):
     fixtures = {}
     for f in glob.glob(os.path.join(cov_dir, "fixtures.*.json")):
         for nodeid, paths in json.load(open(f)).items():
-            n = to_num(nodeid)
-            if n is None:
+            ns = to_nums(nodeid)
+            if not ns:
                 continue
             for p in paths:
                 if "__pycache__" in p:
                     continue
-                fixtures.setdefault(p, set()).add(n)
+                fixtures.setdefault(p, set()).update(ns)
 
     classes = {}
     for f in glob.glob(os.path.join(cov_dir, "classes.*.json")):
         for nodeid, names in json.load(open(f)).items():
-            n = to_num(nodeid)
-            if n is None:
+            ns = to_nums(nodeid)
+            if not ns:
                 continue
             for c in names:
-                classes.setdefault(c, set()).add(n)
+                classes.setdefault(c, set()).update(ns)
 
     out_obj = {
         "sets": sets,
