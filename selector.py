@@ -601,7 +601,7 @@ class Selector:
             if code is None:
                 why.append(f"{path}: import-time value of {','.join(sorted(names))} changed shape, everything")
                 return set(self.all)
-        dropped = removed_dict_keys(old_tree, new_tree)
+        dropped = removed_dict_keys(old_tree, new_tree, scopes, new_scopes)
         if dropped:
             # A key removed or renamed in a table that import-time code pops,
             # deletes or indexes by that key (KEYWORDS.pop("/*+") in a dialect
@@ -1193,26 +1193,34 @@ def _str_consts(tree):
     return out
 
 
-def removed_dict_keys(old_tree, new_tree):
+def removed_dict_keys(old_tree, new_tree, old_scopes=None, new_scopes=None):
     """{table name: keys} removed or renamed in a dict display assigned at
     import level (a class attribute or module constant)."""
-    def tables(tree):
-        consts = _str_consts(tree)
+    def tables(tree, sc):
         out = {}
-        for start, end, header_end, node, runtime, cls in Scopes(tree).stmts:
-            if runtime or not isinstance(node, (ast.Assign, ast.AnnAssign)):
+        for start, end, header_end, node, runtime, cls in (sc or Scopes(tree)).stmts:
+            if runtime or not isinstance(node, (ast.Assign, ast.AnnAssign)) \
+                    or not isinstance(node.value, ast.Dict):
                 continue
             names = assigned_names(node)
-            if names and len(names) == 1 and isinstance(node.value, ast.Dict):
-                keys = {_key(k, consts) for k in node.value.keys if k is not None} - {None}
-                out.setdefault((cls, next(iter(names))), set()).update(keys)
+            if names and len(names) == 1:
+                out[(cls, next(iter(names)))] = node
         return out
-    old, new = tables(old_tree), tables(new_tree)
+    old, new = tables(old_tree, old_scopes), tables(new_tree, new_scopes)
     out = {}
-    for (cls, name), keys in old.items():
-        gone = keys - new.get((cls, name), set())
+    consts = {}
+    for key, node in old.items():
+        other = new.get(key)
+        if other is not None and ast.dump(node.value) == ast.dump(other.value):
+            continue
+        if not consts:
+            consts = {"": None, **_str_consts(old_tree)}
+            new_consts = _str_consts(new_tree)
+        before = {_key(k, consts) for k in node.value.keys if k is not None} - {None}
+        after = {_key(k, new_consts) for k in other.value.keys if k is not None} - {None} if other is not None else set()
+        gone = before - after
         if gone:
-            out.setdefault(name, set()).update(gone)
+            out.setdefault(key[1], set()).update(gone)
     return out
 
 
