@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -137,6 +137,7 @@
+         exp.AnalyzeColumns: lambda self, e: self.sql(e, "this"),
+         exp.AnalyzeWith: lambda self, e: self.expressions(e, prefix="WITH ", sep=" "),
+         exp.ArrayContainedBy: lambda self, e: self.binary(e, "<@"),
++        exp.TryCast: lambda self, e: self.cast_sql(e),
+         exp.ArrayContainsAll: lambda self, e: self.binary(e, "@>"),
+         exp.ArrayOverlaps: lambda self, e: self.binary(e, "&&"),
+         exp.AssumeColumnConstraint: lambda self, e: f"ASSUME ({self.sql(e, 'this')})",

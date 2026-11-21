@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/snowflake.py b/sqlglot/parsers/snowflake.py
+--- a/sqlglot/parsers/snowflake.py
++++ b/sqlglot/parsers/snowflake.py
+@@ -439,7 +439,7 @@
+             expression=seq_get(args, 1),
+             preserve_end_of_month=True,
+         ),
+-        "APPROX_PERCENTILE": exp.ApproxQuantile.from_arg_list,
++        "APPROX_PERCENTILE": exp.ApproxQuantile.from_arg_list(None),
+         "CURRENT_TIME": lambda args: exp.Localtime(this=seq_get(args, 0)),
+         "APPROX_TOP_K": _build_approx_top_k,
+         "ARRAY_CONSTRUCT": lambda args: exp.Array(expressions=args),

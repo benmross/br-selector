@@ -1,0 +1,21 @@
+diff --git a/sqlglot/parsers/hive.py b/sqlglot/parsers/hive.py
+--- a/sqlglot/parsers/hive.py
++++ b/sqlglot/parsers/hive.py
+@@ -79,7 +79,7 @@
+ 
+     FUNCTIONS = {
+         **parser.Parser.FUNCTIONS,
+-        "BASE64": exp.ToBase64.from_arg_list,
++        "BASE64": exp.Hex.from_arg_list,
+         "COLLECT_LIST": lambda args: exp.ArrayAgg(this=seq_get(args, 0), nulls_excluded=True),
+         "COLLECT_SET": exp.ArrayUniqueAgg.from_arg_list,
+         "CONCAT_WS": lambda args, dialect: exp.ConcatWs(
+@@ -229,7 +229,7 @@
+         check_func: bool = False,
+         schema: bool = False,
+         allow_identifiers: bool = True,
+-        with_collation: bool = False,
++        with_collation: bool = True,
+     ) -> exp.Expr | None:
+         """
+         Spark (and most likely Hive) treats casts to CHAR(length) and VARCHAR(length) as casts to

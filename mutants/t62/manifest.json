@@ -1,0 +1,245 @@
+{
+ "commits": {
+  "t62k01": {
+   "files": [
+    "sqlglot/generator.py"
+   ],
+   "kind": "base TRANSFORMS value edit, every dialect dispatch copy"
+  },
+  "t62k02": {
+   "files": [
+    "sqlglot/generator.py"
+   ],
+   "kind": "base TRANSFORMS entry removed (dispatch falls back)"
+  },
+  "t62k03": {
+   "files": [
+    "sqlglot/generator.py"
+   ],
+   "kind": "base TRANSFORMS entry added that shadows anyvalue_sql in the dispatch copy"
+  },
+  "t62k04": {
+   "files": [
+    "sqlglot/generator.py"
+   ],
+   "kind": "base TRANSFORMS entry added that shadows trycast_sql"
+  },
+  "t62k05": {
+   "files": [
+    "sqlglot/parsers/snowflake.py"
+   ],
+   "kind": "Snowflake ARRAY_GENERATE_RANGE lambda body (read by the Snowflake generator through SnowflakeParser.FUNCTIONS)"
+  },
+  "t62k06": {
+   "files": [
+    "sqlglot/parsers/teradata.py"
+   ],
+   "kind": "alias value subscript changed to another valid key"
+  },
+  "t62k07": {
+   "files": [
+    "sqlglot/parsers/teradata.py"
+   ],
+   "kind": "alias value subscript changed to a missing key: KeyError at import"
+  },
+  "t62k08": {
+   "files": [
+    "sqlglot/parsers/hive.py"
+   ],
+   "kind": "value attribute misspelled: AttributeError at import"
+  },
+  "t62k09": {
+   "files": [
+    "sqlglot/parsers/hive.py"
+   ],
+   "kind": "value turned into an import-time call of a builder"
+  },
+  "t62k10": {
+   "files": [
+    "sqlglot/parser.py"
+   ],
+   "kind": "FUNCTION_PARSERS key renamed (anonymize reads it; Snowflake and BigQuery filter TRIM)"
+  },
+  "t62k11": {
+   "files": [
+    "sqlglot/parser.py"
+   ],
+   "kind": "base FUNCTION_PARSERS value swapped to another parser"
+  },
+  "t62k12": {
+   "files": [
+    "sqlglot/generator.py"
+   ],
+   "kind": "base TRANSFORMS values swapped"
+  },
+  "t62k13": {
+   "files": [
+    "sqlglot/parser.py"
+   ],
+   "kind": "base FUNCTIONS lambda bodies swapped"
+  },
+  "t62k14": {
+   "files": [
+    "sqlglot/parsers/spark.py"
+   ],
+   "kind": "subclass entry added that shadows an inherited Hive entry"
+  },
+  "t62k15": {
+   "files": [
+    "sqlglot/generators/hive.py"
+   ],
+   "kind": "entry moved above the parent splat (parent value now wins)"
+  },
+  "t62k16": {
+   "files": [
+    "sqlglot/parsers/hive.py"
+   ],
+   "kind": "duplicate key added (later value wins)"
+  },
+  "t62k17": {
+   "files": [
+    "sqlglot/generators/presto.py"
+   ],
+   "kind": "value edit inherited by Trino and Athena"
+  },
+  "t62k18": {
+   "files": [
+    "sqlglot/parsers/mysql.py"
+   ],
+   "kind": "FUNCTION_PARSERS value edit; Doris filters the key, StarRocks and SingleStore inherit"
+  },
+  "t62k19": {
+   "files": [
+    "sqlglot/parsers/postgres.py"
+   ],
+   "kind": "lambda body edit on a key Redshift filters out"
+  },
+  "t62k20": {
+   "files": [
+    "sqlglot/parsers/duckdb.py"
+   ],
+   "kind": "filter of a comprehension splat changed"
+  },
+  "t62k21": {
+   "files": [
+    "sqlglot/generator.py"
+   ],
+   "kind": "base multi-line entry body edit; TSQL filters the key"
+  },
+  "t62k22": {
+   "files": [
+    "sqlglot/parsers/hive.py"
+   ],
+   "kind": "module line inserted above the class plus an entry edit (line numbers shift)"
+  },
+  "t62k23": {
+   "files": [
+    "sqlglot/parsers/hive.py"
+   ],
+   "kind": "FUNCTIONS and FUNCTION_PARSERS entries edited in one class"
+  },
+  "t62k24": {
+   "files": [
+    "sqlglot/parsers/hive.py"
+   ],
+   "kind": "entry edit plus a method default edit in the same file"
+  },
+  "t62k25": {
+   "files": [
+    "sqlglot/generators/hive.py",
+    "sqlglot/parsers/hive.py"
+   ],
+   "kind": "parser and generator entries edited in two files"
+  },
+  "t62k26": {
+   "files": [
+    "sqlglot/generators/presto.py"
+   ],
+   "kind": "entry edit plus another table of the same class"
+  },
+  "t62k27": {
+   "files": [
+    "sqlglot/parsers/hive.py"
+   ],
+   "kind": "Hive CONCAT_WS (overrides the base entry) multi-line lambda body"
+  },
+  "t62k28": {
+   "files": [
+    "sqlglot/parsers/hive.py"
+   ],
+   "kind": "override key renamed: the base entry reappears"
+  },
+  "t62m01": {
+   "files": [
+    "sqlglot/generators/duckdb.py"
+   ],
+   "kind": "factory called with a missing argument: TypeError at import"
+  },
+  "t62m02": {
+   "files": [
+    "sqlglot/parsers/snowflake.py"
+   ],
+   "kind": "factory called with a missing argument: TypeError at import"
+  },
+  "t62m03": {
+   "files": [
+    "sqlglot/generators/hive.py"
+   ],
+   "kind": "generator function called at import with None: raises at import"
+  },
+  "t62m04": {
+   "files": [
+    "sqlglot/parsers/snowflake.py"
+   ],
+   "kind": "from_arg_list called at import with None"
+  },
+  "t62m05": {
+   "files": [
+    "sqlglot/generators/presto.py"
+   ],
+   "kind": "factory called with an extra argument: TypeError at import"
+  },
+  "t62b01": {
+   "files": [
+    "sqlglot/parsers/duckdb.py"
+   ],
+   "kind": "class table call keyword renamed: TypeError at import"
+  },
+  "t62b02": {
+   "files": [
+    "sqlglot/parsers/snowflake.py"
+   ],
+   "kind": "class table call arity changed: TypeError at import"
+  },
+  "t62b03": {
+   "files": [
+    "sqlglot/generators/hive.py"
+   ],
+   "kind": "method decorator argument changed to a 1-tuple: IndexError at class creation"
+  },
+  "t62b04": {
+   "files": [
+    "sqlglot/generators/clickhouse.py"
+   ],
+   "kind": "module-level decorator argument shortened: IndexError at import"
+  },
+  "t62b05": {
+   "files": [
+    "sqlglot/generators/clickhouse.py"
+   ],
+   "kind": "decorator argument turned into a keyword: TypeError at class creation"
+  },
+  "t62b06": {
+   "files": [
+    "sqlglot/generators/presto.py"
+   ],
+   "kind": "class attribute call with wrong arity: TypeError at class creation"
+  },
+  "t62b07": {
+   "files": [
+    "sqlglot/parsers/duckdb.py"
+   ],
+   "kind": "attribute that does not exist in a class table key: AttributeError at import"
+  }
+ }
+}

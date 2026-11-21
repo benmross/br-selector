@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/mysql.py b/sqlglot/parsers/mysql.py
+--- a/sqlglot/parsers/mysql.py
++++ b/sqlglot/parsers/mysql.py
+@@ -180,7 +180,7 @@
+ 
+     FUNCTION_PARSERS = {
+         **parser.Parser.FUNCTION_PARSERS,
+-        "GROUP_CONCAT": lambda self: self._parse_group_concat(),
++        "GROUP_CONCAT": lambda self: self._parse_string_agg(),
+         # https://dev.mysql.com/doc/refman/5.7/en/miscellaneous-functions.html#function_values
+         "VALUES": lambda self: self.expression(
+             exp.Anonymous(this="VALUES", expressions=[self._parse_id_var()])

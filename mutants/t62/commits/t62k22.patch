@@ -1,0 +1,20 @@
+diff --git a/sqlglot/parsers/hive.py b/sqlglot/parsers/hive.py
+--- a/sqlglot/parsers/hive.py
++++ b/sqlglot/parsers/hive.py
+@@ -51,6 +51,7 @@
+     )
+ 
+ 
++_T62_SHIFT = 1
+ class HiveParser(parser.Parser):
+     IS_PREDICATE_PRECEDENCE = IsPredicatePrecedence.EQUALITY
+ 
+@@ -81,7 +82,7 @@
+         **parser.Parser.FUNCTIONS,
+         "BASE64": exp.ToBase64.from_arg_list,
+         "COLLECT_LIST": lambda args: exp.ArrayAgg(this=seq_get(args, 0), nulls_excluded=True),
+-        "COLLECT_SET": exp.ArrayUniqueAgg.from_arg_list,
++        "COLLECT_SET": exp.ArrayAgg.from_arg_list,
+         "CONCAT_WS": lambda args, dialect: exp.ConcatWs(
+             expressions=args,
+             safe=not dialect.STRICT_STRING_CONCAT,

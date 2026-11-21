@@ -1,0 +1,24 @@
+diff --git a/sqlglot/parsers/hive.py b/sqlglot/parsers/hive.py
+--- a/sqlglot/parsers/hive.py
++++ b/sqlglot/parsers/hive.py
+@@ -81,7 +81,7 @@
+         **parser.Parser.FUNCTIONS,
+         "BASE64": exp.ToBase64.from_arg_list,
+         "COLLECT_LIST": lambda args: exp.ArrayAgg(this=seq_get(args, 0), nulls_excluded=True),
+-        "COLLECT_SET": exp.ArrayUniqueAgg.from_arg_list,
++        "COLLECT_SET": exp.ArrayAgg.from_arg_list,
+         "CONCAT_WS": lambda args, dialect: exp.ConcatWs(
+             expressions=args,
+             safe=not dialect.STRICT_STRING_CONCAT,
+diff --git a/sqlglot/generators/hive.py b/sqlglot/generators/hive.py
+--- a/sqlglot/generators/hive.py
++++ b/sqlglot/generators/hive.py
+@@ -283,7 +283,7 @@
+     TRANSFORMS = {
+         **generator.Generator.TRANSFORMS,
+         exp.Property: property_sql,
+-        exp.AnyValue: rename_func("FIRST"),
++        exp.AnyValue: rename_func("ANY_VALUE"),
+         exp.ApproxDistinct: approx_count_distinct_sql,
+         exp.ArgMax: arg_max_or_min_no_count("MAX_BY"),
+         exp.ArgMin: arg_max_or_min_no_count("MIN_BY"),

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/duckdb.py b/sqlglot/parsers/duckdb.py
+--- a/sqlglot/parsers/duckdb.py
++++ b/sqlglot/parsers/duckdb.py
+@@ -306,7 +306,7 @@
+ 
+     TYPE_CONVERTERS = {
+         # https://duckdb.org/docs/sql/data_types/numeric
+-        exp.DType.DECIMAL: build_default_decimal_type(precision=18, scale=3),
++        exp.DType.DECIMALS: build_default_decimal_type(precision=18, scale=3),
+         # https://duckdb.org/docs/sql/data_types/text
+         exp.DType.TEXT: _convert_text_type,
+     }

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/snowflake.py b/sqlglot/parsers/snowflake.py
+--- a/sqlglot/parsers/snowflake.py
++++ b/sqlglot/parsers/snowflake.py
+@@ -457,7 +457,7 @@
+             # Snowflake has exclusive end semantics
+             start=seq_get(args, 0),
+             end=seq_get(args, 1),
+-            step=seq_get(args, 2),
++            step=seq_get(args, 1),
+             is_end_exclusive=True,
+         ),
+         "ARRAY_EXCEPT": lambda args: exp.ArrayExcept(

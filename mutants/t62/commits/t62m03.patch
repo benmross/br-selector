@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/hive.py b/sqlglot/generators/hive.py
+--- a/sqlglot/generators/hive.py
++++ b/sqlglot/generators/hive.py
+@@ -293,7 +293,7 @@
+         exp.ArraySort: _array_sort_sql,
+         exp.With: no_recursive_cte_sql,
+         exp.DateDiff: _date_diff_sql,
+-        exp.DateStrToDate: datestrtodate_sql,
++        exp.DateStrToDate: datestrtodate_sql(None, None),
+         exp.DateToDi: lambda self, e: (
+             f"CAST(DATE_FORMAT({self.sql(e, 'this')}, {HIVE_DATEINT_FORMAT}) AS INT)"
+         ),

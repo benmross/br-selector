@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -245,7 +245,7 @@
+             f"REMOTE WITH CONNECTION {self.sql(e, 'this')}"
+         ),
+         exp.ReturnsProperty: lambda self, e: (
+-            "RETURNS NULL ON NULL INPUT" if e.args.get("null") else self.naked_property(e)
++            "RETURNS NULL ON NULL INPUT" if not e.args.get("null") else self.naked_property(e)
+         ),
+         exp.RowAccessProperty: lambda *_: "ROW ACCESS",
+         exp.SafeFunc: lambda self, e: f"SAFE.{self.sql(e, 'this')}",

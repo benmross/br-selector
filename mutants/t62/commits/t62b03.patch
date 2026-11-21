@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/hive.py b/sqlglot/generators/hive.py
+--- a/sqlglot/generators/hive.py
++++ b/sqlglot/generators/hive.py
+@@ -518,7 +518,7 @@
+     # Hive/Spark lack native numeric TRUNC. CAST to BIGINT truncates toward zero (not rounds).
+     # Potential enhancement: a TRUNC_TEMPLATE using FLOOR/CEIL with scale (Spark 3.3+)
+     # could preserve decimals: CASE WHEN x >= 0 THEN FLOOR(x, d) ELSE CEIL(x, d) END
+-    @unsupported_args("decimals")
++    @unsupported_args(("decimals",))
+     def trunc_sql(self, expression: exp.Trunc) -> str:
+         return self.sql(exp.cast(expression.this, exp.DType.BIGINT))
+ 

@@ -1,0 +1,21 @@
+diff --git a/sqlglot/generators/presto.py b/sqlglot/generators/presto.py
+--- a/sqlglot/generators/presto.py
++++ b/sqlglot/generators/presto.py
+@@ -303,7 +303,7 @@
+ 
+     TYPE_MAPPING = {
+         **generator.Generator.TYPE_MAPPING,
+-        exp.DType.BINARY: "VARBINARY",
++        exp.DType.BINARY: "VARBINARYX",
+         exp.DType.BIT: "BOOLEAN",
+         exp.DType.DATETIME: "TIMESTAMP",
+         exp.DType.DATETIME64: "TIMESTAMP",
+@@ -319,7 +319,7 @@
+ 
+     TRANSFORMS = {
+         **generator.Generator.TRANSFORMS,
+-        exp.AnyValue: rename_func("ARBITRARY"),
++        exp.AnyValue: rename_func("ANY_VALUE"),
+         exp.ApproxQuantile: lambda self, e: self.func(
+             "APPROX_PERCENTILE",
+             e.this,

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parsers/spark.py b/sqlglot/parsers/spark.py
+--- a/sqlglot/parsers/spark.py
++++ b/sqlglot/parsers/spark.py
+@@ -70,6 +70,7 @@
+ 
+     FUNCTIONS = {
+         **Spark2Parser.FUNCTIONS,
++        "COLLECT_SET": exp.ArrayAgg.from_arg_list,
+         "ANY_VALUE": build_with_ignore_nulls(exp.AnyValue),
+         "ARRAY_INSERT": lambda args: exp.ArrayInsert(
+             this=seq_get(args, 0),

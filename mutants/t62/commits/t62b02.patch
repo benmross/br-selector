@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/snowflake.py b/sqlglot/parsers/snowflake.py
+--- a/sqlglot/parsers/snowflake.py
++++ b/sqlglot/parsers/snowflake.py
+@@ -852,7 +852,7 @@
+ 
+     TYPE_CONVERTERS = {
+         # https://docs.snowflake.com/en/sql-reference/data-types-numeric#number
+-        exp.DType.DECIMAL: build_default_decimal_type(precision=38, scale=0),
++        exp.DType.DECIMAL: build_default_decimal_type(38, 0, 1),
+     }
+ 
+     SHOW_PARSERS = {

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -147,7 +147,7 @@
+             f"{'NOT ' if e.args.get('not_') else ''}CASESPECIFIC"
+         ),
+         exp.CalledOnNullInputProperty: lambda *_: "CALLED ON NULL INPUT",
+-        exp.Ceil: lambda self, e: self.ceil_floor(e),
++        exp.Ceil: lambda self, e: self.func("CEILING", e.this),
+         exp.CharacterSetColumnConstraint: lambda self, e: f"CHARACTER SET {self.sql(e, 'this')}",
+         exp.CharacterSetProperty: lambda self, e: (
+             f"{'DEFAULT ' if e.args.get('default') else ''}CHARACTER SET={self.sql(e, 'this')}"

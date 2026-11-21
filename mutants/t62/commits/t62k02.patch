@@ -1,0 +1,11 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -189,7 +189,6 @@
+         exp.ExecuteAsProperty: lambda self, e: self.naked_property(e),
+         exp.Except: lambda self, e: self.set_operations(e),
+         exp.ExternalProperty: lambda *_: "EXTERNAL",
+-        exp.Floor: lambda self, e: self.ceil_floor(e),
+         exp.Get: lambda self, e: self.get_put_sql(e),
+         exp.GlobalProperty: lambda *_: "GLOBAL",
+         exp.HeapProperty: lambda *_: "HEAP",

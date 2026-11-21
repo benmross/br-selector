@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parsers/postgres.py b/sqlglot/parsers/postgres.py
+--- a/sqlglot/parsers/postgres.py
++++ b/sqlglot/parsers/postgres.py
+@@ -149,7 +149,7 @@
+         "DIV": lambda args: exp.cast(binary_from_function(exp.IntDiv)(args), exp.DType.DECIMAL),
+         "GENERATE_SERIES": _build_generate_series,
+         "GET_BIT": lambda args: exp.Getbit(
+-            this=seq_get(args, 0), expression=seq_get(args, 1), zero_is_msb=True
++            this=seq_get(args, 1), expression=seq_get(args, 0), zero_is_msb=True
+         ),
+         "JSON_EXTRACT_PATH": build_json_extract_path(exp.JSONExtract),
+         "JSON_EXTRACT_PATH_TEXT": build_json_extract_path(exp.JSONExtractScalar),
