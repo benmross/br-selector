@@ -767,6 +767,12 @@ class Selector:
                     # module loads, failing every importer at collection.
                     why.append(f"{path}:{line} import-time lookup changed, importers")
                     return self.importers(path)
+                if changed_call_at_import(new_tree, fp):
+                    # SQL templates (maybe_parse), type strings (DataType.build)
+                    # and similar parsers run on their literal while the module
+                    # loads; a literal that no longer parses fails every importer.
+                    why.append(f"{path}:{line} changed constant in an import-time parse call, importers")
+                    return self.importers(path)
                 if bad_regex_at_import(node, line, changed, new_tree, fp):
                     why.append(f"{path}:{line} import-time regex no longer compiles, importers")
                     return self.importers(path)
@@ -1426,6 +1432,112 @@ def lookup_at_import(node, line, changed):
             continue
         stack.extend(ast.iter_child_nodes(n))
     return False
+
+
+PARSE_CALLS = {"maybe_parse", "parse_one", "parse", "from_str", "build", "to_identifier", "column", "table_",
+               "Struct", "strptime", "fromhex", "Decimal", "int", "float", "complex", "format", "compile",
+               "match", "fullmatch", "search", "sub", "split", "findall", "literal_eval", "loads"}
+
+
+def _added_lines(fp):
+    out = set()
+    for (_, lines), (_, new_start, new_count) in zip(fp.hunks, fp.ranges):
+        n = new_start if new_count else new_start + 1
+        for l in lines:
+            if l[:1] == "+":
+                out.add(n)
+            if l[:1] in (" ", "+"):
+                n += 1
+    return out
+
+
+def _import_time_nodes(tree):
+    """Expression nodes evaluated while the module loads: module and class
+    bodies, decorators and default arguments, but not function or lambda bodies."""
+    stack = list(tree.body)
+    while stack:
+        n = stack.pop()
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            stack.extend(n.decorator_list)
+            stack.extend(n.args.defaults + [d for d in n.args.kw_defaults if d is not None])
+            continue
+        if isinstance(n, ast.Lambda):
+            stack.extend(n.args.defaults)
+            continue
+        yield n
+        stack.extend(ast.iter_child_nodes(n))
+
+
+def _try_eval(n):
+    """True if the call/format can be evaluated from literals and succeeds,
+    False if it raises, None if it is not evaluable here."""
+    import datetime, decimal, struct
+    try:
+        if isinstance(n, ast.BinOp):
+            left, right = ast.literal_eval(n.left), ast.literal_eval(n.right)
+            left % right
+            return True
+        func = n.func
+        args = [ast.literal_eval(a) for a in n.args]
+        kwargs = {k.arg: ast.literal_eval(k.value) for k in n.keywords if k.arg}
+    except Exception:
+        return None
+    try:
+        if isinstance(func, ast.Attribute) and isinstance(func.value, ast.Constant) and func.attr == "format":
+            func.value.value.format(*args, **kwargs); return True
+        name = ast.unparse(func)
+        table = {"int": int, "float": float, "complex": complex, "Decimal": decimal.Decimal,
+                 "decimal.Decimal": decimal.Decimal, "bytes.fromhex": bytes.fromhex,
+                 "struct.Struct": struct.Struct, "datetime.strptime": datetime.datetime.strptime,
+                 "datetime.datetime.strptime": datetime.datetime.strptime}
+        if name in table:
+            table[name](*args, **kwargs); return True
+        if name.startswith("re.") and name[3:] in RE_CALLS and args:
+            re.compile(args[0], args[1] if len(args) > 1 and isinstance(args[1], int) else 0); return True
+    except Exception:
+        return False
+    return None
+
+
+def changed_call_at_import(new_tree, fp):
+    """A changed constant inside an import-time call that parses or validates
+    it (PARSE_CALLS), a % format or a literal index can raise while the module
+    loads. Selects importers unless the expression evaluates from literals
+    without raising. Factory calls such as rename_func("X") cannot raise on a
+    constant and keep their selection: selecting importers for every changed
+    constant in any call costs about 30% on the samples."""
+    added = _added_lines(fp)
+    if not added:
+        return False
+    for n in _import_time_nodes(new_tree):
+        cand = None
+        if isinstance(n, ast.Call):
+            consts = [c for a in list(n.args) + [k.value for k in n.keywords] for c in ast.walk(a)
+                      if isinstance(c, ast.Constant) and c.lineno in added]
+            if consts:
+                name = n.func.attr if isinstance(n.func, ast.Attribute) else getattr(n.func, "id", "")
+                if name in PARSE_CALLS:
+                    cand = n
+        elif isinstance(n, ast.BinOp) and isinstance(n.op, ast.Mod) and isinstance(n.left, ast.Constant) \
+                and isinstance(n.left.value, str) and any(c.lineno in added for c in ast.walk(n) if isinstance(c, ast.Constant)):
+            cand = n
+        elif isinstance(n, ast.Subscript) and isinstance(n.value, (ast.Constant, ast.List, ast.Tuple, ast.Dict)) \
+                and any(getattr(c, "lineno", 0) in added for c in ast.walk(n.slice)):
+            cand = n
+        if cand is None:
+            continue
+        ok = _try_sub(cand) if isinstance(cand, ast.Subscript) else _try_eval(cand)
+        if ok is not True:
+            return True
+    return False
+
+
+def _try_sub(n):
+    try:
+        ast.literal_eval(n.value)[ast.literal_eval(n.slice)]
+        return True
+    except Exception:
+        return False
 
 
 RE_CALLS = {"compile", "match", "fullmatch", "search", "findall", "finditer", "sub", "subn", "split"}

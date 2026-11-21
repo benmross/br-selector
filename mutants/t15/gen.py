@@ -92,6 +92,13 @@ EXTRA = [
     ("t15x022", "import_time_regex_literal", "sqlglot/generators/duckdb.py",
      "TIMEZONE_PATTERN = re.compile(r\":\\d{2}.*?[+\\-]\\d{2}(?::\\d{2})?\")\n",
      "TIMEZONE_PATTERN = re.compile(r\":\\d{2}.*?[+\\-]\\d{2}(?::\\d{2}?\")\n"),
+    # SQL parsed while the module loads: a template or type string that no
+    # longer parses raises ParseError on import.
+    ("t15x023", "import_time_parse_literal", "sqlglot/generators/duckdb.py",
+     "_SEQ_BASE: exp.Expr = exp.maybe_parse(\"(ROW_NUMBER() OVER (ORDER BY 1) - 1)\")\n",
+     "_SEQ_BASE: exp.Expr = exp.maybe_parse(\"(ROW_NUMBER() OVER (ORDER BY 1) - 1\")\n"),
+    ("t15x024", "import_time_type_string", "sqlglot/typing/hive.py",
+     "exp.DataType.from_str(\"ARRAY<STRING>\")", "exp.DataType.from_str(\"ARRAY<STRING\")"),
     ("t15x021", "lambda_body_parser_table", "sqlglot/parser.py",
      "        \"ARRAY_INTERSECT\": lambda args: exp.ArrayIntersect(expressions=args),\n",
      "        \"ARRAY_INTERSECT\": lambda args: exp.ArrayIntersect(expressions=args[:1]),\n"),
