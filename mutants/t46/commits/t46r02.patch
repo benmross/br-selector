@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/snowflake.py b/sqlglot/generators/snowflake.py
+--- a/sqlglot/generators/snowflake.py
++++ b/sqlglot/generators/snowflake.py
+@@ -410,7 +410,7 @@
+ 
+     TRANSFORMS = {
+         **generator.Generator.TRANSFORMS,
+-        exp.ApproxDistinct: rename_func("APPROX_COUNT_DISTINCT"),
++        exp.ApproxDistinct: rename_func('T46_RENAME_APPROX_COUNT_DISTINCT'),
+         exp.ArgMax: rename_func("MAX_BY"),
+         exp.ArgMin: rename_func("MIN_BY"),
+         exp.Array: transforms.preprocess([transforms.inherit_struct_field_names]),

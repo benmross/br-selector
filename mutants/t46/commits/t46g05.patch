@@ -1,0 +1,10 @@
+diff --git a/sqlglot/optimizer/__init__.py b/sqlglot/optimizer/__init__.py
+--- a/sqlglot/optimizer/__init__.py
++++ b/sqlglot/optimizer/__init__.py
+@@ -1,5 +1,5 @@
+ # ruff: noqa: F401
+-"""Lazy re-exports from optimizer submodules.
++"""Lazy re-exports from optimizer submodules. T46_DOCSTRING_ADVERSARY
+ 
+ Eager re-exports here trip a circular import under sqlglot[c]: importing
+ sqlglot loads compiled `expressions.builders`, which eagerly wires up its

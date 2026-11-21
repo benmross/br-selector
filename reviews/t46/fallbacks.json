@@ -1,0 +1,1376 @@
+{
+  "sem-base": {
+    "counts": {
+      "tok-word": 9,
+      "tok-str": 104
+    },
+    "details": [
+      {
+        "set": "hid",
+        "commit": "h7x031",
+        "triggers": [
+          "tok-word"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x001",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x002",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x005",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x007",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x008",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x009",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x010",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x011",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x013",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x014",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x015",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x016",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x017",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x018",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x020",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x021",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x023",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x024",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x025",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x026",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x027",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x028",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x029",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x030",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x031",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x032",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x033",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x034",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x035",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x036",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x038",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x043",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x044",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x047",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x049",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x052",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x053",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x054",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x056",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x057",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x058",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x059",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x060",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x061",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x065",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x066",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x067",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x068",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x069",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x070",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x073",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x074",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x075",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x076",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x077",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x078",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x079",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x081",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x082",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x083",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x084",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x085",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x086",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x087",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x090",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x091",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x093",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x094",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x095",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x097",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x099",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x100",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x101",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x103",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x105",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x106",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x109",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x112",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x113",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x114",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x116",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x117",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x118",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x119",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x120",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x121",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x122",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x123",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x124",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x126",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x127",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x132",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x133",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x134",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x135",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x136",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x138",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x140",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x141",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x143",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x144",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x145",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x147",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x149",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "freshb",
+        "commit": "fb911x005",
+        "triggers": [
+          "tok-word"
+        ]
+      },
+      {
+        "set": "freshb",
+        "commit": "fb911x007",
+        "triggers": [
+          "tok-word"
+        ]
+      },
+      {
+        "set": "freshb",
+        "commit": "fb911x010",
+        "triggers": [
+          "tok-word"
+        ]
+      },
+      {
+        "set": "freshb",
+        "commit": "fb911x025",
+        "triggers": [
+          "tok-word"
+        ]
+      },
+      {
+        "set": "freshb",
+        "commit": "fb911x027",
+        "triggers": [
+          "tok-word"
+        ]
+      },
+      {
+        "set": "freshb",
+        "commit": "fb911x031",
+        "triggers": [
+          "tok-word"
+        ]
+      },
+      {
+        "set": "freshb",
+        "commit": "fb911x035",
+        "triggers": [
+          "tok-word"
+        ]
+      },
+      {
+        "set": "freshb",
+        "commit": "fb911x043",
+        "triggers": [
+          "tok-word"
+        ]
+      }
+    ]
+  },
+  "sem-final3": {
+    "counts": {
+      "tok-word": 9,
+      "tok-str": 72
+    },
+    "details": [
+      {
+        "set": "hid",
+        "commit": "h7x031",
+        "triggers": [
+          "tok-word"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x002",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x005",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x007",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x009",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x011",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x013",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x014",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x016",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x017",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x020",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x021",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x026",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x027",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x028",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x029",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x030",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x031",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x033",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x035",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x043",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x049",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x052",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x053",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x054",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x056",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x057",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x058",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x059",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x060",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x065",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x066",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x067",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x069",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x070",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x075",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x076",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x079",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x081",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x083",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x084",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x085",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x087",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x090",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x093",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x094",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x095",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x097",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x100",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x101",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x103",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x105",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x109",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x112",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x113",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x114",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x116",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x117",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x118",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x119",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x120",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x121",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x123",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x126",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x127",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x132",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x135",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x136",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x138",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x143",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x144",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x145",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "fresha",
+        "commit": "fa911x147",
+        "triggers": [
+          "tok-str"
+        ]
+      },
+      {
+        "set": "freshb",
+        "commit": "fb911x005",
+        "triggers": [
+          "tok-word"
+        ]
+      },
+      {
+        "set": "freshb",
+        "commit": "fb911x007",
+        "triggers": [
+          "tok-word"
+        ]
+      },
+      {
+        "set": "freshb",
+        "commit": "fb911x010",
+        "triggers": [
+          "tok-word"
+        ]
+      },
+      {
+        "set": "freshb",
+        "commit": "fb911x025",
+        "triggers": [
+          "tok-word"
+        ]
+      },
+      {
+        "set": "freshb",
+        "commit": "fb911x027",
+        "triggers": [
+          "tok-word"
+        ]
+      },
+      {
+        "set": "freshb",
+        "commit": "fb911x031",
+        "triggers": [
+          "tok-word"
+        ]
+      },
+      {
+        "set": "freshb",
+        "commit": "fb911x035",
+        "triggers": [
+          "tok-word"
+        ]
+      },
+      {
+        "set": "freshb",
+        "commit": "fb911x043",
+        "triggers": [
+          "tok-word"
+        ]
+      }
+    ]
+  }
+}

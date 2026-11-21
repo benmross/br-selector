@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -60,7 +60,7 @@
+ 
+ AFTER_HAVING_MODIFIER_TRANSFORMS: dict[str, t.Any] = {
+     "windows": lambda self, e: (
+-        self.seg("WINDOW ") + self.expressions(e, key="windows", flat=True)
++        self.seg('T46_BROKEN_WINDOW ') + self.expressions(e, key="windows", flat=True)
+         if e.args.get("windows")
+         else ""
+     ),

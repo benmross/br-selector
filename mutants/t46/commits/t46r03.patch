@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/mysql.py b/sqlglot/generators/mysql.py
+--- a/sqlglot/generators/mysql.py
++++ b/sqlglot/generators/mysql.py
+@@ -157,7 +157,7 @@
+             for k, v in generator.Generator.TRANSFORMS.items()
+             if k not in {exp.ArrayContainsAll, exp.ArrayContainedBy}
+         },
+-        exp.ArrayAgg: rename_func("GROUP_CONCAT"),
++        exp.ArrayAgg: rename_func('T46_RENAME_GROUP_CONCAT'),
+         exp.BitwiseAndAgg: rename_func("BIT_AND"),
+         exp.BitwiseOrAgg: rename_func("BIT_OR"),
+         exp.BitwiseXorAgg: rename_func("BIT_XOR"),

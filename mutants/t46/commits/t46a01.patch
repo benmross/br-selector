@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -197,7 +197,7 @@
+ 
+ 
+ def _extract_part(part: str) -> t.Callable[[BigQueryGenerator, exp.Func], str]:
+-    return lambda self, e: self.sql(exp.func("EXTRACT", exp.var(part), e.this, copy=False))
++    return lambda self, e: self.sql(exp.func('T46_BROKEN_EXTRACT', exp.var(part), e.this, copy=False))
+ 
+ 
+ def _day_of_week_iso_sql(self: BigQueryGenerator, expression: exp.DayOfWeekIso) -> str:

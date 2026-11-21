@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -138,7 +138,7 @@
+     """Specifies the strategy according to which identifiers should be normalized."""
+ 
+     LOWERCASE = auto()
+-    """Unquoted identifiers are lowercased."""
++    """Unquoted identifiers are lowercased. T46_DOCSTRING_ADVERSARY"""
+ 
+     UPPERCASE = auto()
+     """Unquoted identifiers are uppercased."""
