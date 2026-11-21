@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/presto.py b/sqlglot/generators/presto.py
+--- a/sqlglot/generators/presto.py
++++ b/sqlglot/generators/presto.py
+@@ -307,7 +307,7 @@
+         exp.DType.BIT: "BOOLEAN",
+         exp.DType.DATETIME: "TIMESTAMP",
+         exp.DType.DATETIME64: "TIMESTAMP",
+-        exp.DType.FLOAT: "REAL",
++        exp.DType.FLOAT: "T46_FLOAT",
+         exp.DType.HLLSKETCH: "HYPERLOGLOG",
+         exp.DType.INT: "INTEGER",
+         exp.DType.STRUCT: "ROW",

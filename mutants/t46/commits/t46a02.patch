@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -1669,7 +1669,7 @@
+                 )
+             )
+             if e.args.get("zero_based")
+-            else self.func("ARRAY_POSITION", e.this, e.expression)
++            else self.func('T46_BROKEN_ARRAY_POSITION', e.this, e.expression)
+         ),
+         exp.ArrayRemoveAt: _array_remove_at_sql,
+         exp.ArrayRemove: remove_from_array_using_filter,

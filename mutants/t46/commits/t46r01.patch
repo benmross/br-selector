@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/clickhouse.py b/sqlglot/generators/clickhouse.py
+--- a/sqlglot/generators/clickhouse.py
++++ b/sqlglot/generators/clickhouse.py
+@@ -296,7 +296,7 @@
+ 
+     TRANSFORMS = {
+         **{k: v for k, v in generator.Generator.TRANSFORMS.items() if k != exp.AutoRefreshProperty},
+-        exp.AnyValue: rename_func("any"),
++        exp.AnyValue: rename_func('T46_RENAME_any'),
+         exp.ApproxDistinct: rename_func("uniq"),
+         exp.ArrayDistinct: rename_func("arrayDistinct"),
+         exp.ArrayConcat: rename_func("arrayConcat"),

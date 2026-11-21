@@ -1,0 +1,9 @@
+{
+  "source_commit": "67317971128babe6a704cd36f5fa7c6fee3d6207",
+  "inputs": {
+    "selector.py": "bb9ec0fb932d081cd940211b83f29c29a82a35f175e295bb9f0099a6bce5ac35",
+    "map.json.gz": "ea326f6e06d43490ffed8a43f7f872d67319b1df6858dd65455016e13b181fc3",
+    "cmp.json.gz": "08654f874a85a1967b5c5bbb443a4cb586cf7e33f45be32c33b6aa386a653687",
+    "Dockerfile": "15dde83370a88eddc3b4940b9feefdee6465ea3b6250687a0e8732d8bbf5f9d7"
+  }
+}
