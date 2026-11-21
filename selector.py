@@ -805,7 +805,8 @@ class Selector:
                 out |= self.qualified_consumers(cls, node, why)
                 import_level = True
         if import_level and could_raise(fp, old_text, new_text) and not self.literal_only(path, old_tree, new_tree, why) \
-                and not self.runtime_strings_safe(path, old_tree, new_tree, why):
+                and not self.runtime_strings_safe(path, old_tree, new_tree, why) \
+                and not self.generator_table_strings_safe(path, old_tree, new_tree, why):
             # Never execute patch-supplied code in the selector. Even an
             # innocent import may loop, fork, write files, or produce unlimited
             # output. Unknown import effects need a conservative selection.
@@ -916,6 +917,28 @@ class Selector:
         for node in lambdas:
             self._literal_extra_users |= self.cov(path, range(node.lineno, node.end_lineno + 1))
         why.append(f'{path}: only stored generator lambda-body strings changed; runtime dispatch coverage retained')
+        return True
+
+    def generator_table_strings_safe(self, path, old_tree, new_tree, why):
+        """Type spellings are runtime output data, including cast's direct read.
+
+        Only nonempty direct string values change; keys, table shape and all
+        readers agree. The audited import consumers only copy/filter tables.
+        Generator instances/MRO and qualified copies retain their users.
+        builders.cast can inspect TYPE_MAPPING without instantiating a
+        generator: keep its 36 covered readers independently of class users.
+        """
+        if not self._single_file_patch or not (self.index or {}).get('@pinned_string_audit'):
+            return False
+        if path != 'sqlglot/generator.py' and not path.startswith('sqlglot/generators/'):
+            return False
+        if not generator_table_changes(old_tree, new_tree):
+            return False
+        for rel, line in self.index['@generator_type_reads']:
+            if line in self.import_lines.get(rel, ()):
+                return False
+            self._literal_extra_users |= self.cov(rel, [line])
+        why.append(f'{path}: only generator type spellings changed; class users, qualified copies and direct cast readers retained')
         return True
 
     # Import-time hooks reviewed at the pinned commit. Given non-empty strings
@@ -1444,6 +1467,27 @@ def inert_string_changes(old_tree, new_tree):
     changes = string_changes(old_tree, new_tree)
     return bool(changes) and all(len(chain) >= 2 and isinstance(chain[-2], ast.Expr)
                                 and chain[-2].value is chain[-1] for chain in changes)
+
+
+def generator_table_changes(old_tree, new_tree):
+    changes = string_changes(old_tree, new_tree)
+    if not changes:
+        return False
+    for chain in changes:
+        if len(chain) < 5 or not isinstance(chain[-2], ast.Dict) \
+                or not any(v is chain[-1] for v in chain[-2].values) or not chain[-1].value:
+            return False
+        stmt = chain[-3]
+        if not isinstance(stmt, (ast.Assign, ast.AnnAssign)) or stmt.value is not chain[-2] \
+                or not assigned_names(stmt) or not assigned_names(stmt) <= {'TYPE_MAPPING', 'STRING_TYPE_MAPPING'}:
+            return False
+        outer = chain[:-3]
+        if len(outer) != 2 or not isinstance(outer[0], ast.Module) or not isinstance(outer[1], ast.ClassDef) \
+                or not outer[1].name.endswith('Generator') or outer[1].decorator_list or outer[1].keywords:
+            return False
+    # An empty replacement remains a str but is deliberately outside the
+    # audited type-name contract.
+    return all(chain[-1].value for chain in string_changes(new_tree, old_tree))
 
 
 def runtime_lambda_changes(old_tree, new_tree):
@@ -2296,6 +2340,11 @@ def build_index(out_path):
                         qual.setdefault(parts[i], []).append([rel, ln, ".".join(parts[:i]) + "."])
     index["@qualified_reads"] = qual
     index['@pinned_string_audit'] = source_fingerprint(sources) == PINNED_STRING_AUDIT
+    index['@generator_type_reads'] = [
+        [rel, n.lineno] for rel, text in sources.items()
+        if rel == 'sqlglot/expressions/builders.py'
+        for n in ast.walk(ast.parse(text))
+        if isinstance(n, ast.Attribute) and n.attr == 'TYPE_MAPPING']
     index['@generator_string_calls'] = [
         [rel, n.body[0].lineno, n.end_lineno]
         for rel, text in sources.items()

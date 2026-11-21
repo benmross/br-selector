@@ -49,3 +49,15 @@ def test_changed_reader_tree_invalidates_pinned_audit():
 ])
 def test_inert_string_value_is_never_executable(before,after,allowed):
     assert s.inert_string_changes(ast.parse(before),ast.parse(after)) is allowed
+
+
+@pytest.mark.parametrize('before,after,allowed',[
+ ('class XGenerator:\n    TYPE_MAPPING={1:"TEXT"}\n','class XGenerator:\n    TYPE_MAPPING={1:"VARCHAR"}\n',True),
+ ('class XGenerator:\n    TYPE_MAPPING={1:"TEXT"}\n','class XGenerator:\n    TYPE_MAPPING={1:""}\n',False),
+ ('class XGenerator:\n    TYPE_MAPPING={"TEXT":1}\n','class XGenerator:\n    TYPE_MAPPING={"VARCHAR":1}\n',False),
+ ('class XGenerator:\n    TYPE_MAPPING={1:parse("TEXT")}\n','class XGenerator:\n    TYPE_MAPPING={1:parse("VARCHAR")}\n',False),
+ ('class XGenerator:\n    TRANSFORMS={1:"TEXT"}\n','class XGenerator:\n    TRANSFORMS={1:"VARCHAR"}\n',False),
+ ('class X:\n    TYPE_MAPPING={1:"TEXT"}\n','class X:\n    TYPE_MAPPING={1:"VARCHAR"}\n',False),
+])
+def test_generator_type_values_only(before,after,allowed):
+    assert bool(s.generator_table_changes(ast.parse(before),ast.parse(after))) is allowed
