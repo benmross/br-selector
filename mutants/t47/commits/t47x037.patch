@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -4634,7 +4634,7 @@
+                 [],
+             ):
+                 hints.extend(hint)
+-        except ParseError:
++        except RuntimeError:
+             should_fallback_to_string = True
+ 
+         if should_fallback_to_string or self._curr:

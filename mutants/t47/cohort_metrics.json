@@ -1,0 +1,30 @@
+{
+  "labeled": 72,
+  "main_misses": 11,
+  "candidate_misses": 0,
+  "main_simulated_seconds": 5501.944,
+  "candidate_simulated_seconds": 2252.033,
+  "main_execution_seconds": 2201.944,
+  "candidate_execution_seconds": 2252.033,
+  "widened_ids": [
+    "t47x014",
+    "t47x022",
+    "t47x023",
+    "t47x062",
+    "t47x065",
+    "t47x066",
+    "t47x067",
+    "t47x068",
+    "t47x069",
+    "t47x070",
+    "t47x071",
+    "t47x072",
+    "t47x073",
+    "t47x074",
+    "t47x075",
+    "t47x076",
+    "t47x077",
+    "t47x078"
+  ],
+  "narrowed_ids": []
+}

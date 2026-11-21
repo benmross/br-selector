@@ -1,0 +1,691 @@
+{
+  "commits": {
+    "t47x000": {
+      "kind": "exception-hierarchy",
+      "description": "UnsupportedError bypasses SqlglotError",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "tests": [
+        "tests/test_errors.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x001": {
+      "kind": "exception-hierarchy",
+      "description": "ParseError bypasses SqlglotError",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "tests": [
+        "tests/test_errors.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x002": {
+      "kind": "exception-hierarchy",
+      "description": "TokenError bypasses SqlglotError",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "tests": [
+        "tests/test_errors.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x003": {
+      "kind": "exception-hierarchy",
+      "description": "OptimizeError bypasses SqlglotError",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "tests": [
+        "tests/test_errors.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x004": {
+      "kind": "exception-hierarchy",
+      "description": "SchemaError bypasses SqlglotError",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "tests": [
+        "tests/test_errors.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x005": {
+      "kind": "exception-hierarchy",
+      "description": "ExecuteError bypasses SqlglotError",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "tests": [
+        "tests/test_errors.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x006": {
+      "kind": "exception-hierarchy",
+      "description": "root bypasses Exception",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "tests": [
+        "tests/test_errors.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x007": {
+      "kind": "exception-hierarchy",
+      "description": "ParseError also matches ValueError",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "tests": [
+        "tests/test_errors.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x008": {
+      "kind": "hierarchy-base-swap",
+      "description": "Condition parent bypassed",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "tests": [
+        "tests/test_expressions.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x009": {
+      "kind": "hierarchy-base-swap",
+      "description": "Predicate parent bypassed",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "tests": [
+        "tests/test_expressions.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x010": {
+      "kind": "hierarchy-base-swap",
+      "description": "Binary parent bypassed",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "tests": [
+        "tests/test_expressions.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x011": {
+      "kind": "hierarchy-base-swap",
+      "description": "Connector parent bypassed",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "tests": [
+        "tests/test_expressions.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x012": {
+      "kind": "hierarchy-base-swap",
+      "description": "Func parent bypassed",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "tests": [
+        "tests/test_expressions.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x013": {
+      "kind": "hierarchy-base-swap",
+      "description": "AggFunc parent bypassed",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "tests": [
+        "tests/test_expressions.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x014": {
+      "kind": "hierarchy-MRO",
+      "description": "Column bases reversed",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x022": {
+      "kind": "hierarchy-MRO",
+      "description": "schema bases reversed",
+      "paths": [
+        "sqlglot/schema.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x023": {
+      "kind": "hierarchy-base-removal",
+      "description": "mapping loses Schema marker",
+      "paths": [
+        "sqlglot/schema.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x024": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/helper.py:seq_get catches RuntimeError instead of IndexError",
+      "paths": [
+        "sqlglot/helper.py"
+      ],
+      "tests": [
+        "tests/test_helper.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x025": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/helper.py:to_int catches RuntimeError instead of InvalidOperation",
+      "paths": [
+        "sqlglot/helper.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x026": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/helper.py:is_type catches RuntimeError instead of ValueError",
+      "paths": [
+        "sqlglot/helper.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x027": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/helper.py:dict_depth catches RuntimeError instead of AttributeError",
+      "paths": [
+        "sqlglot/helper.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x028": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/helper.py:is_iso_date catches RuntimeError instead of ValueError",
+      "paths": [
+        "sqlglot/helper.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x029": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/helper.py:is_iso_datetime catches RuntimeError instead of ValueError",
+      "paths": [
+        "sqlglot/helper.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x030": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/expressions/core.py:is_int catches RuntimeError instead of ValueError",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x031": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/expressions/core.py:number catches RuntimeError instead of Exception",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "tests": [
+        "tests/test_expressions.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x032": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/expressions/core.py:to_py catches RuntimeError instead of ValueError",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "tests": [
+        "tests/test_expressions.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x033": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/schema.py:_to_data_type catches RuntimeError instead of AttributeError",
+      "paths": [
+        "sqlglot/schema.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x034": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/parser.py:_try_parse catches RuntimeError instead of ParseError",
+      "paths": [
+        "sqlglot/parser.py"
+      ],
+      "tests": [
+        "tests/test_parser.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x035": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/parser.py:parse_into catches RuntimeError instead of ParseError",
+      "paths": [
+        "sqlglot/parser.py"
+      ],
+      "tests": [
+        "tests/test_parser.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x036": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/parser.py:_parse_property_before catches RuntimeError instead of TypeError",
+      "paths": [
+        "sqlglot/parser.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x037": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/parser.py:_parse_hint_body catches RuntimeError instead of ParseError",
+      "paths": [
+        "sqlglot/parser.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x038": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/parser.py:_parse_interval_span catches RuntimeError instead of ValueError",
+      "paths": [
+        "sqlglot/parser.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x039": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/parser.py:_parse_types catches RuntimeError instead of TokenError",
+      "paths": [
+        "sqlglot/parser.py"
+      ],
+      "tests": [
+        "tests/test_parser.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x040": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/parser.py:_parse_function_call catches RuntimeError instead of TypeError",
+      "paths": [
+        "sqlglot/parser.py"
+      ],
+      "tests": [
+        "tests/test_parser.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x041": {
+      "kind": "except-dispatch",
+      "description": "sqlglot/optimizer/qualify_columns.py:_select_by_pos catches RuntimeError instead of IndexError",
+      "paths": [
+        "sqlglot/optimizer/qualify_columns.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x042": {
+      "kind": "iteration-protocol",
+      "description": "flatten stops after first scalar",
+      "paths": [
+        "sqlglot/helper.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x043": {
+      "kind": "iteration-protocol",
+      "description": "flatten returns nested iterator as element",
+      "paths": [
+        "sqlglot/helper.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x044": {
+      "kind": "iteration-protocol",
+      "description": "walk returns generator as element",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "tests": [
+        "tests/test_expressions.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x045": {
+      "kind": "iteration-protocol",
+      "description": "walk uses dfs on bfs branch",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "tests": [
+        "tests/test_expressions.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x046": {
+      "kind": "iteration-protocol",
+      "description": "walk uses bfs on dfs branch",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x047": {
+      "kind": "iteration-protocol",
+      "description": "find-all terminates at first match",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "tests": [
+        "tests/test_expressions.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x048": {
+      "kind": "iteration-protocol",
+      "description": "iter-expressions terminates in nested list",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "tests": [
+        "tests/test_expressions.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x049": {
+      "kind": "iteration-protocol",
+      "description": "toposort removes sorted order",
+      "paths": [
+        "sqlglot/helper.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x050": {
+      "kind": "iteration-protocol",
+      "description": "merge-ranges removes sorted order",
+      "paths": [
+        "sqlglot/helper.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x051": {
+      "kind": "iteration-protocol",
+      "description": "highlights preserve unsorted positions",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "tests": [
+        "tests/test_errors.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x052": {
+      "kind": "signature-binding",
+      "description": "seq_get forces keyword index",
+      "paths": [
+        "sqlglot/helper.py"
+      ],
+      "tests": [
+        "tests/test_helper.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x053": {
+      "kind": "signature-binding",
+      "description": "new_trie forces keyword collection",
+      "paths": [
+        "sqlglot/trie.py"
+      ],
+      "tests": [
+        "tests/test_helper.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x054": {
+      "kind": "signature-binding",
+      "description": "in_trie forces positional-only",
+      "paths": [
+        "sqlglot/trie.py"
+      ],
+      "tests": [
+        "tests/test_helper.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x055": {
+      "kind": "signature-binding",
+      "description": "ParseError message keyword only",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "tests": [
+        "tests/test_errors.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x056": {
+      "kind": "descriptor-binding",
+      "description": "Tokenizer.sql property becomes staticmethod",
+      "paths": [
+        "sqlglot/tokens.py"
+      ],
+      "tests": [
+        "tests/test_tokens.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x057": {
+      "kind": "descriptor-binding",
+      "description": "Tokenizer.tokens property becomes staticmethod",
+      "paths": [
+        "sqlglot/tokens.py"
+      ],
+      "tests": [
+        "tests/test_tokens.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x058": {
+      "kind": "descriptor-binding",
+      "description": "MappingSchema.dialect property becomes staticmethod",
+      "paths": [
+        "sqlglot/schema.py"
+      ],
+      "tests": [
+        "tests/test_schema.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x059": {
+      "kind": "descriptor-binding",
+      "description": "AbstractMappingSchema.empty property becomes staticmethod",
+      "paths": [
+        "sqlglot/schema.py"
+      ],
+      "tests": [
+        "tests/test_schema.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x060": {
+      "kind": "descriptor-binding",
+      "description": "Expression.name property becomes staticmethod",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "tests": [
+        "tests/test_expressions.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x061": {
+      "kind": "descriptor-binding",
+      "description": "Expression.output_name property becomes staticmethod",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "tests": [
+        "tests/test_expressions.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x062": {
+      "kind": "mapping-protocol",
+      "description": "mapping no longer inherits Mapping",
+      "paths": [
+        "sqlglot/helper.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x063": {
+      "kind": "super-protocol",
+      "description": "ParseError omits Exception initialization",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "tests": [
+        "tests/test_errors.py"
+      ],
+      "label_scope": "smoke; main selects all 1620; failing ids are lower bounds"
+    },
+    "t47x064": {
+      "kind": "super-protocol",
+      "description": "TokenError omits Exception initialization",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x065": {
+      "kind": "exception-base-removal",
+      "description": "UnsupportedError ceases to be exception",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x066": {
+      "kind": "exception-base-removal",
+      "description": "ParseError ceases to be exception",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x067": {
+      "kind": "exception-base-removal",
+      "description": "TokenError ceases to be exception",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x068": {
+      "kind": "exception-base-removal",
+      "description": "OptimizeError ceases to be exception",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x069": {
+      "kind": "exception-base-removal",
+      "description": "SchemaError ceases to be exception",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x070": {
+      "kind": "exception-base-removal",
+      "description": "ExecuteError ceases to be exception",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x071": {
+      "kind": "hierarchy-base-removal",
+      "description": "Column loses concrete Expression implementation",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x072": {
+      "kind": "hierarchy-base-removal",
+      "description": "Literal loses concrete Expression implementation",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x073": {
+      "kind": "hierarchy-base-removal",
+      "description": "Dot loses concrete Expression implementation",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x074": {
+      "kind": "hierarchy-base-removal",
+      "description": "All loses concrete Expression implementation",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x075": {
+      "kind": "hierarchy-base-removal",
+      "description": "Anonymous loses concrete Expression implementation",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x076": {
+      "kind": "hierarchy-base-removal",
+      "description": "Add loses concrete Expression implementation",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x077": {
+      "kind": "hierarchy-base-removal",
+      "description": "EQ loses concrete Expression implementation",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    },
+    "t47x078": {
+      "kind": "hierarchy-base-removal",
+      "description": "DynamicIdentifier loses concrete Expression implementation",
+      "paths": [
+        "sqlglot/expressions/core.py"
+      ],
+      "label_scope": "full numbered suite except test_max_nodes (1490)"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -936,7 +936,7 @@
+     def is_int(self) -> bool:
+         try:
+             return self.is_number and isinstance(self.to_py(), int)
+-        except ValueError:
++        except RuntimeError:
+             return False
+ 
+     @property

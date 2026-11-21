@@ -1,0 +1,12 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -431,7 +431,7 @@
+     if not ranges:
+         return []
+ 
+-    ranges = sorted(ranges)
++    ranges = list(ranges)
+ 
+     merged = [ranges[0]]
+ 

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/qualify_columns.py b/sqlglot/optimizer/qualify_columns.py
+--- a/sqlglot/optimizer/qualify_columns.py
++++ b/sqlglot/optimizer/qualify_columns.py
+@@ -711,7 +711,7 @@
+ def _select_by_pos(expression: exp.Selectable, node: exp.Literal) -> exp.Alias:
+     try:
+         return expression.selects[int(node.this) - 1].assert_is(exp.Alias)
+-    except IndexError:
++    except RuntimeError:
+         raise OptimizeError(f"Unknown output column: {node.name}")
+ 
+ 

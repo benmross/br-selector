@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -957,7 +957,7 @@
+             return []
+         return [c.name for c in table_alias.args.get("columns") or []]
+ 
+-    @property
++    @staticmethod
+     def name(self) -> str:
+         return self.text("this")
+ 

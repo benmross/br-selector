@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -1840,7 +1840,7 @@
+ # https://docs.snowflake.com/en/sql-reference/identifier-literal
+ # "expressions" holds the arguments when the resolved identifier is invoked as a
+ # function, e.g. `IDENTIFIER('my_func')(1, 2)`
+-class DynamicIdentifier(Expression, Func):
++class DynamicIdentifier(Func):
+     arg_types = {"this": True, "expressions": False}
+ 
+     @property

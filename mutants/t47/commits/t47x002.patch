@@ -1,0 +1,12 @@
+diff --git a/sqlglot/errors.py b/sqlglot/errors.py
+--- a/sqlglot/errors.py
++++ b/sqlglot/errors.py
+@@ -71,7 +71,7 @@
+         )
+ 
+ 
+-class TokenError(SqlglotError):
++class TokenError(ValueError):
+     """Error raised when tokenizing fails.
+ 
+     When available, `start` and `end` are the offsets in the source SQL of the context

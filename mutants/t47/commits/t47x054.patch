@@ -1,0 +1,12 @@
+diff --git a/sqlglot/trie.py b/sqlglot/trie.py
+--- a/sqlglot/trie.py
++++ b/sqlglot/trie.py
+@@ -41,7 +41,7 @@
+     return trie
+ 
+ 
+-def in_trie(trie: dict, key: key) -> tuple[TrieResult, dict]:
++def in_trie(trie: dict, key: key, /) -> tuple[TrieResult, dict]:
+     """
+     Checks whether a key is in a trie.
+ 

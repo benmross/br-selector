@@ -1,0 +1,12 @@
+diff --git a/sqlglot/schema.py b/sqlglot/schema.py
+--- a/sqlglot/schema.py
++++ b/sqlglot/schema.py
+@@ -698,7 +698,7 @@
+                 expression = exp.DataType.from_str(schema_type, dialect=dialect, udt=udt)
+                 expression.transform(dialect.normalize_identifier, copy=False)
+                 self._type_mapping_cache[schema_type] = expression
+-            except AttributeError:
++            except RuntimeError:
+                 in_dialect = f" in dialect {dialect}" if dialect else ""
+                 raise SchemaError(f"Failed to build type '{schema_type}'{in_dialect}.")
+ 

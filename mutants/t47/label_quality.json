@@ -1,0 +1,28 @@
+{
+  "pinned_source": "eb11aec4be8cb2122afe713a4816662c3f0fb2fa",
+  "container_host": "rosserver",
+  "cpus": 2,
+  "memory_bytes": 2147483648,
+  "memory_swap_bytes": 2147483648,
+  "first_38_pytest_workers": 2,
+  "later_pytest_workers": 0,
+  "later_cpuset": "0-1",
+  "python": "3.13.18",
+  "image_id": "sha256:0e08d6bfbf71b4564a778e5e1d80c597f66a11b592ec357620cba5050985a286",
+  "baseline_failing": [],
+  "deselected": [
+    1490
+  ],
+  "scoped_all_selected_controls": 37,
+  "full_suite_labels": 35,
+  "structured_reports_exactly_match_answers": true,
+  "source_python_content_restored": true,
+  "archive_sha256": "8136e62bc307c6be4cabc1a8c704c8859e5c13a21c6367a69e15e8057904cd6a",
+  "oracle_notes": [
+    "Failure counts for scoped all-selected controls are lower bounds.",
+    "Initial bootstrap lacked the sample mount and produced no labels; corrected before labeling.",
+    "The first completed 38-label batch had a shell trailer error after label.py saved all reports and restored source. The structured test reports, rather than the shell exit, determine those labels.",
+    "The labeler rejects any cgroup OOM kill during pytest; no OOM-tainted label was accepted.",
+    "Seven redundant MRO reorder candidates 015-021 were removed before labeling; gen.py --all restores the exploration pool."
+  ]
+}

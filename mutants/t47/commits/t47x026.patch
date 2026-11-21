@@ -1,0 +1,12 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -270,7 +270,7 @@
+     try:
+         target_type(text)
+         return True
+-    except ValueError:
++    except RuntimeError:
+         return False
+ 
+ 

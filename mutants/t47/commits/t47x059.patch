@@ -1,0 +1,12 @@
+diff --git a/sqlglot/schema.py b/sqlglot/schema.py
+--- a/sqlglot/schema.py
++++ b/sqlglot/schema.py
+@@ -164,7 +164,7 @@
+ 
+         self._supported_table_args: tuple[str, ...] = tuple()
+ 
+-    @property
++    @staticmethod
+     def empty(self) -> bool:
+         return not self.mapping
+ 

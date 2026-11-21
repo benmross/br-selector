@@ -1,0 +1,12 @@
+diff --git a/sqlglot/schema.py b/sqlglot/schema.py
+--- a/sqlglot/schema.py
++++ b/sqlglot/schema.py
+@@ -335,7 +335,7 @@
+             self._normalize_udfs(udf_mapping) if self.normalize else udf_mapping,
+         )
+ 
+-    @property
++    @staticmethod
+     def dialect(self) -> Dialect:
+         """Returns the dialect for this mapping schema."""
+         return self._dialect

@@ -1,0 +1,11 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -1169,6 +1169,7 @@
+         for expression in self.walk(bfs=bfs):
+             if isinstance(expression, expression_types):
+                 yield expression
++                return
+ 
+     def find_ancestor(self, *expression_types: Type[E]) -> E | None:
+         ancestor = self.parent

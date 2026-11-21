@@ -1,0 +1,12 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -474,7 +474,7 @@
+ V = t.TypeVar("V")
+ 
+ 
+-class SingleValuedMapping(Mapping[K, V]):
++class SingleValuedMapping:
+     """
+     Mapping where all keys return the same value.
+ 

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/errors.py b/sqlglot/errors.py
+--- a/sqlglot/errors.py
++++ b/sqlglot/errors.py
+@@ -34,7 +34,7 @@
+     pass
+ 
+ 
+-class ParseError(SqlglotError):
++class ParseError(ValueError):
+     def __init__(
+         self,
+         message: str,

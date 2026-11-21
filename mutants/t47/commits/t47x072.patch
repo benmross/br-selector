@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -1761,7 +1761,7 @@
+         return Dot.build(deepcopy(parts)) if len(parts) > 1 else parts[0]
+ 
+ 
+-class Literal(Expression, Condition):
++class Literal(Condition):
+     arg_types = {"this": True, "is_string": True}
+     _hash_raw_args = True
+     is_primitive = True

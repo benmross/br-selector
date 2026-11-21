@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -3003,7 +3003,7 @@
+             parser = self.PROPERTY_PARSERS[self._prev.text.upper()]
+             try:
+                 return parser(self, **{k: v for k, v in kwargs.items() if v})
+-            except TypeError:
++            except RuntimeError:
+                 self.raise_error(f"Cannot parse property '{self._prev.text}'")
+ 
+         if self._match_pair(TokenType.CHAR, TokenType.SET):

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/errors.py b/sqlglot/errors.py
+--- a/sqlglot/errors.py
++++ b/sqlglot/errors.py
+@@ -26,7 +26,7 @@
+     """Immediately raise an exception on the first error found."""
+ 
+ 
+-class SqlglotError(Exception):
++class SqlglotError(BaseException):
+     pass
+ 
+ 

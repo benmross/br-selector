@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokens.py b/sqlglot/tokens.py
+--- a/sqlglot/tokens.py
++++ b/sqlglot/tokens.py
+@@ -624,7 +624,7 @@
+         """Length of the SQL string."""
+         return self._core.size
+ 
+-    @property
++    @staticmethod
+     def tokens(self) -> list[Token]:
+         """The list of tokens produced by tokenization."""
+         return self._core.tokens

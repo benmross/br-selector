@@ -1,0 +1,12 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -214,7 +214,7 @@
+         for deps in dag.values():
+             deps -= current
+ 
+-        result.extend(sorted(current))  # type: ignore
++        result.extend(current)  # type: ignore
+ 
+     return result
+ 

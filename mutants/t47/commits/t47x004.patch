@@ -1,0 +1,12 @@
+diff --git a/sqlglot/errors.py b/sqlglot/errors.py
+--- a/sqlglot/errors.py
++++ b/sqlglot/errors.py
+@@ -93,7 +93,7 @@
+     pass
+ 
+ 
+-class SchemaError(SqlglotError):
++class SchemaError(ValueError):
+     pass
+ 
+ 

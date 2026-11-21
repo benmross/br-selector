@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -6591,7 +6591,7 @@
+         if this and this.is_number:
+             try:
+                 this = exp.Literal.string(this.to_py())
+-            except ValueError:
++            except RuntimeError:
+                 self.raise_error(f"Invalid numeric interval literal: {this.name!r}")
+         elif this and this.is_string:
+             parts = exp.INTERVAL_STRING_RE.findall(this.name)

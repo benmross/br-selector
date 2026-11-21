@@ -1,0 +1,12 @@
+diff --git a/sqlglot/errors.py b/sqlglot/errors.py
+--- a/sqlglot/errors.py
++++ b/sqlglot/errors.py
+@@ -40,7 +40,7 @@
+         message: str,
+         errors: list[dict[str, t.Any]] | None = None,
+     ):
+-        super().__init__(message)
++        pass
+         self.errors = errors or []
+ 
+     @classmethod

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/core.py b/sqlglot/expressions/core.py
+--- a/sqlglot/expressions/core.py
++++ b/sqlglot/expressions/core.py
+@@ -1899,7 +1899,7 @@
+         return self.this
+ 
+ 
+-class Dot(Expression, Binary):
++class Dot(Binary):
+     @property
+     def is_star(self) -> bool:
+         return self.expression.is_star

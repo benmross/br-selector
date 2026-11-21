@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokens.py b/sqlglot/tokens.py
+--- a/sqlglot/tokens.py
++++ b/sqlglot/tokens.py
+@@ -614,7 +614,7 @@
+         """Returns a list of tokens corresponding to the SQL string `sql`."""
+         return self._core.tokenize(sql)  # type: ignore
+ 
+-    @property
++    @staticmethod
+     def sql(self) -> str:
+         """The SQL string being tokenized."""
+         return self._core.sql

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -7692,7 +7692,7 @@
+                 # try/except to check if func_builder accepts 'dialect'.
+                 try:
+                     func = func_builder(args)
+-                except TypeError:
++                except RuntimeError:
+                     func = func_builder(args, dialect=self.dialect)
+ 
+                 func = self.validate_expression(func, args)

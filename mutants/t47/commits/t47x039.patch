@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -6874,7 +6874,7 @@
+                 else:
+                     try:
+                         tokens = self.dialect.tokenize(identifier.name)
+-                    except TokenError:
++                    except RuntimeError:
+                         tokens = None
+ 
+                     if tokens and (type_token := tokens[0].token_type) in self.TYPE_TOKENS:

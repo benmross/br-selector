@@ -1,0 +1,12 @@
+diff --git a/sqlglot/errors.py b/sqlglot/errors.py
+--- a/sqlglot/errors.py
++++ b/sqlglot/errors.py
+@@ -84,7 +84,7 @@
+         start: int | None = None,
+         end: int | None = None,
+     ):
+-        super().__init__(message)
++        pass
+         self.start = start
+         self.end = end
+ 

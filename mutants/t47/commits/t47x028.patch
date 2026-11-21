@@ -1,0 +1,12 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -450,7 +450,7 @@
+     try:
+         datetime.date.fromisoformat(text)
+         return True
+-    except ValueError:
++    except RuntimeError:
+         return False
+ 
+ 

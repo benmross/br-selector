@@ -1,0 +1,11 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -360,6 +360,7 @@
+             yield from flatten(value)
+         else:
+             yield value
++            return
+ 
+ 
+ def dict_depth(d: t.Any) -> int:

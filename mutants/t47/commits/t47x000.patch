@@ -1,0 +1,12 @@
+diff --git a/sqlglot/errors.py b/sqlglot/errors.py
+--- a/sqlglot/errors.py
++++ b/sqlglot/errors.py
+@@ -30,7 +30,7 @@
+     pass
+ 
+ 
+-class UnsupportedError(SqlglotError):
++class UnsupportedError(ValueError):
+     pass
+ 
+ 

@@ -1,0 +1,295 @@
+{
+  "sample": {
+    "baseline": {
+      "hash": "59be830bae1042fab164d330ceb7617e49b52a4f",
+      "commits": 30,
+      "labeled": 30,
+      "execution_seconds": 116.857,
+      "simulated_seconds": 116.857,
+      "misses": {},
+      "cpu_seconds": 1.349609,
+      "all_selected": 0,
+      "ids_sha256": "d54f7e17bd8edfb1c5fdb8830fabacf2097faf41f620286924dc46f04241d53a"
+    },
+    "candidate": {
+      "hash": "e8e33808ec069266854fd6bd6e4a2973a822111d",
+      "commits": 30,
+      "labeled": 30,
+      "execution_seconds": 116.857,
+      "simulated_seconds": 116.857,
+      "misses": {},
+      "cpu_seconds": 1.116749,
+      "all_selected": 0,
+      "ids_sha256": "d54f7e17bd8edfb1c5fdb8830fabacf2097faf41f620286924dc46f04241d53a"
+    },
+    "widened": [],
+    "narrowed": [],
+    "rule_trigger_commits": 0,
+    "qualified_rule_trigger_commits": 0
+  },
+  "tracked": {
+    "baseline": {
+      "hash": "59be830bae1042fab164d330ceb7617e49b52a4f",
+      "commits": 412,
+      "labeled": 412,
+      "execution_seconds": 8439.638,
+      "simulated_seconds": 8439.638,
+      "misses": {},
+      "cpu_seconds": 51.240286,
+      "all_selected": 190,
+      "ids_sha256": "1a0aed3daf698060e105232de6963196257ddbb4a80ae9e25f3211fd279a2822"
+    },
+    "candidate": {
+      "hash": "e8e33808ec069266854fd6bd6e4a2973a822111d",
+      "commits": 412,
+      "labeled": 412,
+      "execution_seconds": 8439.638,
+      "simulated_seconds": 8439.638,
+      "misses": {},
+      "cpu_seconds": 44.864675999999996,
+      "all_selected": 190,
+      "ids_sha256": "1a0aed3daf698060e105232de6963196257ddbb4a80ae9e25f3211fd279a2822"
+    },
+    "widened": [],
+    "narrowed": [],
+    "rule_trigger_commits": 0,
+    "qualified_rule_trigger_commits": 25
+  },
+  "hid": {
+    "baseline": {
+      "hash": "59be830bae1042fab164d330ceb7617e49b52a4f",
+      "commits": 400,
+      "labeled": 0,
+      "execution_seconds": 3491.011,
+      "simulated_seconds": 3491.011,
+      "misses": {},
+      "cpu_seconds": 16.232398999999994,
+      "all_selected": 15,
+      "ids_sha256": "b033b0a049515dc3c46390e9a9a945131098dd0a47e0fe1a716530ca217089b0"
+    },
+    "candidate": {
+      "hash": "e8e33808ec069266854fd6bd6e4a2973a822111d",
+      "commits": 400,
+      "labeled": 0,
+      "execution_seconds": 3491.011,
+      "simulated_seconds": 3491.011,
+      "misses": {},
+      "cpu_seconds": 14.642552000000002,
+      "all_selected": 15,
+      "ids_sha256": "b033b0a049515dc3c46390e9a9a945131098dd0a47e0fe1a716530ca217089b0"
+    },
+    "widened": [],
+    "narrowed": [],
+    "rule_trigger_commits": 0,
+    "qualified_rule_trigger_commits": 14
+  },
+  "fresha": {
+    "baseline": {
+      "hash": "59be830bae1042fab164d330ceb7617e49b52a4f",
+      "commits": 150,
+      "labeled": 0,
+      "execution_seconds": 4551.398,
+      "simulated_seconds": 4551.398,
+      "misses": {},
+      "cpu_seconds": 45.501945000000006,
+      "all_selected": 118,
+      "ids_sha256": "f6e53e5a8f8969c0ee5051699fb44b9a2fee2212978374e32062559aec01489e"
+    },
+    "candidate": {
+      "hash": "e8e33808ec069266854fd6bd6e4a2973a822111d",
+      "commits": 150,
+      "labeled": 0,
+      "execution_seconds": 4551.398,
+      "simulated_seconds": 4551.398,
+      "misses": {},
+      "cpu_seconds": 34.76568300000002,
+      "all_selected": 118,
+      "ids_sha256": "f6e53e5a8f8969c0ee5051699fb44b9a2fee2212978374e32062559aec01489e"
+    },
+    "widened": [],
+    "narrowed": [],
+    "rule_trigger_commits": 0,
+    "qualified_rule_trigger_commits": 24
+  },
+  "freshb": {
+    "baseline": {
+      "hash": "59be830bae1042fab164d330ceb7617e49b52a4f",
+      "commits": 50,
+      "labeled": 0,
+      "execution_seconds": 556.021,
+      "simulated_seconds": 556.021,
+      "misses": {},
+      "cpu_seconds": 7.681927000000002,
+      "all_selected": 12,
+      "ids_sha256": "a6c2dfcc1d926b80824198ad9f7c56bdef2aa6f16c8d9806a1e56c218ec8d513"
+    },
+    "candidate": {
+      "hash": "e8e33808ec069266854fd6bd6e4a2973a822111d",
+      "commits": 50,
+      "labeled": 0,
+      "execution_seconds": 556.021,
+      "simulated_seconds": 556.021,
+      "misses": {},
+      "cpu_seconds": 9.404976999999974,
+      "all_selected": 12,
+      "ids_sha256": "a6c2dfcc1d926b80824198ad9f7c56bdef2aa6f16c8d9806a1e56c218ec8d513"
+    },
+    "widened": [],
+    "narrowed": [],
+    "rule_trigger_commits": 0,
+    "qualified_rule_trigger_commits": 33
+  },
+  "t3": {
+    "baseline": {
+      "hash": "59be830bae1042fab164d330ceb7617e49b52a4f",
+      "commits": 20,
+      "labeled": 20,
+      "execution_seconds": 394.149,
+      "simulated_seconds": 394.149,
+      "misses": {},
+      "cpu_seconds": 2.330215,
+      "all_selected": 7,
+      "ids_sha256": "f5158673e1228c8b0c72ac28b384bc65639df542cb243cc6a4cdcc9ef10bdeb0"
+    },
+    "candidate": {
+      "hash": "e8e33808ec069266854fd6bd6e4a2973a822111d",
+      "commits": 20,
+      "labeled": 20,
+      "execution_seconds": 394.149,
+      "simulated_seconds": 394.149,
+      "misses": {},
+      "cpu_seconds": 1.7214919999999978,
+      "all_selected": 7,
+      "ids_sha256": "f5158673e1228c8b0c72ac28b384bc65639df542cb243cc6a4cdcc9ef10bdeb0"
+    },
+    "widened": [],
+    "narrowed": [],
+    "rule_trigger_commits": 0,
+    "qualified_rule_trigger_commits": 1
+  },
+  "t44": {
+    "baseline": {
+      "hash": "59be830bae1042fab164d330ceb7617e49b52a4f",
+      "commits": 12,
+      "labeled": 12,
+      "execution_seconds": 287.705,
+      "simulated_seconds": 587.7049999999999,
+      "misses": {
+        "a44l01": [
+          434,
+          624
+        ]
+      },
+      "cpu_seconds": 1.256842,
+      "all_selected": 6,
+      "ids_sha256": "25ebc738bb32c1148dbbbf262c6116994871d8b63c8ac7c07960b0b46061b317"
+    },
+    "candidate": {
+      "hash": "e8e33808ec069266854fd6bd6e4a2973a822111d",
+      "commits": 12,
+      "labeled": 12,
+      "execution_seconds": 287.705,
+      "simulated_seconds": 287.705,
+      "misses": {},
+      "cpu_seconds": 1.241083,
+      "all_selected": 6,
+      "ids_sha256": "25ebc738bb32c1148dbbbf262c6116994871d8b63c8ac7c07960b0b46061b317"
+    },
+    "widened": [
+      "a44l01"
+    ],
+    "narrowed": [],
+    "rule_trigger_commits": 0,
+    "qualified_rule_trigger_commits": 5
+  },
+  "t14": {
+    "baseline": {
+      "commits": 17,
+      "simulated_seconds": 422.387,
+      "misses": []
+    },
+    "candidate": {
+      "commits": 17,
+      "simulated_seconds": 422.387,
+      "misses": []
+    },
+    "widened": [],
+    "narrowed": [],
+    "rule_trigger_commits": 0
+  },
+  "t15": {
+    "baseline": {
+      "commits": 25,
+      "simulated_seconds": 647.799,
+      "misses": []
+    },
+    "candidate": {
+      "commits": 25,
+      "simulated_seconds": 647.799,
+      "misses": []
+    },
+    "widened": [],
+    "narrowed": [],
+    "rule_trigger_commits": 0
+  },
+  "t24a": {
+    "baseline": {
+      "commits": 6,
+      "simulated_seconds": 193.275,
+      "misses": []
+    },
+    "candidate": {
+      "commits": 6,
+      "simulated_seconds": 193.275,
+      "misses": []
+    },
+    "widened": [],
+    "narrowed": [],
+    "rule_trigger_commits": 0
+  },
+  "t30": {
+    "baseline": {
+      "commits": 83,
+      "simulated_seconds": 2153.452,
+      "misses": []
+    },
+    "candidate": {
+      "commits": 83,
+      "simulated_seconds": 2153.452,
+      "misses": []
+    },
+    "widened": [],
+    "narrowed": [],
+    "rule_trigger_commits": 0
+  },
+  "t47": {
+    "labeled": 72,
+    "main_misses": 11,
+    "candidate_misses": 0,
+    "main_simulated_seconds": 5501.944,
+    "candidate_simulated_seconds": 2252.033,
+    "main_execution_seconds": 2201.944,
+    "candidate_execution_seconds": 2252.033,
+    "widened_ids": [
+      "t47x014",
+      "t47x022",
+      "t47x023",
+      "t47x062",
+      "t47x065",
+      "t47x066",
+      "t47x067",
+      "t47x068",
+      "t47x069",
+      "t47x070",
+      "t47x071",
+      "t47x072",
+      "t47x073",
+      "t47x074",
+      "t47x075",
+      "t47x076",
+      "t47x077",
+      "t47x078"
+    ],
+    "narrowed_ids": []
+  }
+}

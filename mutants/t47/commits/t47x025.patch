@@ -1,0 +1,12 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -250,7 +250,7 @@
+     """Unlike int(), never materializes a huge int from a short exponent like 1e1000000."""
+     try:
+         number = Decimal(value)
+-    except InvalidOperation:
++    except RuntimeError:
+         return None
+ 
+     if (

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -2266,7 +2266,7 @@
+ 
+             try:
+                 return self._parse(parser, raw_tokens, sql)
+-            except ParseError as e:
++            except RuntimeError as e:
+                 e.errors[0]["into_expression"] = expression_type
+                 errors.append(e)
+ 
