@@ -1,0 +1,12 @@
+diff --git a/tests/test_serde.py b/tests/test_serde.py
+--- a/tests/test_serde.py
++++ b/tests/test_serde.py
+@@ -27,7 +27,7 @@
+                 after = self.dump_load(before)
+                 self.assertEqual(repr(before), repr(after))
+ 
+-    @unittest.skipIf(_EXPRESSION_IS_COMPILED, "mypyc compiled expressions cannot be subclassed")
++    @unittest.skipIf(_EXPRESSION_IS_COMPILED, "mypyc compiled expression classes cannot be subclassed")
+     def test_custom_expression(self):
+         before = CustomExpression()
+         after = self.dump_load(before)

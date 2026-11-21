@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/math.py b/sqlglot/expressions/math.py
+--- a/sqlglot/expressions/math.py
++++ b/sqlglot/expressions/math.py
+@@ -200,7 +200,7 @@
+ 
+ class Trunc(Expression, Func):
+     arg_types = {"this": True, "decimals": False, "fractions_supported": False}
+-    _sql_names = ["TRUNC", "TRUNCATE"]
++    _sql_names = ["TRUNC", "TRUNCATE", "TRUNC_NUMBER"]
+ 
+ 
+ # Safe arithmetic

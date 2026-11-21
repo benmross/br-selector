@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_oracle.py b/tests/dialects/test_oracle.py
+--- a/tests/dialects/test_oracle.py
++++ b/tests/dialects/test_oracle.py
+@@ -4,7 +4,7 @@
+ 
+ 
+ class TestOracle(Validator):
+-    dialect = "oracle"
++    dialect = "oracle12"
+ 
+     def test_create_table_tablespace(self):
+         sql = "CREATE TABLE t (id NUMBER) TABLESPACE ts"

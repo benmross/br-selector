@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/singlestore.py b/sqlglot/generators/singlestore.py
+--- a/sqlglot/generators/singlestore.py
++++ b/sqlglot/generators/singlestore.py
+@@ -354,7 +354,7 @@
+         exp.DType.GEOMETRY: "GEOGRAPHY",
+         exp.DType.POINT: "GEOGRAPHYPOINT",
+         exp.DType.RING: "GEOGRAPHY",
+-        exp.DType.LINESTRING: "GEOGRAPHY",
++        exp.DType.LINESTRING: "GEOMETRY",
+         exp.DType.POLYGON: "GEOGRAPHY",
+         exp.DType.MULTIPOLYGON: "GEOGRAPHY",
+         exp.DType.STRUCT: "RECORD",

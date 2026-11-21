@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/postgres.py b/sqlglot/generators/postgres.py
+--- a/sqlglot/generators/postgres.py
++++ b/sqlglot/generators/postgres.py
+@@ -342,7 +342,7 @@
+         exp.DType.VARBINARY: "BYTEA",
+         exp.DType.ROWVERSION: "BYTEA",
+         exp.DType.DATETIME: "TIMESTAMP",
+-        exp.DType.TIMESTAMPNTZ: "TIMESTAMP",
++        exp.DType.TIMESTAMPNTZ: "TIMESTAMP WITHOUT TIME ZONE",
+         exp.DType.BLOB: "BYTEA",
+     }
+ 

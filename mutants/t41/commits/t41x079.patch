@@ -1,0 +1,12 @@
+diff --git a/sqlglot/errors.py b/sqlglot/errors.py
+--- a/sqlglot/errors.py
++++ b/sqlglot/errors.py
+@@ -17,7 +17,7 @@
+     """Ignore all errors."""
+ 
+     WARN = auto()
+-    """Log all errors."""
++    """Log all errors as warnings."""
+ 
+     RAISE = auto()
+     """Collect all errors and raise a single exception."""

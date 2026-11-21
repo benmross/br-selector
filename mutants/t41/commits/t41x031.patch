@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/starrocks.py b/sqlglot/dialects/starrocks.py
+--- a/sqlglot/dialects/starrocks.py
++++ b/sqlglot/dialects/starrocks.py
+@@ -49,7 +49,7 @@
+             "RECOVER": TokenType.COMMAND,
+             "REFRESH": TokenType.REFRESH,
+             "RESTORE": TokenType.COMMAND,
+-            "RESUME": TokenType.COMMAND,
++            "RESUME JOB": TokenType.COMMAND,
+             "STOP": TokenType.COMMAND,
+             "SUBMIT": TokenType.COMMAND,
+             "TRANSLATE TRINO": TokenType.COMMAND,

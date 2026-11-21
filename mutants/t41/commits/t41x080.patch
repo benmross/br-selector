@@ -1,0 +1,12 @@
+diff --git a/sqlglot/errors.py b/sqlglot/errors.py
+--- a/sqlglot/errors.py
++++ b/sqlglot/errors.py
+@@ -20,7 +20,7 @@
+     """Log all errors."""
+ 
+     RAISE = auto()
+-    """Collect all errors and raise a single exception."""
++    """Collect all errors and raise them together in a single exception."""
+ 
+     IMMEDIATE = auto()
+     """Immediately raise an exception on the first error found."""

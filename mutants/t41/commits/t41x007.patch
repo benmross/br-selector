@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/spark2.py b/sqlglot/generators/spark2.py
+--- a/sqlglot/generators/spark2.py
++++ b/sqlglot/generators/spark2.py
+@@ -185,7 +185,7 @@
+             exp.DayOfMonth: rename_func("DAYOFMONTH"),
+             exp.DayOfWeek: rename_func("DAYOFWEEK"),
+             # (DAY_OF_WEEK(datetime) % 7) + 1 is equivalent to DAYOFWEEK_ISO(datetime)
+-            exp.DayOfWeekIso: lambda self, e: f"(({self.func('DAYOFWEEK', e.this)} % 7) + 1)",
++            exp.DayOfWeekIso: lambda self, e: f"(({self.func('WEEKDAY', e.this)} % 7) + 1)",
+             exp.DayOfYear: rename_func("DAYOFYEAR"),
+             exp.From: transforms.preprocess([_unalias_pivot]),
+             exp.FromTimeZone: lambda self, e: self.func(

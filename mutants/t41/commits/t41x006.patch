@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -1841,7 +1841,7 @@
+             "STRFTIME", self.func("TO_TIMESTAMP", e.this), self.format_time(e)
+         ),
+         exp.UnixToTime: _unix_to_time_sql,
+-        exp.UnixToTimeStr: lambda self, e: f"CAST(TO_TIMESTAMP({self.sql(e, 'this')}) AS TEXT)",
++        exp.UnixToTimeStr: lambda self, e: f"CAST(TO_TIMESTAMP({self.sql(e, 'this')}) AS VARCHAR)",
+         exp.VariancePop: rename_func("VAR_POP"),
+         exp.WeekOfYear: rename_func("WEEKOFYEAR"),
+         exp.YearOfWeek: lambda self, e: self.sql(

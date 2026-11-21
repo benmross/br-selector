@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/math.py b/sqlglot/expressions/math.py
+--- a/sqlglot/expressions/math.py
++++ b/sqlglot/expressions/math.py
+@@ -191,7 +191,7 @@
+ 
+ 
+ class Sign(Expression, Func):
+-    _sql_names = ["SIGN", "SIGNUM"]
++    _sql_names = ["SIGN", "SGN"]
+ 
+ 
+ class Sqrt(Expression, Func):

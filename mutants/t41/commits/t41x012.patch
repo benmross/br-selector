@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/presto.py b/sqlglot/generators/presto.py
+--- a/sqlglot/generators/presto.py
++++ b/sqlglot/generators/presto.py
+@@ -343,7 +343,7 @@
+         exp.AtTimeZone: rename_func("AT_TIMEZONE"),
+         exp.BitwiseAnd: lambda self, e: self.func("BITWISE_AND", e.this, e.expression),
+         exp.BitwiseLeftShift: rename_func("BITWISE_LEFT_SHIFT"),
+-        exp.BitwiseNot: lambda self, e: self.func("BITWISE_NOT", e.this),
++        exp.BitwiseNot: lambda self, e: self.func("BIT_NOT", e.this),
+         exp.BitwiseOr: lambda self, e: self.func("BITWISE_OR", e.this, e.expression),
+         exp.BitwiseRightShift: rename_func("BITWISE_RIGHT_SHIFT"),
+         exp.BitwiseXor: lambda self, e: self.func("BITWISE_XOR", e.this, e.expression),

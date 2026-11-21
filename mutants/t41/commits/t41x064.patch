@@ -1,0 +1,12 @@
+diff --git a/tests/test_executor.py b/tests/test_executor.py
+--- a/tests/test_executor.py
++++ b/tests/test_executor.py
+@@ -28,7 +28,7 @@
+ )
+ 
+ DIR_TPCH = FIXTURES_DIR + "/optimizer/tpc-h/"
+-DIR_TPCDS = FIXTURES_DIR + "/optimizer/tpc-ds/"
++DIR_TPCDS = FIXTURES_DIR + "/optimizer/tpcds/"
+ 
+ 
+ def open_file(file_name):

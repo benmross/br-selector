@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_postgres.py b/tests/dialects/test_postgres.py
+--- a/tests/dialects/test_postgres.py
++++ b/tests/dialects/test_postgres.py
+@@ -9,7 +9,7 @@
+ 
+ class TestPostgres(Validator):
+     maxDiff = None
+-    dialect = "postgres"
++    dialect = "postgresql"
+ 
+     def test_convert(self):
+         self.validate_identity(

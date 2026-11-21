@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/postgres.py b/sqlglot/generators/postgres.py
+--- a/sqlglot/generators/postgres.py
++++ b/sqlglot/generators/postgres.py
+@@ -463,7 +463,7 @@
+         exp.JSONBObjectAgg: rename_func("JSONB_OBJECT_AGG"),
+         exp.CountIf: count_if_to_sum,
+         exp.FileFormatProperty: lambda self, e: f"USING {self.sql(e, 'this')}",
+-        exp.TableSpaceProperty: lambda self, e: f"TABLESPACE {self.sql(e, 'this')}",
++        exp.TableSpaceProperty: lambda self, e: f"IN TABLESPACE {self.sql(e, 'this')}",
+     }
+ 
+     PROPERTIES_LOCATION = {

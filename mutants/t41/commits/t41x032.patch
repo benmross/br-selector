@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/tsql.py b/sqlglot/dialects/tsql.py
+--- a/sqlglot/dialects/tsql.py
++++ b/sqlglot/dialects/tsql.py
+@@ -176,7 +176,7 @@
+             "NONCLUSTERED INDEX": TokenType.INDEX,
+             "NTEXT": TokenType.TEXT,
+             "OPTION": TokenType.OPTION,
+-            "OUTPUT": TokenType.RETURNING,
++            "OUTPUTS": TokenType.RETURNING,
+             "PRINT": TokenType.COMMAND,
+             "PROC": TokenType.PROCEDURE,
+             "REAL": TokenType.FLOAT,

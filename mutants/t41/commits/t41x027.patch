@@ -1,0 +1,12 @@
+diff --git a/tests/leakcheck.py b/tests/leakcheck.py
+--- a/tests/leakcheck.py
++++ b/tests/leakcheck.py
+@@ -89,7 +89,7 @@
+ # Treat them with a higher delta threshold so first-run cache warmup doesn't
+ # flip the verdict; a real leak still wins because its slope is linear and
+ # unbounded.
+-_STRUCTURAL = frozenset({"dict", "list", "tuple", "set", "frozenset"})
++_STRUCTURAL = frozenset({"dict", "list", "tuple", "set", "frozenset", "bytearray"})
+ 
+ 
+ # Opened once at import rather than per-iteration to avoid FD churn and to

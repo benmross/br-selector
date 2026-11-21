@@ -1,0 +1,12 @@
+diff --git a/tests/test_executor.py b/tests/test_executor.py
+--- a/tests/test_executor.py
++++ b/tests/test_executor.py
+@@ -67,7 +67,7 @@
+     return execute(expression, schema=_schema, tables=tables)
+ 
+ 
+-@unittest.skipIf(SKIP_INTEGRATION, "Skipping Integration Tests since `SKIP_INTEGRATION` is set")
++@unittest.skipIf(SKIP_INTEGRATION, "Skipping integration tests because `SKIP_INTEGRATION` is set")
+ class TestExecutor(unittest.TestCase):
+     @classmethod
+     def setUpClass(cls):

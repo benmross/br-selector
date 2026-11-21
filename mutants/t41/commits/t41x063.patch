@@ -1,0 +1,12 @@
+diff --git a/tests/test_executor.py b/tests/test_executor.py
+--- a/tests/test_executor.py
++++ b/tests/test_executor.py
+@@ -27,7 +27,7 @@
+     load_sql_fixture_pairs,
+ )
+ 
+-DIR_TPCH = FIXTURES_DIR + "/optimizer/tpc-h/"
++DIR_TPCH = FIXTURES_DIR + "/optimizer/tpch/"
+ DIR_TPCDS = FIXTURES_DIR + "/optimizer/tpc-ds/"
+ 
+ 

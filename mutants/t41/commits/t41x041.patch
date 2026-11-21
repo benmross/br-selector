@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/bigquery.py b/sqlglot/generators/bigquery.py
+--- a/sqlglot/generators/bigquery.py
++++ b/sqlglot/generators/bigquery.py
+@@ -369,7 +369,7 @@
+     SUPPORTS_UNIX_SECONDS = True
+     DECLARE_DEFAULT_ASSIGNMENT = "DEFAULT"
+ 
+-    SAFE_JSON_PATH_KEY_RE = re.compile(r"^[\-\w]*$")
++    SAFE_JSON_PATH_KEY_RE = re.compile(r"^[\-\w]*\Z")
+ 
+     WINDOW_FUNCS_REQUIRING_ORDER = (
+         exp.CumeDist,

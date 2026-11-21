@@ -1,0 +1,12 @@
+diff --git a/sqlglot/errors.py b/sqlglot/errors.py
+--- a/sqlglot/errors.py
++++ b/sqlglot/errors.py
+@@ -23,7 +23,7 @@
+     """Collect all errors and raise a single exception."""
+ 
+     IMMEDIATE = auto()
+-    """Immediately raise an exception on the first error found."""
++    """Immediately raise an exception on the first error encountered."""
+ 
+ 
+ class SqlglotError(Exception):

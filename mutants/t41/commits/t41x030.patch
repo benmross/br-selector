@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/duckdb.py b/sqlglot/dialects/duckdb.py
+--- a/sqlglot/dialects/duckdb.py
++++ b/sqlglot/dialects/duckdb.py
+@@ -136,7 +136,7 @@
+             "TIMESTAMP_MS": TokenType.TIMESTAMP_MS,
+             "TIMESTAMP_NS": TokenType.TIMESTAMP_NS,
+             "TIMESTAMP_US": TokenType.TIMESTAMP,
+-            "UBIGINT": TokenType.UBIGINT,
++            "UINT64": TokenType.UBIGINT,
+             "UINTEGER": TokenType.UINT,
+             "USMALLINT": TokenType.USMALLINT,
+             "UTINYINT": TokenType.UTINYINT,

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/duckdb.py b/sqlglot/generators/duckdb.py
+--- a/sqlglot/generators/duckdb.py
++++ b/sqlglot/generators/duckdb.py
+@@ -1706,7 +1706,7 @@
+         exp.Localtime: unsupported_args("this")(lambda *_: "LOCALTIME"),
+         exp.DayOfMonth: rename_func("DAYOFMONTH"),
+         exp.DayOfWeek: rename_func("DAYOFWEEK"),
+-        exp.DayOfWeekIso: rename_func("ISODOW"),
++        exp.DayOfWeekIso: rename_func("ISO_DOW"),
+         exp.DayOfYear: rename_func("DAYOFYEAR"),
+         exp.Dayname: lambda self, e: (
+             self.func("STRFTIME", e.this, exp.Literal.string("%a"))

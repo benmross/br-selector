@@ -1,0 +1,11 @@
+diff --git a/sqlglot/expressions/math.py b/sqlglot/expressions/math.py
+--- a/sqlglot/expressions/math.py
++++ b/sqlglot/expressions/math.py
+@@ -282,6 +282,6 @@
+ 
+ 
+ class Getbit(Expression, Func):
+-    _sql_names = ["GETBIT", "GET_BIT"]
++    _sql_names = ["GETBIT", "BIT_GET"]
+     # zero_is_msb means the most significant bit is indexed 0
+     arg_types = {"this": True, "expression": True, "zero_is_msb": False}

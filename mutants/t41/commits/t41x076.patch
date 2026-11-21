@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_dialect.py b/tests/dialects/test_dialect.py
+--- a/tests/dialects/test_dialect.py
++++ b/tests/dialects/test_dialect.py
+@@ -6097,7 +6097,7 @@
+             "SELECT ROW_NUMBER() OVER (PARTITION BY event_time + CAST(INTERVAL '00:00:01' AS INTERVAL)) AS foo FROM t",
+         )
+ 
+-    @unittest.skipIf(_PARSER_IS_COMPILED, "mypyc compiled parsers cannot be subclassed")
++    @unittest.skipIf(_PARSER_IS_COMPILED, "mypyc compiled parser classes cannot be subclassed")
+     def test_patch_dialect_parser(self):
+         class CustomSnowflakeParser(SnowflakeParser):
+             FUNCTIONS = {

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/helper.py b/sqlglot/helper.py
+--- a/sqlglot/helper.py
++++ b/sqlglot/helper.py
+@@ -34,7 +34,7 @@
+     from sqlglot.expressions import Expr
+ 
+ 
+-CAMEL_CASE_PATTERN = re.compile("(?<!^)(?=[A-Z])")
++CAMEL_CASE_PATTERN = re.compile("(?<!^)(?=[A-Z][a-z])")
+ PYTHON_VERSION = sys.version_info[:2]
+ logger = logging.getLogger("sqlglot")
+ 

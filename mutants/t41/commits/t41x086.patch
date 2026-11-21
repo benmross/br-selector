@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -144,7 +144,7 @@
+     """Unquoted identifiers are uppercased."""
+ 
+     CASE_SENSITIVE = auto()
+-    """Always case-sensitive, regardless of quotes."""
++    """Always case-sensitive, whether quoted or not."""
+ 
+     CASE_INSENSITIVE = auto()
+     """Always case-insensitive (lowercase), regardless of quotes."""

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/postgres.py b/sqlglot/dialects/postgres.py
+--- a/sqlglot/dialects/postgres.py
++++ b/sqlglot/dialects/postgres.py
+@@ -137,7 +137,7 @@
+             "TEMP": TokenType.TEMPORARY,
+             "TYPE": TokenType.TYPE,
+             "REGCLASS": TokenType.OBJECT_IDENTIFIER,
+-            "REGCOLLATION": TokenType.OBJECT_IDENTIFIER,
++            "REGCOLLATE": TokenType.OBJECT_IDENTIFIER,
+             "REGCONFIG": TokenType.OBJECT_IDENTIFIER,
+             "REGDICTIONARY": TokenType.OBJECT_IDENTIFIER,
+             "REGNAMESPACE": TokenType.OBJECT_IDENTIFIER,

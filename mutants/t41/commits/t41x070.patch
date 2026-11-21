@@ -1,0 +1,12 @@
+diff --git a/tests/leakcheck.py b/tests/leakcheck.py
+--- a/tests/leakcheck.py
++++ b/tests/leakcheck.py
+@@ -94,7 +94,7 @@
+ 
+ # Opened once at import rather than per-iteration to avoid FD churn and to
+ # keep it out of the per-sample object count.
+-_NULL_STREAM = open(os.devnull, "w")
++_NULL_STREAM = open(os.devnull, "wt")
+ 
+ 
+ def _maxrss_kb() -> int:

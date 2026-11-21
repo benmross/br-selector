@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/math.py b/sqlglot/expressions/math.py
+--- a/sqlglot/expressions/math.py
++++ b/sqlglot/expressions/math.py
+@@ -149,7 +149,7 @@
+ 
+ 
+ class IsInf(Expression, Func):
+-    _sql_names = ["IS_INF", "ISINF"]
++    _sql_names = ["IS_INFINITE", "ISINF"]
+ 
+ 
+ class IsNan(Expression, Func):

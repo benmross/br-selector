@@ -1,0 +1,12 @@
+diff --git a/sqlglot/__init__.py b/sqlglot/__init__.py
+--- a/sqlglot/__init__.py
++++ b/sqlglot/__init__.py
+@@ -71,7 +71,7 @@
+ 
+ 
+ pretty = False
+-"""Whether to format generated SQL by default."""
++"""Whether generated SQL is pretty-printed by default."""
+ 
+ 
+ def tokenize(sql: str, read: DialectType = None, dialect: DialectType = None) -> list[Token]:

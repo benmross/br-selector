@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/redshift.py b/sqlglot/generators/redshift.py
+--- a/sqlglot/generators/redshift.py
++++ b/sqlglot/generators/redshift.py
+@@ -88,7 +88,7 @@
+         exp.CurrentUserId: lambda *_: "CURRENT_USER_ID",
+         exp.DateAdd: lambda self, e: self._date_delta_sql(e, "DATEADD"),
+         exp.DateDiff: lambda self, e: self._date_delta_sql(e, "DATEDIFF"),
+-        exp.DistKeyProperty: lambda self, e: self.func("DISTKEY", e.this),
++        exp.DistKeyProperty: lambda self, e: self.func("DIST_KEY", e.this),
+         exp.DistStyleProperty: lambda self, e: self.naked_property(e),
+         exp.Explode: lambda self, e: self.explode_sql(e),
+         exp.FarmFingerprint: rename_func("FARMFINGERPRINT64"),

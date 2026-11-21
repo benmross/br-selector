@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/postgres.py b/sqlglot/generators/postgres.py
+--- a/sqlglot/generators/postgres.py
++++ b/sqlglot/generators/postgres.py
+@@ -405,7 +405,7 @@
+         exp.Min: min_or_least,
+         exp.Merge: merge_without_target_sql,
+         exp.Month: _day_month_year_sql,
+-        exp.PartitionedByProperty: lambda self, e: f"PARTITION BY {self.sql(e, 'this')}",
++        exp.PartitionedByProperty: lambda self, e: f"PARTITIONED BY {self.sql(e, 'this')}",
+         exp.PercentileCont: transforms.preprocess([transforms.add_within_group_for_percentiles]),
+         exp.PercentileDisc: transforms.preprocess([transforms.add_within_group_for_percentiles]),
+         exp.Pivot: no_pivot_sql,

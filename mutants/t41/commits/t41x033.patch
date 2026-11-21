@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/snowflake.py b/sqlglot/dialects/snowflake.py
+--- a/sqlglot/dialects/snowflake.py
++++ b/sqlglot/dialects/snowflake.py
+@@ -140,7 +140,7 @@
+         KEYWORDS = {
+             **tokens.Tokenizer.KEYWORDS,
+             "(+)": TokenType.JOIN_MARKER,
+-            "BYTEINT": TokenType.INT,
++            "BYTE_INT": TokenType.INT,
+             "FILE://": TokenType.URI_START,
+             "FILE FORMAT": TokenType.FILE_FORMAT,
+             "GET": TokenType.GET,

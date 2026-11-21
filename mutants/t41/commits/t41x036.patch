@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokens.py b/sqlglot/tokens.py
+--- a/sqlglot/tokens.py
++++ b/sqlglot/tokens.py
+@@ -261,7 +261,7 @@
+         "-|-": TokenType.ADJACENT,
+         "ALL": TokenType.ALL,
+         "AND": TokenType.AND,
+-        "ANTI": TokenType.ANTI,
++        "ANTIJOIN": TokenType.ANTI,
+         "ANY": TokenType.ANY,
+         "ASC": TokenType.ASC,
+         "AS": TokenType.ALIAS,

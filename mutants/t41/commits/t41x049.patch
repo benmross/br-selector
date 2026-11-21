@@ -1,0 +1,12 @@
+diff --git a/tests/test_time.py b/tests/test_time.py
+--- a/tests/test_time.py
++++ b/tests/test_time.py
+@@ -6,7 +6,7 @@
+ from sqlglot.generators.hive import CANONICAL_TIME_FORMAT, LAX_TO_NON_PADDED_FORMATS
+ from sqlglot.time import format_time, subsecond_precision
+ 
+-KNOWN_CANONICAL_ATOM = re.compile(r"%(?:[mdHIMS]strict|[-:].|[\w%])")
++KNOWN_CANONICAL_ATOM = re.compile(r"%(?:[mdHIMSy]strict|[-:].|[\w%])")
+ 
+ 
+ class TestTime(unittest.TestCase):

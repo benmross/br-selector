@@ -1,0 +1,660 @@
+{
+  "commits": {
+    "t41x000": {
+      "kind": "a",
+      "description": "presto security property keyword",
+      "paths": [
+        "sqlglot/generators/presto.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x001": {
+      "kind": "a",
+      "description": "presto file format property name",
+      "paths": [
+        "sqlglot/generators/presto.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x002": {
+      "kind": "a",
+      "description": "presto unix-to-time-str cast type",
+      "paths": [
+        "sqlglot/generators/presto.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x003": {
+      "kind": "a",
+      "description": "postgres partitioned-by wording",
+      "paths": [
+        "sqlglot/generators/postgres.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x004": {
+      "kind": "a",
+      "description": "postgres file format keyword",
+      "paths": [
+        "sqlglot/generators/postgres.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x005": {
+      "kind": "a",
+      "description": "postgres tablespace prefix",
+      "paths": [
+        "sqlglot/generators/postgres.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x006": {
+      "kind": "a",
+      "description": "duckdb unix-to-time-str cast type",
+      "paths": [
+        "sqlglot/generators/duckdb.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x007": {
+      "kind": "a",
+      "description": "spark2 iso weekday function",
+      "paths": [
+        "sqlglot/generators/spark2.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x008": {
+      "kind": "a",
+      "description": "redshift starts-with operator",
+      "paths": [
+        "sqlglot/generators/redshift.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x009": {
+      "kind": "a",
+      "description": "presto day-of-week function",
+      "paths": [
+        "sqlglot/generators/presto.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x010": {
+      "kind": "a",
+      "description": "presto str-to-date cast type",
+      "paths": [
+        "sqlglot/generators/presto.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x011": {
+      "kind": "a",
+      "description": "redshift distkey function name",
+      "paths": [
+        "sqlglot/generators/redshift.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x012": {
+      "kind": "a",
+      "description": "presto bitwise not name",
+      "paths": [
+        "sqlglot/generators/presto.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x013": {
+      "kind": "a",
+      "description": "redshift approx distinct wording",
+      "paths": [
+        "sqlglot/generators/redshift.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x014": {
+      "kind": "b",
+      "description": "redshift binary type name",
+      "paths": [
+        "sqlglot/generators/redshift.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x015": {
+      "kind": "b",
+      "description": "presto int type name",
+      "paths": [
+        "sqlglot/generators/presto.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x016": {
+      "kind": "b",
+      "description": "postgres ntz timestamp type",
+      "paths": [
+        "sqlglot/generators/postgres.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x017": {
+      "kind": "b",
+      "description": "duckdb varbinary type name",
+      "paths": [
+        "sqlglot/generators/duckdb.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x018": {
+      "kind": "b",
+      "description": "singlestore linestring type",
+      "paths": [
+        "sqlglot/generators/singlestore.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x021": {
+      "kind": "b",
+      "description": "bigquery binary type",
+      "paths": [
+        "sqlglot/generators/bigquery.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x022": {
+      "kind": "b",
+      "description": "mysql hour format value",
+      "paths": [
+        "sqlglot/dialects/mysql.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x023": {
+      "kind": "b",
+      "description": "duckdb iso dow rename",
+      "paths": [
+        "sqlglot/generators/duckdb.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x024": {
+      "kind": "b",
+      "description": "bigquery json bool rename",
+      "paths": [
+        "sqlglot/generators/bigquery.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x025": {
+      "kind": "b",
+      "description": "clickhouse current database rename",
+      "paths": [
+        "sqlglot/generators/clickhouse.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x026": {
+      "kind": "b",
+      "description": "snowflake manhattan distance rename",
+      "paths": [
+        "sqlglot/generators/snowflake.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x027": {
+      "kind": "b",
+      "description": "test leakcheck structural types",
+      "paths": [
+        "tests/leakcheck.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x028": {
+      "kind": "c",
+      "description": "redshift binary varying keyword",
+      "paths": [
+        "sqlglot/dialects/redshift.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x029": {
+      "kind": "c",
+      "description": "postgres regcollation keyword",
+      "paths": [
+        "sqlglot/dialects/postgres.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x030": {
+      "kind": "c",
+      "description": "duckdb ubigint keyword",
+      "paths": [
+        "sqlglot/dialects/duckdb.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x031": {
+      "kind": "c",
+      "description": "starrocks resume keyword",
+      "paths": [
+        "sqlglot/dialects/starrocks.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x032": {
+      "kind": "c",
+      "description": "tsql output keyword",
+      "paths": [
+        "sqlglot/dialects/tsql.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x033": {
+      "kind": "c",
+      "description": "snowflake byteint keyword",
+      "paths": [
+        "sqlglot/dialects/snowflake.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x034": {
+      "kind": "c",
+      "description": "oracle subpartition keyword",
+      "paths": [
+        "sqlglot/dialects/oracle.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x035": {
+      "kind": "c",
+      "description": "trino refresh keyword",
+      "paths": [
+        "sqlglot/dialects/trino.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x036": {
+      "kind": "c",
+      "description": "base anti keyword",
+      "paths": [
+        "sqlglot/tokens.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x037": {
+      "kind": "c",
+      "description": "base asof keyword",
+      "paths": [
+        "sqlglot/tokens.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x039": {
+      "kind": "c",
+      "description": "optimizer lazy export key",
+      "paths": [
+        "sqlglot/optimizer/__init__.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x040": {
+      "kind": "d",
+      "description": "duckdb timezone pattern accepts Z",
+      "paths": [
+        "sqlglot/generators/duckdb.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x041": {
+      "kind": "d",
+      "description": "bigquery safe json key end anchor",
+      "paths": [
+        "sqlglot/generators/bigquery.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x042": {
+      "kind": "d",
+      "description": "hive canonical time strict year",
+      "paths": [
+        "sqlglot/generators/hive.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x043": {
+      "kind": "d",
+      "description": "hive safe json key digits",
+      "paths": [
+        "sqlglot/generators/hive.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x044": {
+      "kind": "d",
+      "description": "interval unit allows underscore",
+      "paths": [
+        "sqlglot/expressions/builders.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x045": {
+      "kind": "d",
+      "description": "camel case split before lowercase",
+      "paths": [
+        "sqlglot/helper.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x046": {
+      "kind": "d",
+      "description": "high byte range includes delete",
+      "paths": [
+        "sqlglot/generator.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x047": {
+      "kind": "d",
+      "description": "mysql time mapping key in trie",
+      "paths": [
+        "sqlglot/dialects/mysql.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x048": {
+      "kind": "d",
+      "description": "mysql month-name key in trie",
+      "paths": [
+        "sqlglot/dialects/mysql.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x049": {
+      "kind": "d",
+      "description": "test canonical atom regex",
+      "paths": [
+        "tests/test_time.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x050": {
+      "kind": "e",
+      "description": "tsql dialect registry name",
+      "paths": [
+        "sqlglot/dialects/dialect.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x051": {
+      "kind": "e",
+      "description": "doris dialect registry name",
+      "paths": [
+        "sqlglot/dialects/dialect.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x052": {
+      "kind": "e",
+      "description": "drill dialect registry name",
+      "paths": [
+        "sqlglot/dialects/dialect.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x053": {
+      "kind": "e",
+      "description": "optimizer lazy scope module path",
+      "paths": [
+        "sqlglot/optimizer/__init__.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x054": {
+      "kind": "e",
+      "description": "optimizer lazy optimize attribute",
+      "paths": [
+        "sqlglot/optimizer/__init__.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x055": {
+      "kind": "e",
+      "description": "ceil function alias",
+      "paths": [
+        "sqlglot/expressions/math.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x056": {
+      "kind": "e",
+      "description": "isinf function name",
+      "paths": [
+        "sqlglot/expressions/math.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x057": {
+      "kind": "e",
+      "description": "sign function alias",
+      "paths": [
+        "sqlglot/expressions/math.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x058": {
+      "kind": "e",
+      "description": "getbit function alias",
+      "paths": [
+        "sqlglot/expressions/math.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x059": {
+      "kind": "e",
+      "description": "trunc function alias",
+      "paths": [
+        "sqlglot/expressions/math.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x060": {
+      "kind": "e",
+      "description": "skip integration env name",
+      "paths": [
+        "tests/helpers.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x061": {
+      "kind": "e",
+      "description": "fabric test dialect name",
+      "paths": [
+        "tests/dialects/test_fabric.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x062": {
+      "kind": "e",
+      "description": "risingwave test dialect name",
+      "paths": [
+        "tests/dialects/test_risingwave.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x063": {
+      "kind": "f",
+      "description": "executor tpch fixture dir",
+      "paths": [
+        "tests/test_executor.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x064": {
+      "kind": "f",
+      "description": "executor tpcds fixture dir",
+      "paths": [
+        "tests/test_executor.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x065": {
+      "kind": "f",
+      "description": "helpers fixtures dir name",
+      "paths": [
+        "tests/helpers.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x066": {
+      "kind": "f",
+      "description": "executor skip reason text",
+      "paths": [
+        "tests/test_executor.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x068": {
+      "kind": "f",
+      "description": "oracle test dialect name",
+      "paths": [
+        "tests/dialects/test_oracle.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x069": {
+      "kind": "f",
+      "description": "postgres test dialect name",
+      "paths": [
+        "tests/dialects/test_postgres.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x070": {
+      "kind": "f",
+      "description": "leakcheck null stream mode",
+      "paths": [
+        "tests/leakcheck.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x071": {
+      "kind": "f",
+      "description": "sqlite skip reason text",
+      "paths": [
+        "tests/dialects/test_sqlite.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x072": {
+      "kind": "f",
+      "description": "zoneinfo skip reason text",
+      "paths": [
+        "tests/test_expressions.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x073": {
+      "kind": "f",
+      "description": "serde skip reason text",
+      "paths": [
+        "tests/test_serde.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x075": {
+      "kind": "f",
+      "description": "drill test dialect name",
+      "paths": [
+        "tests/dialects/test_drill.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x076": {
+      "kind": "f",
+      "description": "dialect test first skip reason",
+      "paths": [
+        "tests/dialects/test_dialect.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x077": {
+      "kind": "g",
+      "description": "pretty setting docstring",
+      "paths": [
+        "sqlglot/__init__.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x078": {
+      "kind": "g",
+      "description": "error level ignore docstring",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x079": {
+      "kind": "g",
+      "description": "error level warn docstring",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x080": {
+      "kind": "g",
+      "description": "error level raise docstring",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x081": {
+      "kind": "g",
+      "description": "error level immediate docstring",
+      "paths": [
+        "sqlglot/errors.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x082": {
+      "kind": "g",
+      "description": "dialects enum docstring",
+      "paths": [
+        "sqlglot/dialects/dialect.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x084": {
+      "kind": "g",
+      "description": "lowercase strategy docstring",
+      "paths": [
+        "sqlglot/dialects/dialect.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x085": {
+      "kind": "g",
+      "description": "uppercase strategy docstring",
+      "paths": [
+        "sqlglot/dialects/dialect.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x086": {
+      "kind": "g",
+      "description": "case sensitive strategy docstring",
+      "paths": [
+        "sqlglot/dialects/dialect.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t41x087": {
+      "kind": "g",
+      "description": "optimizer package docstring",
+      "paths": [
+        "sqlglot/optimizer/__init__.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    }
+  }
+}

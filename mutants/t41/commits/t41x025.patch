@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/clickhouse.py b/sqlglot/generators/clickhouse.py
+--- a/sqlglot/generators/clickhouse.py
++++ b/sqlglot/generators/clickhouse.py
+@@ -318,7 +318,7 @@
+         exp.BitwiseXorAgg: rename_func("groupBitXor"),
+         exp.CityHash64: rename_func("cityHash64"),
+         exp.CastToStrType: rename_func("CAST"),
+-        exp.CurrentDatabase: rename_func("CURRENT_DATABASE"),
++        exp.CurrentDatabase: rename_func("currentDatabase"),
+         exp.CurrentSchemas: rename_func("CURRENT_SCHEMAS"),
+         exp.CountIf: rename_func("countIf"),
+         exp.CosineDistance: rename_func("cosineDistance"),

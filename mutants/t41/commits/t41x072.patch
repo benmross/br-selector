@@ -1,0 +1,12 @@
+diff --git a/tests/test_expressions.py b/tests/test_expressions.py
+--- a/tests/test_expressions.py
++++ b/tests/test_expressions.py
+@@ -1232,7 +1232,7 @@
+             "MAP_FROM_ARRAYS(ARRAY('test'), ARRAY('value'))",
+         )
+ 
+-    @unittest.skipUnless(sys.version_info >= (3, 9), "zoneinfo only available from python 3.9+")
++    @unittest.skipUnless(sys.version_info >= (3, 9), "zoneinfo module only available from python 3.9+")
+     def test_convert_python39(self):
+         import zoneinfo
+ 

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/redshift.py b/sqlglot/generators/redshift.py
+--- a/sqlglot/generators/redshift.py
++++ b/sqlglot/generators/redshift.py
+@@ -83,7 +83,7 @@
+         exp.ArrayConcat: array_concat_sql("ARRAY_CONCAT"),
+         exp.Concat: concat_to_dpipe_sql,
+         exp.ConcatWs: concat_ws_to_dpipe_sql,
+-        exp.ApproxDistinct: lambda self, e: f"APPROXIMATE COUNT(DISTINCT {self.sql(e, 'this')})",
++        exp.ApproxDistinct: lambda self, e: f"APPROXIMATE COUNT(DISTINCT ALL {self.sql(e, 'this')})",
+         exp.CurrentTimestamp: lambda self, e: "SYSDATE" if e.args.get("sysdate") else "GETDATE()",
+         exp.CurrentUserId: lambda *_: "CURRENT_USER_ID",
+         exp.DateAdd: lambda self, e: self._date_delta_sql(e, "DATEADD"),

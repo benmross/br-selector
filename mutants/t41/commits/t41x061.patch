@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_fabric.py b/tests/dialects/test_fabric.py
+--- a/tests/dialects/test_fabric.py
++++ b/tests/dialects/test_fabric.py
+@@ -2,7 +2,7 @@
+ 
+ 
+ class TestFabric(Validator):
+-    dialect = "fabric"
++    dialect = "fabricdw"
+     maxDiff = None
+ 
+     def test_type_mappings(self):

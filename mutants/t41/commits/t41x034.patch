@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/oracle.py b/sqlglot/dialects/oracle.py
+--- a/sqlglot/dialects/oracle.py
++++ b/sqlglot/dialects/oracle.py
+@@ -112,7 +112,7 @@
+             "ORDER SIBLINGS BY": TokenType.ORDER_SIBLINGS_BY,
+             "SAMPLE": TokenType.TABLE_SAMPLE,
+             "START": TokenType.BEGIN,
+-            "SUBPARTITION": TokenType.PARTITION,
++            "SUBPARTITIONS": TokenType.PARTITION,
+             "TOP": TokenType.TOP,
+             "VARCHAR2": TokenType.VARCHAR,
+             "SYSTIMESTAMP": TokenType.SYSTIMESTAMP,

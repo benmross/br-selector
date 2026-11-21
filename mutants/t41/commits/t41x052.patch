@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -107,7 +107,7 @@
+     DAX = "dax"
+     DORIS = "doris"
+     DREMIO = "dremio"
+-    DRILL = "drill"
++    DRILL = "apache_drill"
+     DRUID = "druid"
+     DUCKDB = "duckdb"
+     DUNE = "dune"

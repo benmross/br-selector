@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/redshift.py b/sqlglot/dialects/redshift.py
+--- a/sqlglot/dialects/redshift.py
++++ b/sqlglot/dialects/redshift.py
+@@ -48,7 +48,7 @@
+         KEYWORDS = {
+             **Postgres.Tokenizer.KEYWORDS,
+             "(+)": TokenType.JOIN_MARKER,
+-            "BINARY VARYING": TokenType.VARBINARY,
++            "BYTE VARYING": TokenType.VARBINARY,
+             "CURRENT_USER_ID": TokenType.CURRENT_USER_ID,
+             "HLLSKETCH": TokenType.HLLSKETCH,
+             "MINUS": TokenType.EXCEPT,

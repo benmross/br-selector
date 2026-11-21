@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/presto.py b/sqlglot/generators/presto.py
+--- a/sqlglot/generators/presto.py
++++ b/sqlglot/generators/presto.py
+@@ -367,7 +367,7 @@
+             f"CAST(DATE_PARSE(CAST({self.sql(e, 'this')} AS VARCHAR), {type(self.dialect).DATEINT_FORMAT}) AS DATE)"
+         ),
+         exp.Encode: lambda self, e: encode_decode_sql(self, e, "TO_UTF8"),
+-        exp.FileFormatProperty: lambda self, e: f"format={self.sql(exp.Literal.string(e.name))}",
++        exp.FileFormatProperty: lambda self, e: f"format_name={self.sql(exp.Literal.string(e.name))}",
+         exp.First: _first_last_sql,
+         exp.FromISO8601Date: rename_func("FROM_ISO8601_DATE"),
+         exp.FromISO8601Timestamp: rename_func("FROM_ISO8601_TIMESTAMP"),

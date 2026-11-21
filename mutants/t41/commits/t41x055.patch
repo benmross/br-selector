@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/math.py b/sqlglot/expressions/math.py
+--- a/sqlglot/expressions/math.py
++++ b/sqlglot/expressions/math.py
+@@ -133,7 +133,7 @@
+ 
+ class Ceil(Expression, Func):
+     arg_types = {"this": True, "decimals": False, "to": False}
+-    _sql_names = ["CEIL", "CEILING"]
++    _sql_names = ["CEIL", "CEILING", "CEIL_VALUE"]
+ 
+ 
+ class Exp(Expression, Func):

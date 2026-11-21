@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/presto.py b/sqlglot/generators/presto.py
+--- a/sqlglot/generators/presto.py
++++ b/sqlglot/generators/presto.py
+@@ -434,7 +434,7 @@
+             f"DATE_FORMAT(FROM_UNIXTIME({self.sql(e, 'this')}), {self.format_time(e)})"
+         ),
+         exp.UnixToTime: _unix_to_time_sql,
+-        exp.UnixToTimeStr: lambda self, e: f"CAST(FROM_UNIXTIME({self.sql(e, 'this')}) AS VARCHAR)",
++        exp.UnixToTimeStr: lambda self, e: f"CAST(FROM_UNIXTIME({self.sql(e, 'this')}) AS TEXT)",
+         exp.VariancePop: rename_func("VAR_POP"),
+         exp.With: transforms.preprocess([transforms.add_recursive_cte_column_names]),
+         exp.WithinGroup: transforms.preprocess([transforms.remove_within_group_for_percentiles]),

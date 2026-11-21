@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -130,7 +130,7 @@
+     TABLEAU = "tableau"
+     TERADATA = "teradata"
+     TRINO = "trino"
+-    TSQL = "tsql"
++    TSQL = "mssql"
+     EXASOL = "exasol"
+ 
+ 
