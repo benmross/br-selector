@@ -46,3 +46,9 @@ Sample baseline CPU: [1.610003, 1.614641, 1.656716], median 1.614641 s. Candidat
 - Expression-class docstrings have an import-time __doc__ reader and remain conservative. Typing function doc changes retain TestTyping because it compares co_consts; the complete pinned callable graph excludes outside functions.
 - Fresh canonical labels run all tests except test_max_nodes, test_execute_tpcds and the three SQLGlotC build/install checks. No runtime evidence is claimed for those five. No OOM-derived label is accepted. Every other fresh patch is a full-suite run, not a selected-test subset.
 - Local exploratory labeling was paused/stopped after discovering t47 was active; the incomplete patch was discarded. Canonical evidence is the Legion run, after t44 exited at 7:20, on CPUs 8-9 with 2 GiB and one pytest worker.
+
+## Canonical fresh labels
+
+33/33 patches labeled, 25 breaking, 0 missed commits or failing tests. Frozen baseline selection 1182.432 s; final selection 397.708 s. The 611-input union (424 tracked, 82 t41, 33 t46, 72 t47) has zero observed misses. The delayed Oracle callback was labeled in a second container after the primary exited cleanly; both used CPUs 8-9 and 2 GiB, and both exited 0 with OOMKilled=false.
+
+Canonical label command resource usage (pytest and descendants): primary 2955.759 wall / 3577.857 CPU s; remainder 97.970 wall / 117.652 CPU s, total 3695.509 CPU s. The primary cgroup's last snapshot is 3604.347363 CPU s (a lower bound including pip/bootstrap); remainder's final cgroup is 117.855861 s. Thus canonical container CPU is at least 3722.203224 s. The full snapshots, clean baseline, logs and structured reports are in legion-label-evidence.tar.gz. No incomplete local epoch is included in these totals.

@@ -2343,7 +2343,7 @@
     },
     "t47": {
       "n": 72,
-      "labeled": 52,
+      "labeled": 72,
       "selection_s": 2252.033,
       "misses": {},
       "cpu_s": 6.955504999999988,
@@ -2351,7 +2351,7 @@
     },
     "t46": {
       "n": 33,
-      "labeled": 1,
+      "labeled": 33,
       "selection_s": 397.708,
       "misses": {},
       "cpu_s": 7.495094000000028,
@@ -2447,5 +2447,15 @@
       "cpu_s": 13.361378,
       "n": 50
     }
+  },
+  "fresh_label_scope": {
+    "labels": 33,
+    "breaking": 25,
+    "misses": 0,
+    "excluded": [
+      "test_max_nodes",
+      "test_execute_tpcds",
+      "three SQLGlotC tests"
+    ]
   }
 }
