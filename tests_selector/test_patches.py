@@ -562,6 +562,20 @@ def test_argparse_help_narrows_only_unobserved_module(sandbox):
     assert answers['help'] == set(), why
 
 
+@pytest.mark.parametrize('imported_line,expected', [(3, set()), (4, ALL)])
+def test_argparse_help_import_registration_is_distinct_from_reading(sandbox, imported_line, expected):
+    run, src = sandbox
+    (src / 'sqlglot/unused.py').write_text(ARGPARSE_SRC)
+    with gzip.open(run.env['MAP_PATH'], 'rt') as f:
+        mapping = json.load(f)
+    mapping['import_lines']['sqlglot/unused.py'] = [imported_line]
+    with gzip.open(run.env['MAP_PATH'], 'wt') as f:
+        json.dump(mapping, f)
+    answers, why, _ = run({'help': diff('sqlglot/unused.py', ARGPARSE_SRC,
+                         ARGPARSE_SRC.replace('return the query', 'print the query'))})
+    assert answers['help'] == expected, why
+
+
 # ---------------------------------------------------------------- comparison profile
 
 CMP_SRC = (

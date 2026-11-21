@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 
 here = Path(__file__).resolve().parent
-root = Path(os.environ.get('SQLGLOT_SRC', str(here.parents[5] / 'work/sqlglot')))
+root = Path(os.environ.get('SQLGLOT_SRC', str(here.parents[4] / 'work/sqlglot')))
 manifest = json.load(open(here / 'manifest.json'))['commits']
 for cid, row in manifest.items():
     old = (root / row['file']).read_text()

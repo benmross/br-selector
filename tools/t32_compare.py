@@ -22,6 +22,8 @@ def cost(r):
 def rule(why):
     # The final widening can override an earlier reason; prioritize it.
     for needle, name in [('possible import failure', 'could_raise'),
+                         ('analysis error ValueError', 'strict_patch_application'),
+                         ('inserted import-time code', 'inserted_import_code'),
                          ('also runs at import', 'at_import'),
                          ('module constant read at import', 'read_at_import'),
                          ('removed key of', 'removed_key'),
@@ -33,7 +35,12 @@ def rule(why):
                          ('never instantiated', 'uninstantiated_class'),
                          ('changed shape', 'reshaped'),
                          ('syntax error', 'syntax_error'),
-                         ('comparison swap', 'comparison_profile')]:
+                         ('comparison swap', 'comparison_profile'),
+                         ('removed name ', 'removed_name_readers'),
+                         ('data file read', 'fixture_readers'),
+                         (' runtime ', 'coverage_map'),
+                         (' module level ', 'coverage_map'),
+                         (' class ', 'class_map')]:
         if needle in why:
             return name
     return 'coverage_or_other'

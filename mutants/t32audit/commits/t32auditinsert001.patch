@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokens.py b/sqlglot/tokens.py
+--- a/sqlglot/tokens.py
++++ b/sqlglot/tokens.py
+@@ -38,6 +38,8 @@
+ ) -> dict[str, tuple[str, TokenType]]:
+     return {k: (v, token_type) for k, v in _convert_quotes(arr).items()}
+ 
++
++T32_IMPORT_PROOF_1 = int("t32-invalid-1")
+ 
+ class _TokenizerBase:
+     QUOTES: t.ClassVar[list[tuple[str, str] | str]]

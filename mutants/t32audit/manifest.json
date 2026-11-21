@@ -129,7 +129,7 @@
       "source_dataset": "gate238"
     },
     "t14x000": {
-      "kind": "coverage_or_other",
+      "kind": "inserted_import_code",
       "source_dataset": "gate238"
     },
     "t14x010": {
@@ -141,7 +141,7 @@
       "source_dataset": "gate238"
     },
     "t14x016": {
-      "kind": "coverage_or_other",
+      "kind": "inserted_import_code",
       "source_dataset": "gate238"
     },
     "t24ax000": {
@@ -324,6 +324,71 @@
       "kind": "syntax_error",
       "source_dataset": "hid",
       "coordination": "all 15 select-everything commits"
+    },
+    "t32auditinsert000": {
+      "kind": "inserted_import_code",
+      "source_dataset": "fresh module insertion audit",
+      "expected": "stock int literal raises ValueError before tests collect"
+    },
+    "t32auditinsert001": {
+      "kind": "inserted_import_code",
+      "source_dataset": "fresh module insertion audit",
+      "expected": "stock int literal raises ValueError before tests collect"
+    },
+    "t32auditinsert002": {
+      "kind": "inserted_import_code",
+      "source_dataset": "fresh module insertion audit",
+      "expected": "stock int literal raises ValueError before tests collect"
+    },
+    "t32auditinsert003": {
+      "kind": "inserted_import_code",
+      "source_dataset": "fresh module insertion audit",
+      "expected": "stock int literal raises ValueError before tests collect"
+    },
+    "t32auditinsert004": {
+      "kind": "inserted_import_code",
+      "source_dataset": "fresh module insertion audit",
+      "expected": "stock int literal raises ValueError before tests collect"
+    },
+    "t32auditinsert005": {
+      "kind": "inserted_import_code",
+      "source_dataset": "fresh module insertion audit",
+      "expected": "stock int literal raises ValueError before tests collect"
+    },
+    "t32auditinsert006": {
+      "kind": "inserted_import_code",
+      "source_dataset": "fresh module insertion audit",
+      "expected": "stock int literal raises ValueError before tests collect"
+    },
+    "t32auditinsert007": {
+      "kind": "inserted_import_code",
+      "source_dataset": "fresh module insertion audit",
+      "expected": "stock int literal raises ValueError before tests collect"
+    },
+    "t32auditinsert008": {
+      "kind": "inserted_import_code",
+      "source_dataset": "fresh module insertion audit",
+      "expected": "stock int literal raises ValueError before tests collect"
+    },
+    "t32auditinsert009": {
+      "kind": "inserted_import_code",
+      "source_dataset": "fresh module insertion audit",
+      "expected": "stock int literal raises ValueError before tests collect"
+    },
+    "t32auditinsert010": {
+      "kind": "inserted_import_code",
+      "source_dataset": "fresh module insertion audit",
+      "expected": "stock int literal raises ValueError before tests collect"
+    },
+    "t32auditinsert011": {
+      "kind": "inserted_import_code",
+      "source_dataset": "fresh module insertion audit",
+      "expected": "stock int literal raises ValueError before tests collect"
+    },
+    "t32auditinsert012": {
+      "kind": "inserted_import_code",
+      "source_dataset": "fresh module insertion audit",
+      "expected": "stock int literal raises ValueError before tests collect"
     }
   }
 }

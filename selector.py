@@ -791,14 +791,22 @@ class Selector:
             # Never execute patch-supplied code in the selector. Even an
             # innocent import may loop, fork, write files, or produce unlimited
             # output. Unknown import effects need a conservative selection.
-            # No import-time state or cached help metadata may escape to a
-            # later test without a source-line context. Require that this
-            # existing module was never loaded, executed, or read as data.
-            unused = not self.import_lines.get(path) and not self.broad(path) and not self.fixture_users(path)
-            if not unused or not argparse_help_only(old_tree, new_tree):
+            # Argument registration may run in the map's preload pass. Help
+            # is only stored there. Its sole permitted reader, parse_args,
+            # must never have run at import; no test may run/read this module.
+            safe_help = False
+            if argparse_help_only(old_tree, new_tree):
+                imp = self.import_lines.get(path, set())
+                unread = not any(isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
+                                 and n.func.attr == 'parse_args'
+                                 and any(line in imp for line in range(n.lineno, n.end_lineno + 1))
+                                 for n in ast.walk(old_tree))
+                unused = not self.broad(path) and not self.fixture_users(path)
+                safe_help = unused and unread
+            if not safe_help:
                 why.append(f"{path}: possible import failure, everything")
                 return set(self.all)
-            why.append(f"{path}: unobserved module, only stock argparse help text changed, import effects unchanged")
+            why.append(f"{path}: no runtime/data users, stock argparse help stored but never read at import")
         return out
 
     def dedented_blocks(self, fp, old_text, scopes, path, why):
