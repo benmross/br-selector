@@ -1903,6 +1903,104 @@ def pack(nums, tests):
     return [sorted(b) for b in best[1] if b]
 
 
+
+# ---------------------------------------------------------------- verification
+
+# A commit with any selected test pays a 2 s worker. When its static selection
+# is tiny, run it against the patched code (verify.py) and emit no workers if
+# every test passes; on any failure, error or timeout keep the whole selection.
+VERIFY = os.environ.get("BR_VERIFY", "1") != "0"
+V_MAX_MS = int(os.environ.get("BR_V_MAX_MS", "600"))    # recorded time of the selection
+V_CPU_S = float(os.environ.get("BR_V_CPU_S", "1.5"))     # hard CPU limit per commit
+V_WALL_S = float(os.environ.get("BR_V_WALL_S", "60"))    # all verification stops this long after start
+V_MIN_RATE = float(os.environ.get("BR_V_MIN_RATE", "0.12"))  # stop when passes run rarer
+T_START = time.monotonic()
+# setUpClass cost before a class's first test, measured by t4 in the scorer's image
+V_CLASS_SETUP_MS = {"tests/test_executor.py::TestExecutor": 2100, "tests/test_optimizer.py::TestOptimizer": 60}
+
+
+def overlay_files(patch_path):
+    """{relative path: patched text or None for deleted} for a patch that
+    applies cleanly to text files; None otherwise."""
+    with open(patch_path, "rb") as f:
+        raw = f.read(MAX_PATCH_BYTES + 1)
+    if len(raw) > MAX_PATCH_BYTES:
+        return None
+    files = {}
+    for fp in parse_patch(raw.decode("utf-8")):
+        if fp.binary:
+            return None
+        for p in (fp.old, fp.new):
+            if p is not None and (p.startswith("/") or ".." in p.split("/") or not p
+                                  or any(part in ("__pycache__", ".git") for part in p.split("/"))):
+                return None
+        old_text = ""
+        if fp.old is not None:
+            with open(os.path.join(SRC, fp.old), encoding="utf-8", newline="") as f:
+                old_text = f.read()
+            if fp.new != fp.old:
+                files[fp.old] = None
+        if fp.new is not None:
+            if fp.new in files and files[fp.new] is not None:
+                return None
+            files[fp.new] = apply(old_text, fp)[0]
+    return files
+
+
+def verify_tiny(results, tests):
+    jobs = []
+    for r in results:
+        chosen = r[1]
+        if not chosen or len(chosen) == len(tests):
+            continue
+        rec = sum(tests[n][2] for n in chosen) + sum(
+            V_CLASS_SETUP_MS.get(c, 0) for c in {tests[n][0].rsplit("::", 1)[0] for n in chosen})
+        if rec > V_MAX_MS:
+            continue
+        try:
+            files = overlay_files(r[3])
+        except Exception as e:
+            r[2].append(f"verify: patch not applied ({type(e).__name__})")
+            continue
+        if not files:
+            continue
+        if any(p.startswith("tests/") for p in files):
+            # Patches that touch the tests (fixtures, test code) nearly always
+            # break the tests they select: 11 of 11 such tiny commits in the
+            # sample. Running them would cost CPU and save nothing.
+            r[2].append("verify: patch touches tests")
+            continue
+        jobs.append((r, files, rec))
+    if not jobs:
+        return
+    if V_WALL_S - (time.monotonic() - T_START) < 2:
+        for r, _, _ in jobs:
+            r[2].append("verify: out of time")
+        return
+    from verify import Verifier
+    v = Verifier(SRC, tests)
+    v.share_modules({tests[n][1] for r, _, _ in jobs for n in r[1]})
+    tries = passes = 0
+    for r, files, rec in sorted(jobs, key=lambda j: j[2]):
+        left = V_WALL_S - (time.monotonic() - T_START)
+        if left < 1:
+            r[2].append("verify: out of time")
+            continue
+        # A child costs about 0.35 s of CPU and a pass saves about 2.1 s, so
+        # verification loses when under about a sixth of these commits pass
+        # (t9's 400 hidden-style commits: 24%; the 176 mutants: 17%). Stop
+        # after a run of failures: about seven in a row with no pass.
+        if (passes + 1) / (tries + 2) < V_MIN_RATE:
+            r[2].append(f"verify: stopped, {passes} of {tries} passed")
+            continue
+        ok, how = v.run(files, r[1], min(left, 4 * V_CPU_S), V_CPU_S)
+        tries += 1
+        r[2].append(f"verify: {len(r[1])} tests ({rec} ms recorded) {how}, child CPU {v.last_cpu:.2f} s")
+        if ok:
+            passes += 1
+            r[1] = set()
+    log(f"verify: {len(jobs)} commits, child CPU {v.cpu:.2f} s")
+
 # ---------------------------------------------------------------- main
 
 
@@ -2186,12 +2284,20 @@ def main():
     fallback_workers = pack(set(tests), tests)
     everything = set(tests)
     paths = [os.path.join(cdir, name) for name in sorted(os.listdir(cdir)) if name.endswith(".patch")]
+    heavy_nums = heavy_tests(tests) if HEAVY and sel is not None else set()
+    deferred = []  # commits whose selection holds a heavy test: written after the checks
 
-    def emit(path, chosen, why):
-        cid = os.path.basename(path)[: -len(".patch")]
+    def write(cid, chosen, why):
         workers = fallback_workers if chosen == everything else pack(chosen, tests)
         log(cid, len(chosen), "tests;", "; ".join(why))
         sys.stdout.write(json.dumps({"commit": cid, "workers": workers}) + "\n")
+
+    def emit(path, chosen, why):
+        cid = os.path.basename(path)[: -len(".patch")]
+        if heavy_nums and chosen != everything and heavy_nums & set(chosen):
+            deferred.append([cid, set(chosen), list(why), path])
+            return
+        write(cid, chosen, why)
 
     if sel is None:
         for path in paths:
@@ -2213,6 +2319,13 @@ def main():
         gc.collect()
         gc.freeze()
         analyze_batch(context, paths, sel, tests, deadline, emit, cpu_slots())
+    if deferred:
+        try:
+            drop_heavy_tests(deferred, tests)
+        except Exception as e:  # keep every static selection
+            log("heavy failed:", repr(e))
+        for cid, chosen, why, _ in deferred:
+            write(cid, chosen, why)
     sys.stdout.flush()
 
 

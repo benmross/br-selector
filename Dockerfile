@@ -11,8 +11,13 @@ t.extractall('/opt', filter='data')" \
  && (python -m compileall -q /opt/sqlglot/sqlglot /opt/sqlglot/tests || true) \
  && chmod -R a+rX /opt/sqlglot
 
+# The packages sqlglot's tests need, at the versions they were labeled with,
+# so tiny selections can be run against the patch (verify.py).
+COPY requirements.lock /app/
+RUN pip install --no-cache-dir --root-user-action=ignore -q -r /app/requirements.lock
+
 # Which comparison-operator swaps changed any result while the suite ran (tools/build_cmp.py).
-COPY selector.py map.json.gz cmp.json.gz /app/
+COPY selector.py verify.py map.json.gz cmp.json.gz /app/
 # Index where each class or module setting is read, from the original source.
 RUN SQLGLOT_SRC=/opt/sqlglot python /app/selector.py --index /app/index.json.gz && chmod -R a+rX /app
 ENV PYTHONDONTWRITEBYTECODE=1
