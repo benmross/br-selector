@@ -53,7 +53,11 @@ MAX_COMMIT_WALL_SECONDS = 10
 
 
 def log(*a):
-    print(*a, file=sys.stderr)
+    # Diagnostics only: a closed or broken stderr must never stop a stdout line.
+    try:
+        print(*a, file=sys.stderr)
+    except Exception:
+        pass
 
 
 # ---------------------------------------------------------------- patches
@@ -662,6 +666,11 @@ class Selector:
         if same_ast(old_tree.body, new_tree.body, min(touched or {0}), max(touched or {0})):
             why.append(f"{path}: syntax tree unchanged")
             return set()
+        if path.startswith("tests/"):
+            shared = changed_test_state(old_tree, new_tree, touched)
+            if shared:
+                why.append(f"{path}: edited {shared} mutates shared test state, everything")
+                return set(self.all)
         swaps = comparison_swaps(old_tree.body, new_tree.body, min(touched or {0}), max(touched or {0}))
         if swaps:
             verdict = self.comparison_verdict(path, swaps, why)
@@ -1537,6 +1546,90 @@ def literal_structure_changed(before, after):
                    for k, v in zip(after.keys, after.values) if k is not None)
     return False
 
+def changed_test_state(old_tree, new_tree, touched):
+    """An edited test/helper can leave imported or module state for later tests.
+
+    Runtime coverage credits the writer, not tests that observe its state.
+    Inspect the whole enclosing function: changing a saved original value can
+    corrupt a later restoration even when the changed statement is a read.
+    Local objects and self/cls attributes keep ordinary coverage selection.
+    """
+    mutators = {"add", "append", "clear", "discard", "extend", "insert", "pop", "popitem",
+                "remove", "reverse", "set", "setdefault", "sort", "update", "clear_cache",
+                "clear_column_cache"}
+    for tree in (old_tree, new_tree):
+        bindings, imports = set(), {}
+        for node in tree.body:
+            if isinstance(node, ast.Import):
+                for a in node.names:
+                    name = a.asname or a.name.split(".")[0]
+                    bindings.add(name); imports[name] = a.name if a.asname else a.name.split(".")[0]
+            elif isinstance(node, ast.ImportFrom):
+                for a in node.names:
+                    name = a.asname or a.name
+                    bindings.add(name); imports[name] = (node.module or "") + "." + a.name
+            elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                bindings.add(node.name)
+            elif isinstance(node, (ast.Assign, ast.AnnAssign)):
+                bindings.update(assigned_names(node) or ())
+
+        def root(node):
+            while isinstance(node, (ast.Attribute, ast.Subscript)):
+                node = node.value
+            return node.id if isinstance(node, ast.Name) else None
+
+        def imported_ref(node, refs):
+            if isinstance(node, ast.Name): return refs.get(node.id, "")
+            if isinstance(node, ast.Attribute):
+                parent = imported_ref(node.value, refs)
+                return parent + "." + node.attr if parent else ""
+            return ""
+
+        for fn in ast.walk(tree):
+            if not isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)) \
+                    or not any(fn.lineno <= line <= fn.end_lineno for line in touched):
+                continue
+            params = {a.arg for a in fn.args.posonlyargs + fn.args.args + fn.args.kwonlyargs}
+            params |= {a.arg for a in (fn.args.vararg, fn.args.kwarg) if a is not None}
+            external = bindings - params - {"self", "cls"}
+            refs = {name:value for name,value in imports.items() if name not in params}
+            nodes = list(ast.walk(fn))
+            globals_ = {name for n in nodes if isinstance(n, ast.Global) for name in n.names}
+            # Track aliases of shared objects, but not fresh constructor/call results.
+            for _ in range(len(nodes)):
+                previous = len(external)
+                for n in nodes:
+                    if isinstance(n, ast.ClassDef) and any(root(b) in external for b in n.bases):
+                        # A fresh subclass can still inherit shared mutable tables.
+                        external.add(n.name)
+                    if isinstance(n, (ast.Assign, ast.AnnAssign)) and root(n.value) in external:
+                        external.update(assigned_names(n) or ())
+                        ref = imported_ref(n.value, refs)
+                        if ref:
+                            refs.update({name:ref for name in (assigned_names(n) or ())})
+                if len(external) == previous: break
+            for n in nodes:
+                if isinstance(n, (ast.Assign, ast.AnnAssign, ast.AugAssign, ast.Delete)):
+                    targets = n.targets if isinstance(n, (ast.Assign, ast.Delete)) else [n.target]
+                    if any((isinstance(t, (ast.Attribute, ast.Subscript)) and root(t) in external)
+                           or (isinstance(t, ast.Name) and t.id in globals_) for t in targets):
+                        return fn.name
+                if isinstance(n, ast.Call):
+                    if isinstance(n.func, ast.Attribute) and n.func.attr in mutators \
+                            and root(n.func.value) in external:
+                        return fn.name
+                    if isinstance(n.func, ast.Name) and n.func.id in {"setattr", "delattr"} \
+                            and n.args and root(n.args[0]) in external:
+                        return fn.name
+                if isinstance(n, ast.ClassDef):
+                    for base in n.bases:
+                        imported = imported_ref(base, refs)
+                        if imported == "sqlglot.Dialect" or imported.startswith("sqlglot.dialects."):
+                            # _Dialect.__new__ registers even a test-local class globally.
+                            return fn.name
+    return None
+
+
 def _is_ref(node, names):
     return (isinstance(node, ast.Name) and node.id in names) or \
         (isinstance(node, ast.Attribute) and node.attr in names)
@@ -2157,7 +2250,12 @@ def pack(nums, tests):
 
 
 def read_patch(patch_path):
-    with open(patch_path, "rb") as f:
+    # O_NONBLOCK: opening a FIFO for reading waits for a writer forever, and
+    # this runs in the parent (prepare_batch), which has no time limit.
+    import stat
+    with os.fdopen(os.open(patch_path, os.O_RDONLY | os.O_NONBLOCK), "rb") as f:
+        if not stat.S_ISREG(os.fstat(f.fileno()).st_mode):
+            raise ValueError("patch is not a regular file")
         raw = f.read(MAX_PATCH_BYTES + 1)
     if len(raw) > MAX_PATCH_BYTES:
         raise ValueError("patch exceeds size limit")
@@ -2182,6 +2280,9 @@ def _vm_size():
 # Below this many commits, loading the comparison profile in every child that
 # needs it (about 8% of proxy commits) costs less CPU than loading it once.
 CMP_PRELOAD_COMMITS = 16
+# Hunk lines prepare_batch may keep for the children (about 60 bytes each in
+# memory: 2,000,000 is about 120 MB). 2,000 proxy commits hold 24,000.
+MAX_CACHED_PATCH_LINES = 2_000_000
 
 
 def prepare_batch(sel, paths, deadline):
@@ -2191,7 +2292,12 @@ def prepare_batch(sel, paths, deadline):
     to parse), so the cheapest commits can go first. A patch that fails here
     is left for its own child, which fails it the same way."""
     sel.vm_base = _vm_size()
-    cost, touched = {}, {}
+    cost, size = {}, {}
+    # The cache lives in the parent for the whole batch, and the OOM killer
+    # takes the parent once it is the only large process: about 700 patches
+    # of 49,000 short lines (105 MB on disk) filled 2 GB. Past this many
+    # cached hunk lines (about 60 bytes each), children re-read their patch.
+    lines_left = MAX_CACHED_PATCH_LINES
     for path in paths:
         cost[path] = 1 << 40
         if time.monotonic() >= deadline:
@@ -2200,19 +2306,23 @@ def prepare_batch(sel, paths, deadline):
             files = read_patch(path)
         except Exception:
             continue
-        sel.patches[path] = files
+        c, n = 1, 0
         for fp in files:
             if fp.old is not None and fp.old.endswith(".py"):
-                touched.setdefault(fp.old, []).append(path)
-    size = {}
-    for rel in touched:
-        try:
-            size[rel] = os.path.getsize(os.path.join(SRC, rel))
-        except OSError:
-            size[rel] = 0
-    for path, files in sel.patches.items():
-        cost[path] = 1 + sum(size.get(fp.old, 0) for fp in files if fp.old is not None and fp.old.endswith(".py")) \
-            + sum(len(l) for fp in files for _, ls in fp.hunks for l in ls)
+                if fp.old not in size:
+                    try:
+                        size[fp.old] = os.path.getsize(os.path.join(SRC, fp.old))
+                    except OSError:
+                        size[fp.old] = 0
+                c += size[fp.old]
+            for _, ls in fp.hunks:
+                n += len(ls)
+                c += sum(len(l) for l in ls)
+        cost[path] = c
+        if n <= lines_left:
+            lines_left -= n
+            sel.patches[path] = files
+        del files
     if len(paths) >= CMP_PRELOAD_COMMITS:
         sel.cmp_profile()
     return cost
@@ -2336,20 +2446,25 @@ def analyze_batch(context, patch_paths, sel, tests, deadline, emit, slots=1):
             if budget <= 0:
                 emit(path, set(tests), ["batch analysis deadline reached: everything"])
                 continue
-            receiver, sender = context.Pipe(duplex=False)
-            process = None
+            receiver = sender = process = None
             try:
+                # Inside the try: os.pipe fails with EMFILE once failed forks
+                # have leaked descriptors (CPython's Popen_fork leaks 4 per
+                # failed fork), and that must cost one commit, not the run.
+                receiver, sender = context.Pipe(duplex=False)
                 process = context.Process(target=_analyze_child,
                                           args=(sender, path, sel, tests, deadline))
                 process.start()
             except Exception as e:
-                receiver.close()
+                if receiver is not None:
+                    receiver.close()
                 if process is not None:
                     _reap(process)
                 emit(path, set(tests), [f"analysis process failed {type(e).__name__}: everything"])
                 continue
             finally:
-                sender.close()
+                if sender is not None:
+                    sender.close()
             running[receiver] = (process, path, now + budget)
         if not running:
             continue
@@ -2438,32 +2553,42 @@ def main():
     everything = set(tests)
     paths = [os.path.join(cdir, name) for name in sorted(os.listdir(cdir)) if name.endswith(".patch")]
 
+    emitted = set()
+
     def emit(path, chosen, why):
+        if path in emitted:  # one line per commit, whatever happens
+            return
         cid = os.path.basename(path)[: -len(".patch")]
         workers = fallback_workers if chosen == everything else pack(chosen, tests)
         log(cid, len(chosen), "tests;", "; ".join(why))
         sys.stdout.write(json.dumps({"commit": cid, "workers": workers}) + "\n")
+        emitted.add(path)
 
-    if sel is None:
+    try:
+        if sel is None:
+            for path in paths:
+                emit(path, everything, ["map unavailable: everything"])
+        else:
+            cost = {}
+            try:
+                cost = prepare_batch(sel, paths, deadline)
+            except Exception as e:  # caches are an optimisation only
+                log("batch preparation failed:", repr(e))
+                sel.patches = {}
+            # Cheapest first: if the deadline comes, the fewest commits fall back
+            # to every test. Output order is free.
+            paths.sort(key=lambda p: (cost.get(p, 1 << 40), p))
+            # Children never free the parent's objects. Without this, a child's
+            # first collection walks every inherited object (the maps, the cached
+            # trees), copying their pages and spending CPU on each commit.
+            import gc
+            gc.collect()
+            gc.freeze()
+            analyze_batch(context, paths, sel, tests, deadline, emit, cpu_slots())
+    except Exception as e:  # a missing line rejects the run: fall back for the rest
+        log("batch failed:", repr(e))
         for path in paths:
-            emit(path, everything, ["map unavailable: everything"])
-    else:
-        cost = {}
-        try:
-            cost = prepare_batch(sel, paths, deadline)
-        except Exception as e:  # caches are an optimisation only
-            log("batch preparation failed:", repr(e))
-            sel.patches = {}
-        # Cheapest first: if the deadline comes, the fewest commits fall back
-        # to every test. Output order is free.
-        paths.sort(key=lambda p: (cost.get(p, 1 << 40), p))
-        # Children never free the parent's objects. Without this, a child's
-        # first collection walks every inherited object (the maps, the cached
-        # trees), copying their pages and spending CPU on each commit.
-        import gc
-        gc.collect()
-        gc.freeze()
-        analyze_batch(context, paths, sel, tests, deadline, emit, cpu_slots())
+            emit(path, everything, ["batch failed: everything"])
     sys.stdout.flush()
 
 

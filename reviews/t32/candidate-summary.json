@@ -113,13 +113,15 @@
   {
     "dataset": "t32",
     "commits": 30,
-    "labelled": 0,
+    "labelled": 30,
     "base_selection_seconds": 1104.51,
     "candidate_selection_seconds": 196.155,
-    "base_misses": null,
-    "candidate_misses": null,
+    "base_misses": 0,
+    "candidate_misses": 0,
     "narrowed": 30,
-    "widened": 0
+    "widened": 0,
+    "observed_base_misses": 0,
+    "observed_candidate_misses": 0
   },
   {
     "dataset": "audit",
