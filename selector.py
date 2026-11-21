@@ -18,6 +18,7 @@ unchanged (comments, blank lines) cannot change behaviour and selects nothing.
 """
 import ast
 import gzip
+import hashlib
 import json
 import os
 import re
@@ -799,7 +800,8 @@ class Selector:
                 out |= self.module_level(path, module, cls, why, line, node)
                 out |= self.qualified_consumers(cls, node, why)
                 import_level = True
-        if import_level and could_raise(fp, old_text, new_text) and not self.literal_only(path, old_tree, new_tree, why):
+        if import_level and could_raise(fp, old_text, new_text) and not self.literal_only(path, old_tree, new_tree, why) \
+                and not self.runtime_strings_safe(path, old_tree, new_tree, why):
             # Never execute patch-supplied code in the selector. Even an
             # innocent import may loop, fork, write files, or produce unlimited
             # output. Unknown import effects need a conservative selection.
@@ -873,6 +875,33 @@ class Selector:
                 why.append(f"{path}:{ref} dedented line runs with its outer block: {len(got)}")
                 out |= got | self.at_import(path, span, why)
         return out
+
+    def runtime_strings_safe(self, path, old_tree, new_tree, why):
+        """Stored generator callbacks are invoked only by runtime dispatch.
+
+        The source audit is bound to the complete pinned Python source tree at
+        index build. A one-file patch may change only string constants in the
+        body of a lambda stored directly in a generator dispatch table. It
+        cannot change defaults, keys, registration, readers or other code.
+        Import hooks copy/filter callbacks; they never invoke them. The three
+        dispatch consumers and preprocess's adapter must have no import-time
+        execution in the map. Keep coverage of every changed lambda body even
+        when its table is copied to an unrelated generator class.
+        """
+        if not self._single_file_patch or not (self.index or {}).get('@pinned_string_audit'):
+            return False
+        if path != 'sqlglot/generator.py' and not path.startswith('sqlglot/generators/'):
+            return False
+        lambdas = runtime_lambda_changes(old_tree, new_tree)
+        if not lambdas:
+            return False
+        for rel, first, last in self.index['@generator_string_calls']:
+            if any(line in self.import_lines.get(rel, ()) for line in range(first, last + 1)):
+                return False
+        for node in lambdas:
+            self._literal_extra_users |= self.cov(path, range(node.lineno, node.end_lineno + 1))
+        why.append(f'{path}: only stored generator lambda-body strings changed; runtime dispatch coverage retained')
+        return True
 
     # Import-time hooks reviewed at the pinned commit. Given non-empty strings
     # of unchanged type and no lost dict keys, they cannot raise on a changed
@@ -1361,6 +1390,67 @@ UNSAFE_FUNCS = {"__new__", "__init_subclass__", "__set_name__", "__class_getitem
 DYNAMIC = re.compile(r"getattr\(|__dict__|vars\(")
 # A maximal dotted chain such as `tokens.Tokenizer.KEYWORDS.copy`.
 QUALIFIED_READ = re.compile(r"(?<![\w.])[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)+")
+
+
+# This is a closed-source reader audit, invalidated by any change to the
+# original source tree. Patches are compared separately and must be one file.
+PINNED_STRING_AUDIT = 'fc8e3c215f006385b628ef4612295b1d074b93b42de8c773997de3f40103d090'
+
+
+def source_fingerprint(sources):
+    digest = hashlib.sha256()
+    for path, text in sorted(sources.items()):
+        digest.update(path.encode() + b'\0' + text.encode() + b'\0')
+    return digest.hexdigest()
+
+
+def string_changes(old_tree, new_tree):
+    """All AST fields agree except str constants; return their old ancestors."""
+    changes = []
+
+    def same(a, b, chain=()):
+        if type(a) is not type(b):
+            return False
+        if isinstance(a, ast.Constant) and a.value != b.value:
+            if type(a.value) is not str or type(b.value) is not str or a.kind != b.kind:
+                return False
+            changes.append(chain + (a,))
+            return True
+        if isinstance(a, ast.AST):
+            return all(same(getattr(a, field), getattr(b, field), chain + (a,)) for field in a._fields)
+        if isinstance(a, list):
+            return len(a) == len(b) and all(same(x, y, chain) for x, y in zip(a, b))
+        return type(a) is type(b) and a == b
+
+    return changes if same(old_tree, new_tree) and changes else None
+
+
+def runtime_lambda_changes(old_tree, new_tree):
+    changes = string_changes(old_tree, new_tree)
+    if not changes:
+        return None
+    lambdas = {}
+    for chain in changes:
+        indices = [i for i, n in enumerate(chain) if isinstance(n, ast.Lambda)]
+        if not indices:
+            return None
+        i = indices[-1]
+        node = chain[i]
+        # Defaults run at definition time, and an immediate call/factory can
+        # invoke a callback at import. Accept only direct stored dict values.
+        if chain[i + 1] is not node.body or i < 3 or not isinstance(chain[i - 1], ast.Dict) \
+                or not any(v is node for v in chain[i - 1].values):
+            return None
+        stmt = chain[i - 2]
+        if not isinstance(stmt, (ast.Assign, ast.AnnAssign)) or stmt.value is not chain[i - 1] \
+                or not assigned_names(stmt) or not assigned_names(stmt) <= {'TRANSFORMS', 'AFTER_HAVING_MODIFIER_TRANSFORMS'}:
+            return None
+        outer = chain[:i - 2]
+        if not isinstance(outer[0], ast.Module) or any(not isinstance(c, ast.ClassDef)
+                or not c.name.endswith('Generator') or c.decorator_list or c.keywords for c in outer[1:]):
+            return None
+        lambdas[id(node)] = node
+    return list(lambdas.values())
 
 
 def argparse_help_only(old_tree, new_tree):
@@ -2184,6 +2274,14 @@ def build_index(out_path):
                     if parts[i - 1][:1].isupper() or parts[i - 1][:1] == "_":
                         qual.setdefault(parts[i], []).append([rel, ln, ".".join(parts[:i]) + "."])
     index["@qualified_reads"] = qual
+    index['@pinned_string_audit'] = source_fingerprint(sources) == PINNED_STRING_AUDIT
+    index['@generator_string_calls'] = [
+        [rel, n.body[0].lineno, n.end_lineno]
+        for rel, text in sources.items()
+        if rel in {'sqlglot/generator.py', 'sqlglot/transforms.py'}
+        for n in ast.walk(ast.parse(text))
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+        and n.name in {'sql', 'json_path_part', 'query_modifiers', '_to_sql'}]
     index["@inert_name_ranges"] = {
         rel: inert_name_ranges(sources[rel], sc)
         for rel, sc in parsed.items() if rel.startswith("sqlglot/")}
