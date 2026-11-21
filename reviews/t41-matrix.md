@@ -2,14 +2,14 @@
 
 | Stratum | Patches | Labeled | Breaking | Main fallbacks | dc91341 misses | Main-cleared misses |
 |---|---:|---:|---:|---:|---:|---:|
-| a | 14 | 10 | 10 | 14 | 0 | 0 |
-| b | 12 | 10 | 9 | 12 | 0 | 0 |
-| c | 11 | 10 | 8 | 11 | 0 | 0 |
+| a | 14 | 11 | 11 | 14 | 0 | 0 |
+| b | 12 | 11 | 10 | 12 | 0 | 0 |
+| c | 11 | 11 | 8 | 11 | 0 | 0 |
 | d | 10 | 10 | 3 | 10 | 1 | 1 |
 | e | 13 | 10 | 7 | 13 | 3 | 0 |
 | f | 12 | 10 | 5 | 12 | 1 | 0 |
 | g | 10 | 10 | 0 | 10 | 0 | 0 |
-| all | 82 | 70 | 42 | 82 | 5 | 1 |
+| all | 82 | 73 | 44 | 82 | 5 | 1 |
 
 | Stratum | Patch | Change | Failing | Failing tests | Main selects | Main reason | dc91341 selects | dc91341 miss | Main cleared selects | Main cleared miss |
 |---|---|---|---:|---|---:|---|---:|---|---:|---|
@@ -23,7 +23,7 @@
 | a | t41x007 | spark2 iso weekday function | 1 | TestPresto::test_time | 1620 | sqlglot/generators/spark2.py:188 class Spark2Generator users 272; sqlglot/generators/spark2.py: possible import failure, everything | 272 | no | 272 | no |
 | a | t41x008 | redshift starts-with operator | 1 | TestRedshift::test_redshift | 1620 | sqlglot/generators/redshift.py:114 class RedshiftGenerator users 96; sqlglot/generators/redshift.py: possible import failure, everything | 96 | no | 96 | no |
 | a | t41x009 | presto day-of-week function | 1 | TestPresto::test_time | 1620 | sqlglot/generators/presto.py:363 class PrestoGenerator users 200; sqlglot/generators/presto.py: possible import failure, everything | 200 | no | 200 | no |
-| a | t41x010 | presto str-to-date cast type | unlabeled |  | 1620 | sqlglot/generators/presto.py:410 class PrestoGenerator users 200; sqlglot/generators/presto.py: possible import failure, everything | 200 |  | 200 |  |
+| a | t41x010 | presto str-to-date cast type | 2 | TestDialect::test_time, TestMySQL::test_mysql_time | 1620 | sqlglot/generators/presto.py:410 class PrestoGenerator users 200; sqlglot/generators/presto.py: possible import failure, everything | 200 | no | 200 | no |
 | a | t41x011 | redshift distkey function name | unlabeled |  | 1620 | sqlglot/generators/redshift.py:91 class RedshiftGenerator users 96; sqlglot/generators/redshift.py: possible import failure, everything | 96 |  | 96 |  |
 | a | t41x012 | presto bitwise not name | unlabeled |  | 1620 | sqlglot/generators/presto.py:346 class PrestoGenerator users 200; sqlglot/generators/presto.py: possible import failure, everything | 200 |  | 200 |  |
 | a | t41x013 | redshift approx distinct wording | unlabeled |  | 1620 | sqlglot/generators/redshift.py:86 class RedshiftGenerator users 96; sqlglot/generators/redshift.py: possible import failure, everything | 96 |  | 96 |  |
@@ -37,7 +37,7 @@
 | b | t41x023 | duckdb iso dow rename | 6 | TestClickhouse::test_clickhouse, TestDuckDB::test_time, TestPresto::test_time, TestSnowflake::test_next_day (+2) | 1620 | sqlglot/generators/duckdb.py:1709 class DuckDBGenerator users 377; sqlglot/generators/duckdb.py: possible import failure, everything | 377 | no | 377 | no |
 | b | t41x024 | bigquery json bool rename | 1 | TestBigQuery::test_bigquery | 1620 | sqlglot/generators/bigquery.py:466 class BigQueryGenerator users 226; sqlglot/generators/bigquery.py: possible import failure, everything | 226 | no | 226 | no |
 | b | t41x025 | clickhouse current database rename | 2 | TestClickhouse::test_clickhouse, TestClickhouse::test_ddl | 1620 | sqlglot/generators/clickhouse.py:321 class ClickHouseGenerator users 123; sqlglot/generators/clickhouse.py: possible import failure, everything | 123 | no | 123 | no |
-| b | t41x026 | snowflake manhattan distance rename | unlabeled |  | 1620 | sqlglot/generators/snowflake.py:523 class SnowflakeGenerator users 283; sqlglot/generators/snowflake.py: possible import failure, everything | 283 |  | 283 |  |
+| b | t41x026 | snowflake manhattan distance rename | 1 | TestSnowflake::test_snowflake | 1620 | sqlglot/generators/snowflake.py:523 class SnowflakeGenerator users 283; sqlglot/generators/snowflake.py: possible import failure, everything | 283 | no | 283 | no |
 | b | t41x027 | test leakcheck structural types | unlabeled |  | 1620 | tests/leakcheck.py:92 test module level 0; tests/leakcheck.py: possible import failure, everything | 0 |  | 0 |  |
 | c | t41x028 | redshift binary varying keyword | 1 | TestRedshift::test_redshift | 1620 | sqlglot/dialects/redshift.py:51 class Redshift.Tokenizer users 107; sqlglot/dialects/redshift.py: possible import failure, everything | 107 | no | 107 | no |
 | c | t41x029 | postgres regcollation keyword | 1 | TestPostgres::test_postgres | 1620 | sqlglot/dialects/postgres.py:140 class Postgres.Tokenizer users 320; sqlglot/dialects/postgres.py: possible import failure, everything | 320 | no | 320 | no |
@@ -49,7 +49,7 @@
 | c | t41x035 | trino refresh keyword | 0 |  | 1620 | sqlglot/dialects/trino.py:17 class Trino.Tokenizer users 143; sqlglot/dialects/trino.py: possible import failure, everything | 143 | no | 143 | no |
 | c | t41x036 | base anti keyword | 18 | TestBigQuery::test_with_offset, TestDuckDB::test_duckdb, TestDuckDB::test_join_by_type, TestStarrocks::test_starrocks (+14) | 1620 | sqlglot/tokens.py:264 class Tokenizer users 1564; sqlglot/tokens.py: possible import failure, everything | 1564 | no | 1564 | no |
 | c | t41x037 | base asof keyword | 10 | TestClickhouse::test_clickhouse, TestDuckDB::test_duckdb, TestSnowflake::test_asof_join, TestSnowflake::test_snowflake (+6) | 1620 | sqlglot/tokens.py:268 class Tokenizer users 1564; sqlglot/tokens.py: possible import failure, everything | 1564 | no | 1564 | no |
-| c | t41x039 | optimizer lazy export key | unlabeled |  | 1620 | sqlglot/optimizer/__init__.py:44 module constant read at import, everything; sqlglot/optimizer/__init__.py: possible import failure, everything | 1620 |  | 1620 |  |
+| c | t41x039 | optimizer lazy export key | 0 |  | 1620 | sqlglot/optimizer/__init__.py:44 module constant read at import, everything; sqlglot/optimizer/__init__.py: possible import failure, everything | 1620 | no | 1620 | no |
 | d | t41x040 | duckdb timezone pattern accepts Z | 0 |  | 1620 | sqlglot/generators/duckdb.py:52 module constant TIMEZONE_PATTERN: 5 read it; sqlglot/generators/duckdb.py: possible import failure, everything | 5 | no | 5 | no |
 | d | t41x041 | bigquery safe json key end anchor | 0 |  | 1620 | sqlglot/generators/bigquery.py:372 class BigQueryGenerator users 226; sqlglot/generators/bigquery.py: possible import failure, everything | 226 | no | 226 | no |
 | d | t41x042 | hive canonical time strict year | 0 |  | 1620 | sqlglot/generators/hive.py:57 module constant CANONICAL_TIME_FORMAT: 19 read it; sqlglot/generators/hive.py: possible import failure, everything | 19 | no | 19 | no |
