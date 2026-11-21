@@ -1,0 +1,11 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -10290,6 +10290,7 @@
+     def _match_r_paren(self, expression: exp.Expr | None = None) -> None:
+         if not self._match(TokenType.R_PAREN, expression=expression):
+             self.raise_error("Expecting )")
++        self._add_comments(expression)
+ 
+     def _replace_lambda(
+         self, node: exp.Expr | None, expressions: list[exp.Expr]

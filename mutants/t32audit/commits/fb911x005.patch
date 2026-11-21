@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/python.py b/sqlglot/generators/python.py
+--- a/sqlglot/generators/python.py
++++ b/sqlglot/generators/python.py
+@@ -127,7 +127,7 @@
+             else self.binary(e, "is not" if e.args.get("negate") else "is")
+         ),
+         exp.JSONExtract: lambda self, e: self.func(e.key, e.this, e.expression, *e.expressions),
+-        exp.JSONPath: lambda self, e: f"[{','.join(self.sql(p) for p in e.expressions[1:])}]",
++        exp.JSONPath: lambda self, e: f"[{','.join(self.sql(p) for p in e.expressions[2:])}]",
+         exp.JSONPathKey: lambda self, e: f"'{self.sql(e.this)}'",
+         exp.JSONPathSubscript: lambda self, e: f"'{e.this}'",
+         exp.Lambda: _lambda_sql,

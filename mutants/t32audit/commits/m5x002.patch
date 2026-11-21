@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/functions.py b/sqlglot/expressions/functions.py
+--- a/sqlglot/expressions/functions.py
++++ b/sqlglot/expressions/functions.py
+@@ -388,7 +388,7 @@
+     arg_types = {
+         "this": True,
+         "data_col": False,
+-        "timestamp_col": False,
++        "timestamp_colx": False,
+         "model": False,
+         "id_cols": False,
+         "horizon": False,

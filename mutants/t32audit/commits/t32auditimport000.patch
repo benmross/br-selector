@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dialect.py b/sqlglot/dialects/dialect.py
+--- a/sqlglot/dialects/dialect.py
++++ b/sqlglot/dialects/dialect.py
+@@ -238,7 +238,7 @@
+     @classmethod
+     def _try_load(cls, key: str | Dialects) -> None:
+         if isinstance(key, Dialects):
+-            key = key.value
++            key = key.name.lower()
+ 
+         # 1. Try standard sqlglot modules first
+         if key in DIALECT_MODULE_NAMES:

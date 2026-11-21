@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -2104,7 +2104,7 @@
+     def _add_comments(self, expression: exp.Expr | None) -> None:
+         if expression and self._prev_comments:
+             expression.add_comments(self._prev_comments)
+-            self._prev_comments = []
++        self._prev_comments = []
+ 
+     def _match(
+         self, token_type: TokenType, advance: bool = True, expression: exp.Expr | None = None

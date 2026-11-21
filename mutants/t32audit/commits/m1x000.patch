@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/ddl.py b/sqlglot/expressions/ddl.py
+--- a/sqlglot/expressions/ddl.py
++++ b/sqlglot/expressions/ddl.py
+@@ -68,7 +68,7 @@
+         "maxvalue": False,
+         "cache": False,
+         "start": False,
+-        "owned": False,
++        "ownedx": False,
+         "options": False,
+     }
+ 

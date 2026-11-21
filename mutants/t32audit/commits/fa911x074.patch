@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/exasol.py b/sqlglot/dialects/exasol.py
+--- a/sqlglot/dialects/exasol.py
++++ b/sqlglot/dialects/exasol.py
+@@ -54,7 +54,7 @@
+         IDENTIFIERS = ['"', ("[", "]")]
+         KEYWORDS = {
+             **tokens.Tokenizer.KEYWORDS,
+-            "USER": TokenType.CURRENT_USER,
++            "USERx": TokenType.CURRENT_USER,
+             # https://docs.exasol.com/db/latest/sql_references/functions/alphabeticallistfunctions/if.htm
+             "ENDIF": TokenType.END,
+             "LONG VARCHAR": TokenType.TEXT,

@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generator.py b/sqlglot/generator.py
+--- a/sqlglot/generator.py
++++ b/sqlglot/generator.py
+@@ -80,7 +80,7 @@
+         if not attr_name.endswith("_sql") or attr_name.startswith("_"):
+             continue
+ 
+-        expr_key = attr_name[:-4]
++        expr_key = attr_name[:-10]
+         expr_cls = exp.EXPR_CLASSES.get(expr_key)
+ 
+         if expr_cls and expr_cls not in dispatch:

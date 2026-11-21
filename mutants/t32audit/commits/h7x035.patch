@@ -1,0 +1,12 @@
+diff --git a/sqlglot/parser.py b/sqlglot/parser.py
+--- a/sqlglot/parser.py
++++ b/sqlglot/parser.py
+@@ -6452,7 +6452,7 @@
+         return self.expression(exp.Not(this=this))
+ 
+     def _parse_is(self, this: exp.Expr | None) -> exp.Expr | None:
+-        index = self._index - 1
++        index = self._index - 2
+         negate = self._match(TokenType.NOT)
+ 
+         if self._match_text_seq("DISTINCT", "FROM"):

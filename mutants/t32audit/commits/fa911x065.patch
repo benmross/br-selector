@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/aggregate.py b/sqlglot/expressions/aggregate.py
+--- a/sqlglot/expressions/aggregate.py
++++ b/sqlglot/expressions/aggregate.py
+@@ -66,7 +66,7 @@
+ 
+ class ArgMax(Expression, AggFunc):
+     arg_types = {"this": True, "expression": True, "count": False}
+-    _sql_names = ["ARG_MAX", "ARGMAX", "MAX_BY"]
++    _sql_names = ["ARG_MAX", "ARGMAX", "max_by"]
+ 
+ 
+ class ArgMin(Expression, AggFunc):

@@ -1,0 +1,4 @@
+diff --git a/tests/fixtures/optimizer/normalize.sql b/tests/fixtures/optimizer/normalize_cases.sql
+similarity index 100%
+rename from tests/fixtures/optimizer/normalize.sql
+rename to tests/fixtures/optimizer/normalize_cases.sql
