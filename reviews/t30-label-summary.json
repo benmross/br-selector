@@ -1,5 +1,5 @@
 {
-  "labeled": 76,
+  "labeled": 79,
   "generated": 83,
   "classes": {
     "metaclass": {
@@ -42,10 +42,10 @@
       "candidate_misses": []
     },
     "comparison": {
-      "mutants": 14,
+      "mutants": 17,
       "failing_mutants": 2,
       "failing_test_instances": 10,
-      "main_selected_test_instances": 1635,
+      "main_selected_test_instances": 4875,
       "main_misses": [],
       "candidate_misses": []
     }
@@ -4215,6 +4215,36 @@
       "main_selected": 11,
       "main_missing": [],
       "candidate_selected": 11,
+      "candidate_missing": []
+    },
+    "t30x072": {
+      "class": "comparison",
+      "description": "comparison in comprehension",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 0,
+      "main_missing": [],
+      "candidate_selected": 0,
+      "candidate_missing": []
+    },
+    "t30x073": {
+      "class": "comparison",
+      "description": "comparison in import-time generator",
+      "failing": 0,
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x074": {
+      "class": "comparison",
+      "description": "comparison operand advances parser",
+      "failing": 0,
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
       "candidate_missing": []
     },
     "t30x079": {

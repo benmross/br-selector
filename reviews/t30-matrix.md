@@ -79,9 +79,9 @@ All smoke controls select every test on main. Per-mutant exclusions are recorded
 | t30x069 | comparison | chained upper bound | 0 | 3 | 0 | 0 |
 | t30x070 | comparison | comparison lambda equality | ≥0 | 1620 | 0 | 0 |
 | t30x071 | comparison | comparison lambda mapping read | 9 | 11 | 0 | 0 |
-| t30x072 | comparison | comparison in comprehension | pending | 0 | pending | pending |
-| t30x073 | comparison | comparison in import-time generator | pending | 1620 | pending | pending |
-| t30x074 | comparison | comparison operand advances parser | pending | 1620 | pending | pending |
+| t30x072 | comparison | comparison in comprehension | 0 | 0 | 0 | 0 |
+| t30x073 | comparison | comparison in import-time generator | ≥0 | 1620 | 0 | 0 |
+| t30x074 | comparison | comparison operand advances parser | ≥0 | 1620 | 0 | 0 |
 | t30x075 | shape | PEP 701 comment in f-string expression | pending | 0 | pending | pending |
 | t30x076 | metaclass | time-map key changes type | pending | 291 | pending | pending |
 | t30x077 | metaclass | quote tuple arity shrinks | pending | 117 | pending | pending |
