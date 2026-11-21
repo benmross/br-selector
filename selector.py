@@ -1034,6 +1034,25 @@ class Selector:
                     continue
                 if any(isinstance(n, ast.Name) and n.id == attr for n in ast.walk(stmt)):
                     return None
+        # Calls in the changed entries that run at import must only build a
+        # value (closure factories); lambda bodies run when probed.
+        defs = Selector.__dict__.get("_defs_cache")
+        if defs is None:
+            defs = _defs_by_name(self._all_sources())
+            Selector._defs_cache = defs
+        for ks in changed:
+            for m in (old_map, new_map):
+                if ks not in m:
+                    continue
+                stack = [m[ks][2]]
+                while stack:
+                    n = stack.pop()
+                    if isinstance(n, ast.Lambda):
+                        continue
+                    if isinstance(n, ast.Call) and not import_call_pure(n, defs):
+                        why.append(f"{path}:{start} import-time call in a changed entry not audited pure")
+                        return None
+                    stack.extend(ast.iter_child_nodes(n))
         exp_names = set(K.get("exp_names", ()))
         if any(ks.startswith("t:") and ks[2:] not in exp_names for ks in changed):
             return None  # not an expression class recorded under that name
@@ -1661,6 +1680,135 @@ class Selector:
         if path.startswith("sqlglot/"):
             return set(self.all)
         return self.test_importers(path)
+
+
+MUTATING_CALLS = {"append", "extend", "insert", "add", "update", "setdefault", "pop", "popitem", "remove",
+                  "discard", "clear", "register", "__setitem__", "__delitem__", "write", "sort", "reverse"}
+IMPURE_BUILTINS = {"setattr", "delattr", "exec", "eval", "__import__", "open", "globals", "vars", "compile",
+                   "print", "input", "breakpoint"}
+SAFE_BUILTINS = {"len", "isinstance", "issubclass", "tuple", "list", "dict", "set", "frozenset", "str", "int",
+                 "float", "bool", "sorted", "reversed", "enumerate", "zip", "map", "filter", "any", "all",
+                 "min", "max", "sum", "range", "type", "getattr", "hasattr", "callable", "repr", "id", "iter",
+                 "next", "abs", "round", "object", "super", "staticmethod", "classmethod", "property"}
+
+
+def _defs_by_name(sources):
+    out = {}
+    for rel, text in sources.items():
+        if not rel.startswith("sqlglot/"):
+            continue
+        try:
+            tree = ast.parse(text)
+        except SyntaxError:
+            continue
+        for n in tree.body:
+            if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                out.setdefault(n.name, []).append(n)
+    return out
+
+
+def import_call_pure(call, defs, depth=3, seen=None):
+    """A call in a class-table literal that runs at import (rename_func("X"),
+    transforms.preprocess([...]), unsupported_args(...)(f)) builds a value and
+    changes no shared state: every sqlglot function it reaches, outside the
+    closures it returns, stores no attribute, subscript or global and calls no
+    mutating method. Unresolved names and calls through attributes of local
+    values count as pure only for builtins and class constructors (exp.X)."""
+    seen = set() if seen is None else seen
+    fn = call.func
+    if isinstance(fn, ast.Call):  # a decorator factory applied at import
+        return import_call_pure(fn, defs, depth, seen) and _body_pure(fn, defs, depth, seen, nested=True)
+    if isinstance(fn, ast.Attribute):
+        if fn.attr in MUTATING_CALLS:
+            return False
+        name = fn.attr
+        if name[:1].isupper() or name in ("from_arg_list", "number", "string", "fromkeys", "items",
+                                          "keys", "values", "sql_names", "copy"):
+            return True
+    elif isinstance(fn, ast.Name):
+        name = fn.id
+        if name in IMPURE_BUILTINS:
+            return False
+        if name in SAFE_BUILTINS or name[:1].isupper() or name == "partial":
+            return name not in defs or all(_def_pure(d, defs, depth, seen) for d in defs[name])
+    else:
+        return False
+    if name not in defs:
+        return False
+    return all(_def_pure(d, defs, depth, seen) for d in defs[name])
+
+
+def _body_pure(call, defs, depth, seen, nested):
+    fn = call.func
+    name = fn.id if isinstance(fn, ast.Name) else fn.attr if isinstance(fn, ast.Attribute) else None
+    if name is None or name not in defs:
+        return False
+    return all(_def_pure(d, defs, depth, seen, nested=nested) for d in defs[name])
+
+
+def _def_pure(d, defs, depth, seen, nested=False):
+    if (d.name, nested) in seen:
+        return True
+    seen.add((d.name, nested))
+    if d.decorator_list and not all(isinstance(x, ast.Name) and x.id in ("lru_cache", "cache") or
+                                    isinstance(x, ast.Attribute) and x.attr in ("lru_cache", "cache")
+                                    for x in d.decorator_list):
+        return False
+    # Containers the function creates itself may be filled in place.
+    fresh = set()
+    for n in ast.walk(d):
+        if isinstance(n, (ast.Assign, ast.AnnAssign)) and n.value is not None and (
+                isinstance(n.value, (ast.Dict, ast.List, ast.Set, ast.DictComp, ast.ListComp, ast.SetComp))
+                or isinstance(n.value, ast.Call) and isinstance(n.value.func, ast.Name)
+                and n.value.func.id in ("dict", "list", "set")):
+            for t in (n.targets if isinstance(n, ast.Assign) else [n.target]):
+                if isinstance(t, ast.Name):
+                    fresh.add(t.id)
+
+    def root(x):
+        while isinstance(x, (ast.Attribute, ast.Subscript)):
+            x = x.value
+        return x.id if isinstance(x, ast.Name) else None
+    params = {a.arg for a in d.args.args + d.args.kwonlyargs + d.args.posonlyargs}
+    fresh -= params
+    # Names bound inside the function (parameters of it and of its
+    # closures, locals) are not module functions.
+    local = set()
+    for x in ast.walk(d):
+        if isinstance(x, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)):
+            a = x.args
+            local |= {y.arg for y in a.args + a.kwonlyargs + a.posonlyargs}
+            local |= {y.arg for y in (a.vararg, a.kwarg) if y is not None}
+            if not isinstance(x, ast.Lambda) and x is not d:
+                local.add(x.name)
+        elif isinstance(x, ast.Name) and isinstance(x.ctx, ast.Store):
+            local.add(x.id)
+    stack = list(d.body)
+    while stack:
+        n = stack.pop()
+        if not nested and isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda, ast.ClassDef)):
+            continue  # runs only when the built value is called: traced probes
+        if isinstance(n, (ast.Global, ast.Nonlocal, ast.Delete)):
+            return False
+        if isinstance(n, (ast.Assign, ast.AugAssign, ast.AnnAssign)):
+            targets = n.targets if isinstance(n, ast.Assign) else [n.target]
+            for t in targets:
+                for x in ast.walk(t):
+                    if isinstance(x, (ast.Attribute, ast.Subscript)) and isinstance(x.ctx, ast.Store) \
+                            and root(x) not in fresh:
+                        return False
+        if isinstance(n, ast.Call):
+            f = n.func
+            if isinstance(f, ast.Attribute) and f.attr in MUTATING_CALLS and root(f.value) not in fresh:
+                return False
+            if isinstance(f, ast.Name):
+                if f.id in IMPURE_BUILTINS:
+                    return False
+                if f.id in defs and f.id not in SAFE_BUILTINS and f.id not in local:
+                    if depth <= 0 or not all(_def_pure(x, defs, depth - 1, seen) for x in defs[f.id]):
+                        return False
+        stack.extend(ast.iter_child_nodes(n))
+    return True
 
 
 def table_literal(value):
