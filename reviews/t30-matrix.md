@@ -6,20 +6,20 @@ A ≥ failure count is a smoke-run lower bound. These controls select every test
 
 | Mutant | Class | Edit | Failing | Main selected | Main missed | Candidate missed |
 | --- | --- | --- | ---: | ---: | ---: | ---: |
-| t30x000 | metaclass | metaclass registry key | ≥3 | 1620 | 0 | 0 |
-| t30x001 | metaclass | metaclass time trie | ≥3 | 1620 | 0 | 0 |
-| t30x002 | metaclass | metaclass string parser lookup | ≥1175 | 1620 | 0 | 0 |
-| t30x003 | metaclass | metaclass inherited generator lookup | ≥0 | 1620 | 0 | 0 |
-| t30x004 | metaclass | metaclass shared transform mutation | pending | 1620 | pending | pending |
-| t30x005 | metaclass | metaclass quote endpoint | pending | 1620 | pending | pending |
-| t30x006 | metaclass | tokenizer init-subclass quote source | pending | 1620 | pending | pending |
-| t30x007 | metaclass | tokenizer string-name inheritance | pending | 1620 | pending | pending |
-| t30x008 | metaclass | expression required-args comprehension | pending | 1620 | pending | pending |
-| t30x009 | metaclass | quote converter at import | pending | 1620 | pending | pending |
-| t30x010 | metaclass | hive quote tuple value | pending | 355 | pending | pending |
-| t30x011 | metaclass | bigquery quote scalar value | pending | 294 | pending | pending |
-| t30x012 | metaclass | generator string-read setting | pending | 1620 | pending | pending |
-| t30x013 | metaclass | snowflake inverse time map value | pending | 1620 | pending | pending |
+| t30x000 | metaclass | metaclass registry key | 3 | 1620 | 0 | 0 |
+| t30x001 | metaclass | metaclass time trie | 3 | 1620 | 0 | 0 |
+| t30x002 | metaclass | metaclass string parser lookup | 1175 | 1620 | 0 | 0 |
+| t30x003 | metaclass | metaclass inherited generator lookup | 0 | 1620 | 0 | 0 |
+| t30x004 | metaclass | metaclass shared transform mutation | 1 | 1620 | 0 | 0 |
+| t30x005 | metaclass | metaclass quote endpoint | 0 | 1620 | 0 | 0 |
+| t30x006 | metaclass | tokenizer init-subclass quote source | 1020 | 1620 | 0 | 0 |
+| t30x007 | metaclass | tokenizer string-name inheritance | 4 | 1620 | 0 | 0 |
+| t30x008 | metaclass | expression required-args comprehension | ≥113 | 1620 | 0 | 0 |
+| t30x009 | metaclass | quote converter at import | ≥194 | 1620 | 0 | 0 |
+| t30x010 | metaclass | hive quote tuple value | 42 | 355 | 0 | 0 |
+| t30x011 | metaclass | bigquery quote scalar value | 33 | 294 | 0 | 0 |
+| t30x012 | metaclass | generator string-read setting | ≥2 | 1620 | 0 | 0 |
+| t30x013 | metaclass | snowflake inverse time map value | ≥0 | 1620 | 0 | 0 |
 | t30x014 | cache | dispatch memo stored under base class | pending | 1347 | pending | pending |
 | t30x015 | cache | dispatch memo read under base class | pending | 1347 | pending | pending |
 | t30x016 | cache | dispatch memo mutates previous cached table | pending | 1347 | pending | pending |

@@ -1,17 +1,19 @@
-# t30 handoff
+# Handoff
 
-Model gpt-6.1-sol. Baseline be28115d6b491536992e294aff9ae9b1d2a27dee.
-Branch w/t30. Started 07:15 UTC, hard stop 09:45 UTC.
+Model: gpt-6.1-sol. Baseline be28115d6b491536992e294aff9ae9b1d2a27dee.
+Branch w/t30; hard stop 09:45 UTC.
 
-76 mutants generated. Legion br-label-t30 on CPUs 8–9, 1 GiB memory and swap,
-2 pytest workers. Parser max_nodes (1490) explicitly deselected: it OOMs alone
-in a fresh 1 GiB container; OOM attempts were discarded. All other 1619 numbered
-tests included. Structured labels pending; no proven miss claimed yet.
+Done: initial 18 metaclass labels; main misses two, candidate misses zero.
+149 selector and 22 tools tests pass. No selection/cost change on the nine
+historical/proxy sets. Detailed matrix: reviews/t30-matrix.md.
 
-Draft rule extends the existing shape guard into literal container entries.
-All 148 selector tests pass. Identical selections on samples, 238 gate mutants,
-t3, t14, t15, t24a and all 600 proxies; no narrowing, no historical misses.
-Measurement artifacts: work/t30-measure/ and tools/t30_measure.py.
+Running: br-label-t30 on Legion CPUs 8–9, 1 GiB, one pytest process; cache
+class. Test 1490 OOMs alone and is deselected; baseline TPC-DS 88 is reconciled
+by subtest. 28 all-selected controls use explicit smoke scopes; other labels
+are broad. Host memory guard stops below 5 GiB available.
 
-Next command:
+Exact next command:
 ssh legion 'free -g; tail -3 ~/bt-watchdog.log; docker logs --tail 12 br-label-t30'
+
+After t30x025 stops: touch legion:~/br/t30/cache-order.request, clear stop
+files, restart the same container and the memory guard. Gate and push pending.

@@ -6,11 +6,7 @@
       "paths": [
         "sqlglot/dialects/dialect.py"
       ],
-      "tests": [
-        "tests/dialects/test_dialect.py",
-        "tests/test_parser.py"
-      ],
-      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x001": {
       "kind": "metaclass",
@@ -18,11 +14,7 @@
       "paths": [
         "sqlglot/dialects/dialect.py"
       ],
-      "tests": [
-        "tests/dialects/test_dialect.py",
-        "tests/test_parser.py"
-      ],
-      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x002": {
       "kind": "metaclass",
@@ -30,11 +22,7 @@
       "paths": [
         "sqlglot/dialects/dialect.py"
       ],
-      "tests": [
-        "tests/dialects/test_dialect.py",
-        "tests/test_parser.py"
-      ],
-      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x003": {
       "kind": "metaclass",
@@ -42,11 +30,7 @@
       "paths": [
         "sqlglot/dialects/dialect.py"
       ],
-      "tests": [
-        "tests/dialects/test_dialect.py",
-        "tests/test_parser.py"
-      ],
-      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x004": {
       "kind": "metaclass",
@@ -54,11 +38,7 @@
       "paths": [
         "sqlglot/dialects/dialect.py"
       ],
-      "tests": [
-        "tests/dialects/test_dialect.py",
-        "tests/test_parser.py"
-      ],
-      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x005": {
       "kind": "metaclass",
@@ -66,11 +46,7 @@
       "paths": [
         "sqlglot/dialects/dialect.py"
       ],
-      "tests": [
-        "tests/dialects/test_dialect.py",
-        "tests/test_parser.py"
-      ],
-      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x006": {
       "kind": "metaclass",
@@ -78,11 +54,7 @@
       "paths": [
         "sqlglot/tokens.py"
       ],
-      "tests": [
-        "tests/dialects/test_dialect.py",
-        "tests/test_parser.py"
-      ],
-      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x007": {
       "kind": "metaclass",
@@ -90,11 +62,7 @@
       "paths": [
         "sqlglot/tokens.py"
       ],
-      "tests": [
-        "tests/dialects/test_dialect.py",
-        "tests/test_parser.py"
-      ],
-      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x008": {
       "kind": "metaclass",

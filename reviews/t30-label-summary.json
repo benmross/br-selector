@@ -1,12 +1,12 @@
 {
-  "labeled": 8,
+  "labeled": 18,
   "generated": 78,
   "classes": {
     "metaclass": {
-      "mutants": 8,
-      "failing_mutants": 7,
-      "failing_test_instances": 3607,
-      "main_selected_test_instances": 7775,
+      "mutants": 18,
+      "failing_mutants": 15,
+      "failing_test_instances": 5016,
+      "main_selected_test_instances": 21384,
       "main_misses": [
         "t30x064",
         "t30x065"
@@ -1558,7 +1558,7 @@
       "class": "metaclass",
       "description": "metaclass registry key",
       "failing": 3,
-      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
       "main_selected": 1620,
       "main_missing": [],
       "candidate_selected": 1620,
@@ -1568,7 +1568,7 @@
       "class": "metaclass",
       "description": "metaclass time trie",
       "failing": 3,
-      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
       "main_selected": 1620,
       "main_missing": [],
       "candidate_selected": 1620,
@@ -1578,7 +1578,7 @@
       "class": "metaclass",
       "description": "metaclass string parser lookup",
       "failing": 1175,
-      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
       "main_selected": 1620,
       "main_missing": [],
       "candidate_selected": 1620,
@@ -1587,6 +1587,106 @@
     "t30x003": {
       "class": "metaclass",
       "description": "metaclass inherited generator lookup",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x004": {
+      "class": "metaclass",
+      "description": "metaclass shared transform mutation",
+      "failing": 1,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x005": {
+      "class": "metaclass",
+      "description": "metaclass quote endpoint",
+      "failing": 0,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x006": {
+      "class": "metaclass",
+      "description": "tokenizer init-subclass quote source",
+      "failing": 1020,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x007": {
+      "class": "metaclass",
+      "description": "tokenizer string-name inheritance",
+      "failing": 4,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x008": {
+      "class": "metaclass",
+      "description": "expression required-args comprehension",
+      "failing": 113,
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x009": {
+      "class": "metaclass",
+      "description": "quote converter at import",
+      "failing": 194,
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x010": {
+      "class": "metaclass",
+      "description": "hive quote tuple value",
+      "failing": 42,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 355,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x011": {
+      "class": "metaclass",
+      "description": "bigquery quote scalar value",
+      "failing": 33,
+      "label_scope": "full numbered suite except memory-infeasible test 1490",
+      "main_selected": 294,
+      "main_missing": [],
+      "candidate_selected": 294,
+      "candidate_missing": []
+    },
+    "t30x012": {
+      "class": "metaclass",
+      "description": "generator string-read setting",
+      "failing": 2,
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
+      "main_selected": 1620,
+      "main_missing": [],
+      "candidate_selected": 1620,
+      "candidate_missing": []
+    },
+    "t30x013": {
+      "class": "metaclass",
+      "description": "snowflake inverse time map value",
       "failing": 0,
       "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke",
       "main_selected": 1620,
