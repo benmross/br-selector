@@ -1,0 +1,88 @@
+t41x000 200 tests; sqlglot/generators/presto.py:408 class PrestoGenerator users 200
+t41x001 200 tests; sqlglot/generators/presto.py:370 class PrestoGenerator users 200
+t41x002 200 tests; sqlglot/generators/presto.py:437 class PrestoGenerator users 200
+t41x003 261 tests; sqlglot/generators/postgres.py:408 class PostgresGenerator users 261
+t41x004 261 tests; sqlglot/generators/postgres.py:465 class PostgresGenerator users 261
+t41x005 261 tests; sqlglot/generators/postgres.py:466 class PostgresGenerator users 261
+t41x006 377 tests; sqlglot/generators/duckdb.py:1844 class DuckDBGenerator users 377
+t41x007 272 tests; sqlglot/generators/spark2.py:188 class Spark2Generator users 272
+t41x008 96 tests; sqlglot/generators/redshift.py:114 class RedshiftGenerator users 96
+t41x009 200 tests; sqlglot/generators/presto.py:363 class PrestoGenerator users 200
+t41x010 200 tests; sqlglot/generators/presto.py:410 class PrestoGenerator users 200
+t41x011 96 tests; sqlglot/generators/redshift.py:91 class RedshiftGenerator users 96
+t41x012 200 tests; sqlglot/generators/presto.py:346 class PrestoGenerator users 200
+t41x013 96 tests; sqlglot/generators/redshift.py:86 class RedshiftGenerator users 96
+t41x014 96 tests; sqlglot/generators/redshift.py:57 class RedshiftGenerator users 96
+t41x015 200 tests; sqlglot/generators/presto.py:312 class PrestoGenerator users 200
+t41x016 261 tests; sqlglot/generators/postgres.py:345 class PostgresGenerator users 261
+t41x017 377 tests; sqlglot/generators/duckdb.py:1887 class DuckDBGenerator users 377
+t41x018 34 tests; sqlglot/generators/singlestore.py:357 class SingleStoreGenerator users 34
+t41x021 226 tests; sqlglot/generators/bigquery.py:566 class BigQueryGenerator users 226
+t41x022 291 tests; sqlglot/dialects/mysql.py:49 class MySQL users 291
+t41x023 377 tests; sqlglot/generators/duckdb.py:1709 class DuckDBGenerator users 377
+t41x024 226 tests; sqlglot/generators/bigquery.py:466 class BigQueryGenerator users 226
+t41x025 123 tests; sqlglot/generators/clickhouse.py:321 class ClickHouseGenerator users 123
+t41x026 283 tests; sqlglot/generators/snowflake.py:523 class SnowflakeGenerator users 283
+t41x027 0 tests; tests/leakcheck.py:92 test module level 0
+t41x028 107 tests; sqlglot/dialects/redshift.py:51 class Redshift.Tokenizer users 107
+t41x029 320 tests; sqlglot/dialects/postgres.py:140 class Postgres.Tokenizer users 320
+t41x030 437 tests; sqlglot/dialects/duckdb.py:139 class DuckDB.Tokenizer users 437
+t41x031 73 tests; sqlglot/dialects/starrocks.py:52 class StarRocks.Tokenizer users 73
+t41x032 171 tests; sqlglot/dialects/tsql.py:179 class TSQL.Tokenizer users 171
+t41x033 358 tests; sqlglot/dialects/snowflake.py:143 class Snowflake.Tokenizer users 358
+t41x034 137 tests; sqlglot/dialects/oracle.py:115 class Oracle.Tokenizer users 137
+t41x035 143 tests; sqlglot/dialects/trino.py:17 class Trino.Tokenizer users 143
+t41x036 1564 tests; sqlglot/tokens.py:264 class Tokenizer users 1564
+t41x037 1564 tests; sqlglot/tokens.py:268 class Tokenizer users 1564
+import check: [1;35mAttributeError[0m: [35mmodule 'sqlglot.optimizer' has no attribute '__build_class__'[0m
+t41x039 1620 tests; sqlglot/optimizer/__init__.py:44 module constant read at import, everything; sqlglot/optimizer/__init__.py: fails to import and loads with sqlglot, everything
+t41x040 5 tests; sqlglot/generators/duckdb.py:52 module constant TIMEZONE_PATTERN: 5 read it
+t41x041 226 tests; sqlglot/generators/bigquery.py:372 class BigQueryGenerator users 226
+t41x042 19 tests; sqlglot/generators/hive.py:57 module constant CANONICAL_TIME_FORMAT: 19 read it
+t41x043 304 tests; sqlglot/generators/hive.py:245 class HiveGenerator users 304
+t41x044 55 tests; sqlglot/expressions/builders.py:347 module constant INTERVAL_STRING_RE: 55 read it
+t41x045 1620 tests; sqlglot/helper.py:37 module constant read at import, everything
+t41x046 3 tests; sqlglot/generator.py:28 module constant _HIGH_BYTE_RE: 3 read it
+t41x047 291 tests; sqlglot/dialects/mysql.py:50 class MySQL users 291
+t41x048 291 tests; sqlglot/dialects/mysql.py:46 class MySQL users 291
+t41x049 4 tests; tests/test_time.py:9 test module level 4
+t41x050 2 tests; sqlglot/dialects/dialect.py:133 class Dialects users 2
+t41x051 0 tests; sqlglot/dialects/dialect.py:108 class Dialects attr DORIS: 0 users, 0 read it
+t41x052 0 tests; sqlglot/dialects/dialect.py:110 class Dialects attr DRILL: 0 users, 0 read it
+import check: [1;35mAttributeError[0m: [35mmodule 'sqlglot.optimizer' has no attribute '__build_class__'[0m
+t41x053 1620 tests; sqlglot/optimizer/__init__.py:41 module constant read at import, everything; sqlglot/optimizer/__init__.py: fails to import and loads with sqlglot, everything
+import check: [1;35mAttributeError[0m: [35mmodule 'sqlglot.optimizer' has no attribute '__build_class__'[0m
+t41x054 1620 tests; sqlglot/optimizer/__init__.py:40 module constant read at import, everything; sqlglot/optimizer/__init__.py: fails to import and loads with sqlglot, everything
+t41x055 10 tests; sqlglot/expressions/math.py:136 class Ceil users 10
+t41x056 5 tests; sqlglot/expressions/math.py:152 class IsInf users 5
+t41x057 4 tests; sqlglot/expressions/math.py:194 class Sign users 4
+t41x058 8 tests; sqlglot/expressions/math.py:285 class Getbit users 8
+t41x059 19 tests; sqlglot/expressions/math.py:203 class Trunc users 19
+t41x060 96 tests; tests/helpers.py:66 test module level 96
+t41x061 7 tests; tests/dialects/test_fabric.py:5 test module level 7
+t41x062 2 tests; tests/dialects/test_risingwave.py:5 test module level 2
+import check: [1;35mModuleNotFoundError[0m: [35mNo module named 'duckdb'[0m
+t41x063 1620 tests; tests/test_executor.py:30 test module level 60; tests/test_executor.py: fails to import and loads with sqlglot, everything
+import check: [1;35mModuleNotFoundError[0m: [35mNo module named 'duckdb'[0m
+t41x064 1620 tests; tests/test_executor.py:31 test module level 60; tests/test_executor.py: fails to import and loads with sqlglot, everything
+t41x065 96 tests; tests/helpers.py:4 test module level 96
+t41x066 0 tests; tests/test_executor.py: syntax tree unchanged
+t41x068 41 tests; tests/dialects/test_oracle.py:7 test module level 41
+t41x069 45 tests; tests/dialects/test_postgres.py:12 test module level 45
+t41x070 0 tests; tests/leakcheck.py:97 test module level 0
+t41x071 0 tests; tests/dialects/test_sqlite.py: syntax tree unchanged
+t41x072 0 tests; tests/test_expressions.py: syntax tree unchanged
+t41x073 0 tests; tests/test_serde.py: syntax tree unchanged
+t41x075 3 tests; tests/dialects/test_drill.py:5 test module level 3
+t41x076 0 tests; tests/dialects/test_dialect.py: syntax tree unchanged
+t41x077 1518 tests; sqlglot/__init__.py:74 module level 1518
+t41x078 0 tests; sqlglot/errors.py:17 class ErrorLevel users 0
+t41x079 0 tests; sqlglot/errors.py:20 class ErrorLevel users 0
+t41x080 0 tests; sqlglot/errors.py:23 class ErrorLevel users 0
+t41x081 0 tests; sqlglot/errors.py:26 class ErrorLevel users 0
+t41x082 0 tests; sqlglot/dialects/dialect.py:99 class Dialects users 0
+t41x084 0 tests; sqlglot/dialects/dialect.py:141 class NormalizationStrategy users 0
+t41x085 0 tests; sqlglot/dialects/dialect.py:144 class NormalizationStrategy users 0
+t41x086 0 tests; sqlglot/dialects/dialect.py:147 class NormalizationStrategy users 0
+import check: [1;35mAttributeError[0m: [35mmodule 'sqlglot.optimizer' has no attribute '__build_class__'[0m
+t41x087 1620 tests; sqlglot/optimizer/__init__.py:2 module level 0; sqlglot/optimizer/__init__.py: fails to import and loads with sqlglot, everything
