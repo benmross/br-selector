@@ -1313,6 +1313,10 @@ def literal_structure_changed(before, after):
             return True
         return any(literal_structure_changed(a, b) for a, b in zip(before.elts, after.elts))
     if isinstance(before, ast.Dict):
+        kinds = {shape[0] for k in before.keys if (shape := _shape(k)) is not None}
+        if kinds and any(shape[0] not in kinds for k in after.keys
+                         if (shape := _shape(k)) is not None):
+            return True
         previous = {_dump(k): v for k, v in zip(before.keys, before.values) if k is not None}
         return any(_dump(k) in previous and literal_structure_changed(previous[_dump(k)], v)
                    for k, v in zip(after.keys, after.values) if k is not None)

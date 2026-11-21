@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/mysql.py b/sqlglot/dialects/mysql.py
+--- a/sqlglot/dialects/mysql.py
++++ b/sqlglot/dialects/mysql.py
+@@ -43,7 +43,7 @@
+ 
+     # https://prestodb.io/docs/current/functions/datetime.html#mysql-date-functions
+     TIME_MAPPING = {
+-        "%M": "%B",
++        0: "%B",
+         "%c": "%-m",
+         "%e": "%-d",
+         "%h": "%I",

@@ -177,6 +177,8 @@ p = 'sqlglot/lineage.py'; a = (SRC/p).read_text()
 emit('shape','PEP 701 comment in f-string expression',[(p,a,a.replace('f"<pre>SELECT {node.name} FROM {node.expression.this}</pre>"',
     'f"<pre>SELECT {node.name # t30\\n} FROM {node.expression.this}</pre>"'.replace('\\n','\n'),1))])
 
-assert len(manifest) == 76, len(manifest)
+replace('metaclass','time-map key changes type','sqlglot/dialects/mysql.py','"%M": "%B"','0: "%B"')
+replace('metaclass','quote tuple arity shrinks','sqlglot/dialects/sqlite.py','("[", "]")','("[",)')
+assert len(manifest) == 78, len(manifest)
 (OUT/'manifest.json').write_text(json.dumps({'commits':manifest},indent=2)+'\n')
 print('generated',len(manifest))

@@ -532,6 +532,20 @@
       "paths": [
         "sqlglot/lineage.py"
       ]
+    },
+    "t30x076": {
+      "kind": "metaclass",
+      "description": "time-map key changes type",
+      "paths": [
+        "sqlglot/dialects/mysql.py"
+      ]
+    },
+    "t30x077": {
+      "kind": "metaclass",
+      "description": "quote tuple arity shrinks",
+      "paths": [
+        "sqlglot/dialects/sqlite.py"
+      ]
     }
   }
 }
