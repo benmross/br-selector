@@ -336,6 +336,7 @@ class Selector:
         self.index = None
         self._cmp = None
         self._cmp_drop = None
+        self._single_file_patch = True
         self._test_import_map = None
         self._shared_setup_map = None
         # Filled by prepare_batch in the parent, before any commit is forked:
@@ -604,6 +605,7 @@ class Selector:
         return out
 
     def _for_python(self, fp, path, why):
+        self._literal_extra_users = set()
         old_text = None
         if fp.old is not None:
             try:
@@ -800,8 +802,23 @@ class Selector:
             # Never execute patch-supplied code in the selector. Even an
             # innocent import may loop, fork, write files, or produce unlimited
             # output. Unknown import effects need a conservative selection.
-            why.append(f"{path}: possible import failure, everything")
-            return set(self.all)
+            # Argument registration may run in the map's preload pass. Help
+            # is only stored there. Its sole permitted reader, parse_args,
+            # must never have run at import; no test may run/read this module.
+            safe_help = False
+            if self._single_file_patch and argparse_help_only(old_tree, new_tree):
+                imp = self.import_lines.get(path, set())
+                unread = not any(isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
+                                 and n.func.attr == 'parse_args'
+                                 and any(line in imp for line in range(n.lineno, n.end_lineno + 1))
+                                 for n in ast.walk(old_tree))
+                unused = not self.broad(path) and not self.fixture_users(path)
+                safe_help = unused and unread
+            if not safe_help:
+                why.append(f"{path}: possible import failure, everything")
+                return set(self.all)
+            why.append(f"{path}: no runtime/data users, stock argparse help stored but never read at import")
+        out |= self._literal_extra_users
         return out
 
     def dedented_blocks(self, fp, old_text, scopes, path, why):
@@ -872,6 +889,9 @@ class Selector:
         runs at import reads that name except the reviewed hooks or a pure
         `{**Base.NAME, ...}` extension. The caller keeps the baseline
         selection (coverage and readers), which handles changed behaviour."""
+        self._literal_extra_users = set()
+        if not self._single_file_patch:
+            return False
         diffs = []
 
         def walk(a, b, chain):
@@ -941,15 +961,17 @@ class Selector:
                    and s.value == new.value for s in siblings):
                 return False
             names |= {t.id for t in targets}
-        if not self.import_readers_safe(names):
+        if not self.import_readers_safe(names, why):
             return False
         why.append(f"{path}: only display literals of {','.join(sorted(names))} changed, import cannot fail")
         return True
 
-    def import_readers_safe(self, names):
+    def import_readers_safe(self, names, why=None):
         """No statement that runs at import reads any of names, except the
         reviewed hooks and pure dict/sequence unpacking into another display.
         Reads in tests are their own files' readers and stay selected."""
+        self._literal_extra_users = set()
+        seen_bindings = set()
         pat = re.compile(r"\b(" + "|".join(map(re.escape, sorted(names))) + r")\b")
         for rel, text in self._all_sources().items():
             if not rel.startswith("sqlglot/") or not pat.search(text):
@@ -960,7 +982,12 @@ class Selector:
                 return False
             imp = self.import_lines.get(rel) or set()
             lines = text.split("\n")
-            for ln in sorted({text.count("\n", 0, m.start()) + 1 for m in pat.finditer(text)}):
+            # Comments and standalone string expressions cannot read a name.
+            # Keep strings in executable expressions: getattr(C, "SETTING")
+            # really can read SETTING without a Name/Attribute AST node.
+            inert = (self.index or {}).get("@inert_name_ranges", {}).get(rel)
+            mentioned = name_reference_lines(text, pat, scopes, inert)
+            for ln in sorted(mentioned):
                 st = scopes.at(ln)
                 if st is None:
                     return False
@@ -973,6 +1000,25 @@ class Selector:
                     continue
                 if not self._extension_only(node, names):
                     return False
+                value = getattr(node, 'value', None)
+                targets = assigned_names(node)
+                if targets and value is not None and _mentions(value, names):
+                    # Copying a table into an unrelated class carries its
+                    # runtime effects beyond the original class's MRO. Keep
+                    # the normal users/readers of every same-name consumer.
+                    # Different-name copies need a larger dependency closure.
+                    if not targets <= names:
+                        return False
+                    key = (rel, id(node))
+                    if key not in seen_bindings:
+                        seen_bindings.add(key)
+                        module = rel[:-3].replace('/', '.').removesuffix('.__init__')
+                        extra_why = []
+                        users = self.module_level(rel, module, st[5], extra_why, st[0], node)
+                        self._literal_extra_users |= users
+                        if why is not None:
+                            why.extend(extra_why)
+                            why.append(f'{rel}:{st[0]} same-name literal dependency: keep {len(users)} consumer tests')
         return True
 
     def _extension_only(self, node, names):
@@ -996,6 +1042,11 @@ class Selector:
         if not all(isinstance(t, ast.Name) for t in targets):
             return False
         if value is None:
+            return True
+        # A same-name alias preserves the literal value and cannot fail on a
+        # same-type literal edit. Readers of the target are already scanned
+        # under the same name; differently named aliases need propagation.
+        if _is_ref(value, names) and all(t.id in names for t in targets):
             return True
         ok = []
 
@@ -1250,6 +1301,170 @@ def comparison_swaps(a_list, b_list, lo, hi):
 
 UNSAFE_FUNCS = {"__new__", "__init_subclass__", "__set_name__", "__class_getitem__"}
 DYNAMIC = re.compile(r"getattr\(|__dict__|vars\(")
+
+
+def argparse_help_only(old_tree, new_tree):
+    """Only ASCII, percent-free help strings on a stock ArgumentParser change.
+
+    Stock argparse actions store help text without interpreting it during
+    add_argument. Percent formatting happens when help is rendered; prohibit
+    percent characters in both versions. Prove the parser has not escaped,
+    been rebound, registered custom actions, or acquired a custom formatter.
+    All other AST fields, including argument names/defaults/actions, agree.
+    This only removes an import-failure fallback; ordinary users stay selected.
+    """
+    imports = [n for n in old_tree.body if isinstance(n, ast.Import)
+               for alias in n.names if alias.name == 'argparse' and alias.asname is None]
+    if len(imports) != 1:
+        return False
+    changes = []
+
+    def same(a, b, chain=()):
+        if type(a) is not type(b):
+            return False
+        if isinstance(a, ast.Constant) and a.value != b.value:
+            if not (type(a.value) is str and type(b.value) is str
+                    and a.value.isascii() and b.value.isascii()
+                    and '%' not in a.value and '%' not in b.value
+                    and a.kind == b.kind and len(chain) == 4):
+                return False
+            module, stmt, call, keyword, const = (*chain, a)
+            if not (isinstance(module, ast.Module) and isinstance(stmt, ast.Expr)
+                    and stmt in module.body and isinstance(call, ast.Call)
+                    and stmt.value is call and isinstance(keyword, ast.keyword)
+                    and keyword.arg == 'help' and isinstance(call.func, ast.Attribute)
+                    and call.func.attr == 'add_argument' and isinstance(call.func.value, ast.Name)):
+                return False
+            changes.append(call)
+            return True
+        if isinstance(a, ast.AST):
+            return all(same(getattr(a, field), getattr(b, field), chain + (a,)) for field in a._fields)
+        if isinstance(a, list):
+            return len(a) == len(b) and all(same(x, y, chain) for x, y in zip(a, b))
+        return a == b
+
+    if not same(old_tree, new_tree) or not changes:
+        return False
+    # A constant's ancestors are Module, Expr, Call, keyword (four nodes).
+    names = {call.func.value.id for call in changes}
+    parents = {id(child): node for node in ast.walk(old_tree) for child in ast.iter_child_nodes(node)}
+    stores = {name: [] for name in names | {'argparse'}}
+    for node in ast.walk(old_tree):
+        if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Store) and node.id in stores:
+            stores[node.id].append(node)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and node.name in stores:
+            return False
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            for alias in node.names:
+                bound = alias.asname or alias.name.split('.')[0]
+                if bound in stores and not (node is imports[0] and bound == 'argparse'):
+                    return False
+    if stores['argparse']:
+        return False
+    # Before a changed registration, allow only imports, parser construction
+    # and literal argument registrations. No arbitrary helper can replace the
+    # stock parser/action registry between construction and the changed call.
+    last_change = max(call.lineno for call in changes)
+    for stmt in old_tree.body:
+        if stmt.lineno > last_change or isinstance(stmt, (ast.Import, ast.ImportFrom)):
+            continue
+        if isinstance(stmt, ast.Assign) and len(stmt.targets) == 1 \
+                and isinstance(stmt.targets[0], ast.Name) and stmt.targets[0].id in names:
+            continue  # constructor checked below
+        if isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant) and type(stmt.value.value) is str:
+            continue
+        if not (isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call)
+                and isinstance(stmt.value.func, ast.Attribute) and stmt.value.func.attr == 'add_argument'
+                and isinstance(stmt.value.func.value, ast.Name) and stmt.value.func.value.id in names):
+            return False
+        call = stmt.value
+        if not all(isinstance(v, ast.Constant) and type(v.value) is str for v in call.args):
+            return False
+        for keyword in call.keywords:
+            if isinstance(keyword.value, ast.Constant):
+                continue
+            if keyword.arg == 'type' and isinstance(keyword.value, ast.Name) and keyword.value.id == 'str':
+                # A source-level replacement of built-in str would be a new
+                # callback; reject all bindings other than its implicit one.
+                if any(n == 'str' for _, n in bound_names(Scopes(old_tree))):
+                    return False
+                continue
+            return False
+    for name in names:
+        if len(stores[name]) != 1:
+            return False
+        assignment = parents[id(stores[name][0])]
+        if not (isinstance(assignment, ast.Assign) and assignment in old_tree.body
+                and len(assignment.targets) == 1 and isinstance(assignment.value, ast.Call)):
+            return False
+        ctor = assignment.value
+        if not (isinstance(ctor.func, ast.Attribute) and ctor.func.attr == 'ArgumentParser'
+                and isinstance(ctor.func.value, ast.Name) and ctor.func.value.id == 'argparse'
+                and not ctor.args and all(k.arg in {'description', 'prog'}
+                    and isinstance(k.value, ast.Constant) and type(k.value.value) is str for k in ctor.keywords)):
+            return False
+        if any(assignment.lineno >= call.lineno for call in changes if call.func.value.id == name):
+            return False
+        for node in ast.walk(old_tree):
+            if not isinstance(node, ast.Name) or not isinstance(node.ctx, ast.Load):
+                continue
+            if node.id == 'argparse' and node is not ctor.func.value:
+                return False
+            if node.id != name:
+                continue
+            attr = parents[id(node)]
+            call = parents.get(id(attr))
+            if not (isinstance(attr, ast.Attribute) and attr.attr in {'add_argument', 'parse_args'}
+                    and isinstance(attr.ctx, ast.Load) and isinstance(call, ast.Call) and call.func is attr):
+                return False
+            if attr.attr == 'add_argument':
+                if any(k.arg is None for k in call.keywords):
+                    return False
+                actions = [k.value for k in call.keywords if k.arg == 'action']
+                if any(not isinstance(v, ast.Constant) or v.value not in
+                       {'store', 'store_const', 'store_true', 'store_false', 'append', 'append_const',
+                        'count', 'help', 'version', 'extend'} for v in actions):
+                    return False
+    return True
+
+
+def inert_name_ranges(text, scopes):
+    """Character intervals occupied by comments and inert string statements."""
+    import io
+    import tokenize
+
+    inert = {(st[3].value.lineno, st[3].value.col_offset)
+             for st in scopes.stmts if isinstance(st[3], ast.Expr)
+             and isinstance(st[3].value, ast.Constant)
+             and isinstance(st[3].value.value, str)}
+    offsets = [0]
+    for line in text.splitlines(keepends=True):
+        offsets.append(offsets[-1] + len(line))
+    ranges = []
+    for token in tokenize.generate_tokens(io.StringIO(text).readline):
+        if token.type == tokenize.COMMENT or token.start in inert:
+            ranges.append((offsets[token.start[0] - 1] + token.start[1],
+                           offsets[token.end[0] - 1] + token.end[1]))
+    return ranges
+
+
+def name_reference_lines(text, pattern, scopes, inert=None):
+    """Lexical name mentions minus comments and inert string statements.
+
+    Executable string expressions remain possible dynamic name reads.
+    The image indexes inert intervals at build time; old or absent indexes
+    compute the identical intervals here. No patch code is evaluated.
+    """
+    if inert is None:
+        inert = inert_name_ranges(text, scopes)
+    lines, pos = set(), 0
+    for match in pattern.finditer(text):
+        while pos < len(inert) and inert[pos][1] <= match.start():
+            pos += 1
+        if pos < len(inert) and inert[pos][0] <= match.start() and match.end() <= inert[pos][1]:
+            continue
+        lines.add(text.count("\n", 0, match.start()) + 1)
+    return lines
 
 
 def bound_names(scopes):
@@ -1894,6 +2109,11 @@ def build_index(out_path):
         e["t"] = sorted({tuple(x) for x in e["t"]})
     index["@test_importers"] = build_test_importers(sources)
     index["@shared_setup"] = build_shared_setups(sources)
+    # Build-time-only tokenization: a proof must not add a source-wide token
+    # scan to every charged commit. Offsets refer to the pinned source only.
+    index["@inert_name_ranges"] = {
+        rel: inert_name_ranges(sources[rel], sc)
+        for rel, sc in parsed.items() if rel.startswith("sqlglot/")}
     with gzip.open(out_path, "wt") as f:
         json.dump(index, f, separators=(",", ":"))
     log(f"index: {len(cands)} names; test imports and shared setup scopes")
@@ -2115,6 +2335,7 @@ def select_patch(patch_path, sel, tests, deadline):
     files = getattr(sel, "patches", {}).get(patch_path)
     if files is None:
         files = read_patch(patch_path)
+    sel._single_file_patch = len(files) == 1
     chosen, why = set(), []
     sel.pending_shared = set()
     for fp in files:

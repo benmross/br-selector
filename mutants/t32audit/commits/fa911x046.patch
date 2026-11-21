@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/singlestore.py b/sqlglot/dialects/singlestore.py
+--- a/sqlglot/dialects/singlestore.py
++++ b/sqlglot/dialects/singlestore.py
+@@ -23,7 +23,7 @@
+         "DY": "%a",  # abbreviated name of day
+         "HH": "%I",  # Hour of day (01-12)
+         "HH12": "%I",  # alias for HH
+-        "HH24": "%H",  # Hour of day (00-23)
++        "HH24x": "%H",  # Hour of day (00-23)
+         "MI": "%M",  # Minute (00-59)
+         "MM": "%m",  # Month (01-12; January = 01)
+         "MON": "%b",  # Abbreviated name of month

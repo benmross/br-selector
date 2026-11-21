@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/tsql.py b/sqlglot/dialects/tsql.py
+--- a/sqlglot/dialects/tsql.py
++++ b/sqlglot/dialects/tsql.py
+@@ -80,7 +80,7 @@
+         "YYYY": "%Y",
+         "YY": "%y",
+         "MMMM": "%B",
+-        "MMM": "%b",
++        "mmm": "%b",
+         "MM": "%m",
+         "M": "%-m",
+         "dddd": "%A",

@@ -1,0 +1,22 @@
+hid old 3501.803 main 3491.011 changed 9
+fresha old 1784.348 main 4551.398 changed 102
+freshb old 457.419 main 556.021 changed 6
+gate238 old 2229.783 main 2989.116 changed 76
+added | rule | commits | seconds | share |
+| could_raise | 120 | 3226.599 | 81.5% |
+| at_import | 7 | 232.134 | 5.9% |
+| strict_patch_application | 3 | 104.178 | 2.6% |
+| inserted_import_code | 2 | 73.634 | 1.9% |
+| uninstantiated_class | 2 | 71.619 | 1.8% |
+| parse_at_import | 2 | 68.892 | 1.7% |
+| coverage_map | 4 | 53.935 | 1.4% |
+| protocol_attribute | 1 | 36.817 | 0.9% |
+| lookup_at_import | 2 | 35.132 | 0.9% |
+| definition_header | 2 | 27.557 | 0.7% |
+| reshaped | 1 | 23.658 | 0.6% |
+| fixture_readers | 1 | 2.024 | 0.1% |
+| removed_name_readers | 1 | 1.945 | 0.0% |
+| class_map | 2 | 0.000 | 0.0% |
+| removed_key | 3 | 0.000 | 0.0% |
+removed | rule | commits | seconds | share |
+| comparison_profile | 40 | 343.931 | 100.0% |

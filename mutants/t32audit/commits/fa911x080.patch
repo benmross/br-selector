@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/exasol.py b/sqlglot/dialects/exasol.py
+--- a/sqlglot/dialects/exasol.py
++++ b/sqlglot/dialects/exasol.py
+@@ -34,7 +34,7 @@
+         "dd": "%d",
+         "DD": "%d",
+         "DAY": "%A",
+-        "DY": "%a",
++        "D": "%a",
+         "H12": "%I",
+         "H24": "%H",
+         "HH": "%H",

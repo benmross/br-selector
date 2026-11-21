@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/tsql.py b/sqlglot/dialects/tsql.py
+--- a/sqlglot/dialects/tsql.py
++++ b/sqlglot/dialects/tsql.py
+@@ -40,7 +40,7 @@
+         "Y": "DAYOFYEAR",
+         "WW": "WEEK",
+         "N": "MINUTE",
+-        "SS": "SECOND",
++        "SS": "SECONDx",
+         "MCS": "MICROSECOND",
+         "TZOFFSET": "TIMEZONE_MINUTE",
+         "TZ": "TIMEZONE_MINUTE",

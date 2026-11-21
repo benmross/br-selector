@@ -1,0 +1,8 @@
+Simulated: 116.857 s
+Misses:    0 (0.000 s of the simulated time)
+CPU:       not measured here. The simulated seconds above are exact. The board adds the CPU seconds your container used and takes the middle of 3 runs.
+mutants: 412 commits, 3 misses; total 7815.4 s   floor about 3601.4 s
+t30x079 cache    sel     1 fail 106 cost    2.00 best   6.65 MISS [259, 317, 328, 329, 330]
+t30x080 cache    sel     1 fail 106 cost    2.00 best   6.65 MISS [259, 317, 328, 329, 330]
+t30x082 metaclass sel     1 fail 145 cost    2.00 best   5.38 MISS [180, 188, 189, 192, 198]
+FAIL: mutant misses

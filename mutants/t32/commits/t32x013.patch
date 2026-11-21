@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/dremio.py b/sqlglot/dialects/dremio.py
+--- a/sqlglot/dialects/dremio.py
++++ b/sqlglot/dialects/dremio.py
+@@ -19,7 +19,7 @@
+         "YYYY": "%Y",
+         "yyyy": "%Y",
+         "YY": "%y",
+-        "yy": "%y",
++        'yy_t32_13': "%y",
+         # month / day
+         "MM": "%m",
+         "mm": "%m",

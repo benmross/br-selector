@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/doris.py b/sqlglot/generators/doris.py
+--- a/sqlglot/generators/doris.py
++++ b/sqlglot/generators/doris.py
+@@ -70,7 +70,7 @@
+         ),
+         exp.EuclideanDistance: rename_func("L2_DISTANCE"),
+         exp.GroupConcat: lambda self, e: self.func(
+-            "GROUP_CONCAT", e.this, e.args.get("separator") or exp.Literal.string(",")
++            "group_concat", e.this, e.args.get("separator") or exp.Literal.string(",")
+         ),
+         exp.JSONExtractScalar: lambda self, e: self.func("JSON_EXTRACT", e.this, e.expression),
+         exp.Lag: _lag_lead_sql,

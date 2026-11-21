@@ -1,0 +1,12 @@
+diff --git a/sqlglot/lineage.py b/sqlglot/lineage.py
+--- a/sqlglot/lineage.py
++++ b/sqlglot/lineage.py
+@@ -20,7 +20,7 @@
+ logger = logging.getLogger("sqlglot")
+ 
+ 
+-@dataclass(frozen=True)
++@dataclass(frozen=False)
+ class Node:
+     name: str
+     expression: exp.Expr

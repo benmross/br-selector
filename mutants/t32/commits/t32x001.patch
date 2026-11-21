@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/exasol.py b/sqlglot/dialects/exasol.py
+--- a/sqlglot/dialects/exasol.py
++++ b/sqlglot/dialects/exasol.py
+@@ -38,7 +38,7 @@
+         "H12": "%I",
+         "H24": "%H",
+         "HH": "%H",
+-        "ID": "%u",
++        'ID_t32_1': "%u",
+         "vW": "%V",
+         "IW": "%V",
+         "vYYY": "%G",

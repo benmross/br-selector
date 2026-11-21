@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/datatypes.py b/sqlglot/expressions/datatypes.py
+--- a/sqlglot/expressions/datatypes.py
++++ b/sqlglot/expressions/datatypes.py
+@@ -179,7 +179,7 @@
+ 
+ class DataType(Expression):
+     arg_types = {
+-        "this": True,
++        "this": False,
+         "expressions": False,
+         "nested": False,
+         "values": False,

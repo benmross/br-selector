@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/postgres.py b/sqlglot/dialects/postgres.py
+--- a/sqlglot/dialects/postgres.py
++++ b/sqlglot/dialects/postgres.py
+@@ -54,7 +54,7 @@
+         "iw": "%V",  # ISO 8601 week of year
+         "IW": "%V",  # ISO 8601 week of year
+         "iyyy": "%G",  # ISO 8601 week-numbering year
+-        "IYYY": "%G",  # ISO 8601 week-numbering year
++        "IYY": "%G",  # ISO 8601 week-numbering year
+         "mi": "%M",  # zero padded minute
+         "MI": "%M",  # zero padded minute
+         "mm": "%m",  # 01

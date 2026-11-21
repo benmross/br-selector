@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/mysql.py b/sqlglot/dialects/mysql.py
+--- a/sqlglot/dialects/mysql.py
++++ b/sqlglot/dialects/mysql.py
+@@ -45,7 +45,7 @@
+     TIME_MAPPING = {
+         "%M": "%B",
+         "%c": "%-m",
+-        "%e": "%-d",
++        '%e_t32_5': "%-d",
+         "%h": "%I",
+         "%i": "%M",
+         "%s": "%S",

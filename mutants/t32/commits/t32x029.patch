@@ -1,0 +1,12 @@
+diff --git a/sqlglot/__main__.py b/sqlglot/__main__.py
+--- a/sqlglot/__main__.py
++++ b/sqlglot/__main__.py
+@@ -50,7 +50,7 @@
+     "--tokenize",
+     dest="tokenize",
+     action="store_true",
+-    help="Tokenize and return the tokens list",
++    help="Tokenize and return the tokens list (t32 proof case 29)",
+ )
+ parser.add_argument(
+     "--error-level",

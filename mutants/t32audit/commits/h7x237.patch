@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/datatypes.py b/sqlglot/expressions/datatypes.py
+--- a/sqlglot/expressions/datatypes.py
++++ b/sqlglot/expressions/datatypes.py
+@@ -185,7 +185,7 @@
+         "values": False,
+         "kind": False,
+         "nullable": False,
+-        "collate": False,
++        "collate": True,
+     }
+ 
+     is_data_type: t.ClassVar[bool] = True

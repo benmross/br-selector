@@ -471,6 +471,156 @@ def test_import_time_literal_edits(sandbox, name, before, after, everything):
     assert (answers[name] == ALL) is everything
 
 
+@pytest.mark.parametrize("extra,expected", [
+    ('# RESERVED is only documentation\n', False),
+    ('"""RESERVED\nconfiguration docs\n"""\n', False),
+    ('class Alias:\n    RESERVED = Gen.RESERVED\n', False),
+    ('class Alias:\n    OTHER = Gen.RESERVED\n', True),
+    ('class Alias:\n    OTHER = {*Gen.RESERVED}\n', True),
+    ('VALUE = getattr(Gen, "RESERVED")[0]\n', True),
+    ('VALUE = "RESERVED"\n', True),
+    ('f"{getattr(Gen, \'RESERVED\')}"\n', True),
+    ('class Alias:\n    RESERVED = Gen.RESERVED["missing"]\n', True),
+])
+def test_literal_proof_ignores_only_inert_name_mentions(sandbox, extra, expected):
+    run, src = sandbox
+    before = SET_ATTR + extra
+    after = before.replace('"between"', '"betweenx"')
+    (src / "sqlglot/other.py").write_text(before)
+    answers, why, _ = run({"literal": diff("sqlglot/other.py", before, after)})
+    assert (answers["literal"] == ALL) is expected, why
+
+
+def test_reference_lines_keeps_code_after_docstring():
+    selector = load_selector()
+    import ast
+    import re
+    text = '"""SETTING docs"""; x = SETTING  # SETTING comment\n'
+    assert selector.name_reference_lines(text, re.compile(r"\bSETTING\b"),
+                                         selector.Scopes(ast.parse(text))) == {1}
+
+
+@pytest.mark.parametrize('alias', ['Gen.RESERVED', '{*Gen.RESERVED, "inner"}'])
+def test_literal_dependency_keeps_disjoint_alias_class_users(sandbox, alias):
+    run, src = sandbox
+    before = SET_ATTR + f'class Alias:\n    RESERVED = {alias}\n'
+    (src / 'sqlglot/other.py').write_text(before)
+    with gzip.open(run.env['MAP_PATH'], 'rt') as f:
+        mapping = json.load(f)
+    mapping['classes'].update({'sqlglot.other:Gen': 3, 'sqlglot.other:Alias': 4})
+    mapping['import_lines']['sqlglot/other.py'] = [1, 2, 3, 4, 6, 7]
+    with gzip.open(run.env['MAP_PATH'], 'wt') as f:
+        json.dump(mapping, f)
+    answers, why, _ = run({'literal': diff('sqlglot/other.py', before,
+                         before.replace('"between"', '"betweenx"'))})
+    assert answers['literal'] == {3, 4}, why
+
+
+def test_literal_dependency_unknown_namespace_stays_broad(sandbox):
+    run, src = sandbox
+    before = SET_ATTR + 'class Alias:\n    RESERVED = Gen.RESERVED\n'
+    (src / 'sqlglot/other.py').write_text(before)
+    with gzip.open(run.env['MAP_PATH'], 'rt') as f:
+        mapping = json.load(f)
+    mapping['classes']['sqlglot.other:Gen'] = 3
+    mapping['import_lines']['sqlglot/other.py'] = [1, 2, 3, 4, 6, 7]
+    with gzip.open(run.env['MAP_PATH'], 'wt') as f:
+        json.dump(mapping, f)
+    answers, why, _ = run({'literal': diff('sqlglot/other.py', before,
+                         before.replace('"between"', '"betweenx"'))})
+    assert answers['literal'] == ALL, why
+
+
+def test_indexed_inert_intervals_equal_runtime_tokenization():
+    selector = load_selector()
+    import ast
+    import re
+    text = ('"""SETTING is documentation\nincluding another SETTING\n"""\n'
+            '# SETTING comment\n'
+            'VALUE = "SETTING"  # SETTING comment\n'
+            'class C:\n    """SETTING docs"""\n    SETTING = Other.SETTING\n')
+    scopes = selector.Scopes(ast.parse(text))
+    pattern = re.compile(r"\bSETTING\b")
+    intervals = json.loads(json.dumps(selector.inert_name_ranges(text, scopes)))
+    assert selector.name_reference_lines(text, pattern, scopes) == {5, 8}
+    assert selector.name_reference_lines(text, pattern, scopes, intervals) == {5, 8}
+    text = 'VALUE = """# SETTING\nassigned text\n"""\n'
+    assert selector.name_reference_lines(text, re.compile(r"\bSETTING\b"),
+                                         selector.Scopes(ast.parse(text))) == {1}
+
+
+ARGPARSE_SRC = ('import argparse\n'
+                'parser = argparse.ArgumentParser(description="query")\n'
+                'parser.add_argument("--x", action="store_true", help="return the query")\n'
+                'args = parser.parse_args()\n')
+
+
+@pytest.mark.parametrize('before,after,expected', [
+    (ARGPARSE_SRC, ARGPARSE_SRC.replace('return the query', 'print the query'), True),
+    (ARGPARSE_SRC, ARGPARSE_SRC.replace('return the query', '%(unknown)s'), False),
+    (ARGPARSE_SRC, ARGPARSE_SRC.replace('return the query', 'café'), False),
+    (ARGPARSE_SRC, ARGPARSE_SRC.replace('"--x"', '"--y"'), False),
+    (ARGPARSE_SRC.replace('action="store_true"', 'action=Custom'),
+     ARGPARSE_SRC.replace('action="store_true"', 'action=Custom').replace('return the query', 'print the query'), False),
+    (ARGPARSE_SRC.replace('description="query"', 'formatter_class=Custom'),
+     ARGPARSE_SRC.replace('description="query"', 'formatter_class=Custom').replace('return the query', 'print the query'), False),
+    (ARGPARSE_SRC.replace('args = ', 'escaped = parser\nargs = '),
+     ARGPARSE_SRC.replace('args = ', 'escaped = parser\nargs = ').replace('return the query', 'print the query'), False),
+    (ARGPARSE_SRC.replace('args = ', 'parser.register("action", "store_true", Custom)\nargs = '),
+     ARGPARSE_SRC.replace('args = ', 'parser.register("action", "store_true", Custom)\nargs = ').replace('return the query', 'print the query'), False),
+    (ARGPARSE_SRC.replace('args = ', 'parser = Custom()\nargs = '),
+     ARGPARSE_SRC.replace('args = ', 'parser = Custom()\nargs = ').replace('return the query', 'print the query'), False),
+    (ARGPARSE_SRC.replace('args = ', 'argparse.ArgumentParser = Custom\nargs = '),
+     ARGPARSE_SRC.replace('args = ', 'argparse.ArgumentParser = Custom\nargs = ').replace('return the query', 'print the query'), False),
+])
+def test_stock_argparse_help_proof(before, after, expected):
+    import ast
+    assert load_selector().argparse_help_only(ast.parse(before), ast.parse(after)) is expected
+
+
+def test_argparse_help_keeps_observed_module_conservative(sandbox):
+    run, src = sandbox
+    (src / 'sqlglot/other.py').write_text(ARGPARSE_SRC)
+    answers, why, _ = run({'help': diff('sqlglot/other.py', ARGPARSE_SRC,
+                         ARGPARSE_SRC.replace('return the query', 'print the query'))})
+    assert answers['help'] == ALL, why
+
+
+def test_argparse_help_narrows_only_unobserved_module(sandbox):
+    run, src = sandbox
+    (src / 'sqlglot/unused.py').write_text(ARGPARSE_SRC)
+    answers, why, _ = run({'help': diff('sqlglot/unused.py', ARGPARSE_SRC,
+                         ARGPARSE_SRC.replace('return the query', 'print the query'))})
+    assert answers['help'] == set(), why
+
+
+@pytest.mark.parametrize('before,after', [
+    (ARGPARSE_SRC, ARGPARSE_SRC.replace('return the query', 'print the query')),
+    (SET_ATTR, SET_ATTR.replace('"between"', '"betweenx"')),
+])
+def test_literal_import_proofs_do_not_cross_another_changed_file(sandbox, before, after):
+    run, src = sandbox
+    (src / 'sqlglot/unused.py').write_text(before)
+    dependency = CORE.replace('    return 1', '    import sqlglot.unused\n    return 1')
+    patch = diff('sqlglot/unused.py', before, after) + diff('sqlglot/core.py', CORE, dependency)
+    answers, why, _ = run({'joint': patch})
+    assert answers['joint'] == ALL, why
+
+
+@pytest.mark.parametrize('imported_line,expected', [(3, set()), (4, ALL)])
+def test_argparse_help_import_registration_is_distinct_from_reading(sandbox, imported_line, expected):
+    run, src = sandbox
+    (src / 'sqlglot/unused.py').write_text(ARGPARSE_SRC)
+    with gzip.open(run.env['MAP_PATH'], 'rt') as f:
+        mapping = json.load(f)
+    mapping['import_lines']['sqlglot/unused.py'] = [imported_line]
+    with gzip.open(run.env['MAP_PATH'], 'wt') as f:
+        json.dump(mapping, f)
+    answers, why, _ = run({'help': diff('sqlglot/unused.py', ARGPARSE_SRC,
+                         ARGPARSE_SRC.replace('return the query', 'print the query'))})
+    assert answers['help'] == expected, why
+
+
 # ---------------------------------------------------------------- comparison profile
 
 CMP_SRC = (

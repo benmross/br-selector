@@ -1,0 +1,12 @@
+diff --git a/sqlglot/dialects/clickhouse.py b/sqlglot/dialects/clickhouse.py
+--- a/sqlglot/dialects/clickhouse.py
++++ b/sqlglot/dialects/clickhouse.py
+@@ -107,7 +107,7 @@
+             "ENUM8": TokenType.ENUM8,
+             "ENUM16": TokenType.ENUM16,
+             "EXCHANGE": TokenType.COMMAND,
+-            "FINAL": TokenType.FINAL,
++            "final": TokenType.FINAL,
+             "FIXEDSTRING": TokenType.FIXEDSTRING,
+             "FLOAT32": TokenType.FLOAT,
+             "FLOAT64": TokenType.DOUBLE,
