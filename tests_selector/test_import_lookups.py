@@ -76,3 +76,25 @@ def test_import_time_regex_that_no_longer_compiles():
     node = tree.body[1]
     assert sel.bad_regex_at_import(node, 2, [2], ast.parse(bad), _FP(before, bad))
     assert not sel.bad_regex_at_import(node, 2, [2], ast.parse(good), _FP(before, good))
+
+
+def _changed(before, after):
+    return sel.changed_call_at_import(ast.parse(after), _FP(before, after))
+
+
+def test_import_time_parse_literal_selects_importers():
+    before = 'X = exp.maybe_parse("(1 - 1)")\n'
+    assert _changed(before, before.replace("(1 - 1)", "(1 - 2)"))
+
+
+def test_factory_literal_and_lambda_body_do_not_count():
+    before = 'T = {1: rename_func("A"), 2: lambda s, e: exp.maybe_parse("x")}\n'
+    assert not _changed(before, before.replace('"A"', '"B"'))
+    assert not _changed(before, before.replace('"x"', '"y"'))
+
+
+def test_evaluable_literal_calls_are_proved_or_flagged():
+    before = 'N = int("10")\nF = "%s-%s" % ("a", "b")\n'
+    assert not _changed(before, before.replace('"10"', '"11"'))
+    assert _changed(before, before.replace('"10"', '"1x"'))
+    assert _changed(before, before.replace('("a", "b")', '("a",)'))

@@ -84,6 +84,14 @@
    "kind": "import_time_regex_literal",
    "file": "sqlglot/generators/duckdb.py"
   },
+  "t15x023": {
+   "kind": "import_time_parse_literal",
+   "file": "sqlglot/generators/duckdb.py"
+  },
+  "t15x024": {
+   "kind": "import_time_type_string",
+   "file": "sqlglot/typing/hive.py"
+  },
   "t15x021": {
    "kind": "lambda_body_parser_table",
    "file": "sqlglot/parser.py"
