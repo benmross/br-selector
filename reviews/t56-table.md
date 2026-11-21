@@ -25,12 +25,12 @@
 | t56x006 | 4 | Trino FUNCTION_PARSERS key LISTAGG renamed LIST_AGG (Athena inherits; anonymize reads it) | 4 | 95 | 7.0 | 36.8 | yes | no |
 | t56x007 | 4 | Oracle FUNCTION_PARSERS key LISTAGG renamed LIST_AGG | 1 | 98 | 6.1 | 36.8 | yes | no |
 | t56x008 | 4 | Snowflake FUNCTION_PARSERS key LISTAGG renamed LIST_AGG | 1 | 276 | 9.1 | 36.8 | yes | no |
-| t56x009 | 4 | Hive FUNCTIONS key GET_JSON_OBJECT renamed GET_JSON (Spark2/Spark/Databricks inherit) | unlabeled | 307 | 10.9 | 36.8 | yes | - |
-| t56x010 | 4 | Hive FUNCTIONS key DATE_FORMAT renamed DATEFORMAT (Spark family inherits) | unlabeled | 307 | 10.9 | 36.8 | yes | - |
-| t56x011 | 4 | MySQL FUNCTIONS DATE_FORMAT lambda reads Dialect["mysql"] changed to Dialect["doris"] | unlabeled | 298 | 9.8 | 36.8 | yes | - |
-| t56x012 | 4 | Snowflake FUNCTIONS key ARRAY_TO_STRING renamed ARRAY_TOSTRING | unlabeled | 323 | 9.6 | 36.8 | yes | - |
+| t56x009 | 4 | Hive FUNCTIONS key GET_JSON_OBJECT renamed GET_JSON (Spark2/Spark/Databricks inherit) | 7 | 307 | 10.9 | 36.8 | yes | no |
+| t56x010 | 4 | Hive FUNCTIONS key DATE_FORMAT renamed DATEFORMAT (Spark family inherits) | 2 | 307 | 10.9 | 36.8 | yes | no |
+| t56x011 | 4 | MySQL FUNCTIONS DATE_FORMAT lambda reads Dialect["mysql"] changed to Dialect["doris"] | 0 | 298 | 9.8 | 36.8 | yes | no |
+| t56x012 | 4 | Snowflake FUNCTIONS key ARRAY_TO_STRING renamed ARRAY_TOSTRING | 2 | 323 | 9.6 | 36.8 | yes | no |
 | t56x013 | 4 | Postgres FUNCTION_PARSERS key DATE_PART renamed DATEPART (Redshift/Materialize/RisingWave inherit) | 4 | 224 | 10.0 | 36.8 | yes | no |
-| t56x014 | 4 | Postgres FUNCTION_PARSERS key JSONB_EXISTS renamed JSONB_KEY_EXISTS | unlabeled | 224 | 10.0 | 36.8 | yes | - |
+| t56x014 | 4 | Postgres FUNCTION_PARSERS key JSONB_EXISTS renamed JSONB_KEY_EXISTS | 1 | 224 | 10.0 | 36.8 | yes | no |
 | t56x015 | 4 | Postgres PROPERTY_PARSERS key TABLESPACE renamed TABLE_SPACE | 1 | 219 | 10.0 | 36.8 | yes | no |
 | t56x016 | 4 | Oracle NO_PAREN_FUNCTION_PARSERS key SYSDATE renamed SYS_DATE | 2 | 93 | 6.1 | 36.8 | yes | no |
 | t56x017 | 4 | Oracle FUNCTION_PARSERS key TO_NUMBER renamed TONUMBER | 1 | 98 | 6.1 | 36.8 | yes | no |
@@ -50,7 +50,7 @@
 | t56x031 | 4 | executor ENV key FIRST renamed FIRST_VALUE (lambda value) | unlabeled | 1620 | 36.8 | 36.8 | yes | - |
 | t56x032 | 4 | executor ENV key IF renamed IIF (lambda value) | unlabeled | 1620 | 36.8 | 36.8 | yes | - |
 | t56x033 | 4 | Postgres FUNCTIONS JSON_EXTRACT_PATH_TEXT key renamed JSON_EXTRACT_PATH_TXT (value is a build_ call) | 4 | 285 | 10.4 | 36.8 | yes | no |
-| t56x034 | 4 | Hive FUNCTIONS key LAST_VALUE renamed LASTVALUE (value build_with_ignore_nulls call) | unlabeled | 307 | 10.9 | 36.8 | yes | - |
+| t56x034 | 4 | Hive FUNCTIONS key LAST_VALUE renamed LASTVALUE (value build_with_ignore_nulls call) | 2 | 307 | 10.9 | 36.8 | yes | no |
 | t56x035 | 4 | executor ENV key ORD renamed ASCII (value null_if_any(ord) call) | unlabeled | 1620 | 36.8 | 36.8 | yes | - |
 | t56x062 | 4 | generator.py AFTER_HAVING_MODIFIER_TRANSFORMS key windows renamed window (BigQuery subscripts ["windows"] at import) | unlabeled | 1620 | 36.8 | 36.8 | yes | - |
 | t56x063 | 4 | base FUNCTION_PARSERS key TRY_CAST renamed TRYCAST (Teradata subscripts ["TRY_CAST"] at import) | unlabeled | 1620 | 36.8 | 36.8 | yes | - |
