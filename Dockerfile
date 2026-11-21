@@ -11,8 +11,9 @@ t.extractall('/opt', filter='data')" \
  && (python -m compileall -q /opt/sqlglot/sqlglot /opt/sqlglot/tests || true) \
  && chmod -R a+rX /opt/sqlglot
 
-# Which comparison-operator swaps changed any result while the suite ran (tools/build_cmp.py).
-COPY selector.py map.json.gz cmp.json.gz /app/
+# Which comparison-operator swaps changed any result while the suite ran (tools/build_cmp.py),
+# and which keys of class-level callable tables each test probed (tools/key_trace.py).
+COPY selector.py map.json.gz cmp.json.gz keys.json.gz /app/
 # Index where each class or module setting is read, from the original source.
 RUN SQLGLOT_SRC=/opt/sqlglot python /app/selector.py --index /app/index.json.gz && chmod -R a+rX /app
 ENV PYTHONDONTWRITEBYTECODE=1

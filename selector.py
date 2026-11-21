@@ -33,6 +33,9 @@ CMP = os.environ.get("CMP_PATH", os.path.join(os.path.dirname(os.path.abspath(__
 # Per-test narrowing of comparison swaps that change some results (off: only
 # swaps that change no result anywhere in the suite select nothing).
 CMP_PER_TEST = os.environ.get("CMP_PER_TEST", "0") == "1"
+# Per-test keys probed in class-level callable tables (tools/key_trace.py).
+KEYS = os.environ.get("KEYS_PATH", os.path.join(os.path.dirname(os.path.abspath(__file__)), "keys.json.gz"))
+KEY_TABLES = ("FUNCTIONS", "FUNCTION_PARSERS", "TRANSFORMS")
 WORKER_MS = 2000
 MAX_WORKERS = 8
 # The scorer stops a run at 180 s of wall time. Analysis stops at 150 s. The
@@ -820,6 +823,12 @@ class Selector:
                     got = self.cov(path, body)
                     why.append(f"{path}:{line} definition header of {node.name}: callers {len(got)}")
                     out |= got | self.at_import(path, body, why)
+                self._old_tree = old_tree
+                keyed = self.key_table_selection(path, module, cls, node, start, end, new_tree, line, why)
+                if keyed is not None:
+                    out |= keyed
+                    import_level = True
+                    continue
                 out |= self.cov(path, range(start, end + 1))
                 out |= self.module_level(path, module, cls, why, line, node)
                 out |= self.qualified_consumers(cls, node, why, path=path)
@@ -852,6 +861,233 @@ class Selector:
             # Only the changed lambda scopes can observe their values.
             out = set(self._runtime_string_users)
         out |= self._literal_extra_users
+        return out
+
+    _keys = False
+
+    def key_data(self):
+        if Selector._keys is False:
+            try:
+                with gzip.open(KEYS, "rt") as f:
+                    Selector._keys = json.load(f)
+            except Exception:
+                Selector._keys = None
+        return Selector._keys
+
+    def key_table_selection(self, path, module, cls, node, start, end, new_tree, line, why):
+        """One entry of a class-level callable table changed (Parser FUNCTIONS or
+        FUNCTION_PARSERS, Generator TRANSFORMS): the tests that can observe it.
+
+        The table's literal runs at import, so line coverage credits it to no
+        test and module_level keeps every user of the class. tools/key_trace.py
+        recorded, per test, the keys probed in every class's own table (hits
+        and misses, generator dispatch included) and whole-table reads, plus
+        which tables hold the same value object (subclass splats, filtered
+        comprehensions, aliases). An edit of keys K keeps: tests that probed K
+        in this table or a subclass table, tests that probed any key holding
+        the old entry's object anywhere, whole-table readers of those tables,
+        tests whose coverage runs the old entry's lines (lambda bodies), tests
+        whose own code reads the attribute, and from today's selection the
+        tests the trace could not see. Returns None, keeping today's
+        selection, for anything else: other statements, computed keys,
+        changed splats, duplicate keys, entries absent at run time, probes
+        during collection, import-time readers outside the traced tables."""
+        if not cls or not isinstance(node, (ast.Assign, ast.AnnAssign)) or table_literal(node.value) is None:
+            return None
+        names = assigned_names(node)
+        if not names or len(names) != 1 or next(iter(names)) not in KEY_TABLES:
+            return None
+        attr = next(iter(names))
+        K = self.key_data()
+        name = f"{module}:{cls}.{attr}"
+        if not K or name not in K.get("tables", {}):
+            return None
+        cache = self.__dict__.setdefault("_key_cache", {})
+        if (name, start) in cache:
+            return set(cache[(name, start)])
+        res = self._key_table_selection(path, module, cls, node, start, end, new_tree, attr, name, K, why)
+        if res is None:
+            why.append(f"{path}:{start} {cls}.{attr}: key analysis declined, class users")
+        cache[(name, start)] = res
+        return None if res is None else set(res)
+
+    def _key_table_selection(self, path, module, cls, node, start, end, new_tree, attr, name, K, why):
+        def find_class(tree, qual):
+            body = tree.body
+            found = None
+            for part in qual.split("."):
+                found = [n for n in body if isinstance(n, ast.ClassDef) and n.name == part]
+                if len(found) != 1:
+                    return None
+                body = found[0].body
+            return found[0]
+        new_cls = find_class(new_tree, cls)
+        if new_cls is None:
+            return None
+        old_cls = find_class(self._old_tree, cls)
+        if old_cls is None:
+            return None
+
+        def binds(c):
+            return [n for n in c.body if isinstance(n, (ast.Assign, ast.AnnAssign)) and assigned_names(n) == {attr}]
+        new_nodes = [n for n in binds(new_cls) if table_literal(n.value) is not None]
+        if len(new_nodes) != 1 or [n for n in binds(old_cls) if table_literal(n.value) is not None] != [node]:
+            return None
+        new_node = new_nodes[0]
+        # Later rebinds may only filter the table by key, unchanged
+        # (Snowflake: FUNCTIONS = {k: v for k, v in FUNCTIONS.items() if ...}).
+        # A filtered-out entry is absent from the traced table.
+        old_re = [n for n in binds(old_cls) if n is not node]
+        new_re = [n for n in binds(new_cls) if n is not new_node]
+        if [ast.dump(n) for n in old_re] != [ast.dump(n) for n in new_re] \
+                or not all(is_key_filter(n.value, attr) for n in old_re):
+            return None
+        if table_literal(node.value)[1] != table_literal(new_node.value)[1]:
+            return None  # the comprehension around the literal changed
+        tgt = (lambda n: ast.dump(n.targets[0]) if isinstance(n, ast.Assign) else
+               ast.dump(n.target) + ast.dump(n.annotation))
+        if tgt(node) != tgt(new_node) or type(node) is not type(new_node):
+            return None
+        T = K["tables"][name]
+        prefixes = {k[:2] for k in T["g"]}
+        if len(prefixes) != 1:
+            return None
+        prefix = next(iter(prefixes))
+
+        def table_key(k):
+            if isinstance(k, ast.Constant) and isinstance(k.value, str):
+                return "s:" + k.value
+            if isinstance(k, ast.Attribute):
+                base = k.value
+                while isinstance(base, ast.Attribute):
+                    base = base.value
+                # exp.Foo: an expression class, recorded by its __name__
+                # (checked below against the classes named by their __name__)
+                if isinstance(base, ast.Name) and base.id in ("exp", "expressions"):
+                    return "t:" + k.attr
+            return None
+
+        def entries(d):
+            # key -> (dump of every value it is given, in order), node pairs
+            keyed, splats, before, dups = {}, [], {}, set()
+            for k, v in zip(d.keys, d.values):
+                if k is None:
+                    splats.append(ast.dump(v))
+                    continue
+                ks = table_key(k)
+                if ks is None or ks[:2] != prefix:
+                    return None
+                if ks in keyed:
+                    dups.add(ks)
+                    keyed[ks] = (keyed[ks][0] + "|" + ast.dump(v), keyed[ks][1], v)
+                else:
+                    keyed[ks] = (ast.dump(v), k, v)
+                before.setdefault(ks, []).append(len(splats))
+            return keyed, splats, before, dups
+        old_e, new_e = entries(table_literal(node.value)[0]), entries(table_literal(new_node.value)[0])
+        if old_e is None or new_e is None or old_e[1] != new_e[1]:
+            return None
+        (old_map, _, old_before, old_dups), (new_map, _, new_before, new_dups) = old_e, new_e
+        changed = {ks for ks in old_map.keys() | new_map.keys()
+                   if (old_map.get(ks) or (None,))[0] != (new_map.get(ks) or (None,))[0]
+                   or (ks in old_map and ks in new_map and old_before[ks] != new_before[ks])}
+        if not changed or changed & (old_dups | new_dups):
+            return None  # order or layout only, or a repeated key: keep today
+        # Any import-time read of this attribute outside the traced class
+        # tables (a module constant built from Parser.FUNCTIONS) holds values
+        # the trace cannot follow.
+        reads = (self.index or {}).get("@qualified_reads")
+        if reads is None:
+            return None
+        for rel, ln, chain in reads.get(attr, ()):
+            try:
+                with open(os.path.join(SRC, rel), encoding="utf-8") as f:
+                    sc = self._scopes(rel, f.read())
+            except (OSError, SyntaxError):
+                return None
+            st = sc.at(ln)
+            if st is None:
+                return None
+            if st[4]:
+                imp = self.import_lines.get(rel, ())
+                if ln in imp:
+                    # A function line that also ran while modules loaded (a
+                    # metaclass). Only the dialect metaclass's removal of
+                    # unsupported JSON path transforms is known: a removed
+                    # key is absent from the traced table, which keeps today.
+                    src_line = self._all_sources().get(rel, "").split("\n")[ln - 1]
+                    if ".pop(" not in src_line:
+                        return None
+                continue  # runtime read: probes the live table, traced
+            if not (st[5] and isinstance(st[3], (ast.Assign, ast.AnnAssign))
+                    and (assigned_names(st[3]) or set()) & set(KEY_TABLES)
+                    and f"{rel[:-3].replace('/', '.').removesuffix('.__init__')}:{st[5]}."
+                        f"{next(iter(assigned_names(st[3]) & set(KEY_TABLES)))}" in K["tables"]):
+                return None
+        # The class body itself may read the table by name after building
+        # it (a derived set or trie): that copy is not traced.
+        for tree_cls, skip in ((old_cls, [node] + old_re), (new_cls, [new_node] + new_re)):
+            for stmt in tree_cls.body:
+                if any(stmt is n for n in skip):
+                    continue
+                if any(isinstance(n, ast.Name) and n.id == attr for n in ast.walk(stmt)):
+                    return None
+        exp_names = set(K.get("exp_names", ()))
+        if any(ks.startswith("t:") and ks[2:] not in exp_names for ks in changed):
+            return None  # not an expression class recorded under that name
+        tables, glob = K["tables"], K.get("global", {})
+        me = f"{module}:{cls}"
+        derived = {t for t, v in tables.items() if t.endswith("." + attr) and me in v.get("mro", ())}
+        if name not in derived:
+            return None
+        ancestors = set(T.get("mro", ())[1:])
+        anc_gids = {g for t, v in tables.items() if t.endswith("." + attr)
+                    and t.rsplit(".", 1)[0] in ancestors for g in v["g"].values()}
+        own = {T["g"][ks] for ks in old_map if ks in T["g"]} - anc_gids
+        for t, v in tables.items():
+            if t.endswith("." + attr) and own & set(v["g"].values()):
+                derived.add(t)  # copies of this table outside its subclasses
+        keys_by_table = {}
+        for ks in changed:
+            if ks in old_map and ks not in T["g"]:
+                return None  # the literal's entry is gone at run time (popped, overridden)
+            for t in derived:
+                keys_by_table.setdefault(t, set()).add(ks)
+            gid = T["g"].get(ks) if ks in old_map else None
+            if gid is not None:
+                for t, v in tables.items():
+                    for k2, g2 in v["g"].items():
+                        if g2 == gid:
+                            keys_by_table.setdefault(t, set()).add(k2)
+        sel = set()
+        for t, ks in keys_by_table.items():
+            gl = glob.get(t)
+            if gl and (gl.get("w") or set(gl.get("p", ())) & ks):
+                why.append(f"{path}:{start} {t} read during collection, keep class users")
+                return None
+            v = tables.get(t, {})
+            sel |= set(v.get("w", ()))
+            for k in ks:
+                sel |= set(v.get("p", {}).get(k, ()))
+        probed = len(sel)
+        entry = set()
+        for ks in changed & old_map.keys():
+            _, k, v = old_map[ks]
+            entry |= self.cov(path, range(k.lineno, v.end_lineno + 1))
+        _, test_readers = self.readers({attr})
+        # Today's selection, for the tests the trace cannot see.
+        saved = set(self.pending_shared)
+        scratch = []
+        today = self.cov(path, range(start, end + 1), mark_shared=False) \
+            | self.module_level(path, module, cls, scratch, start, node) \
+            | self.qualified_consumers(cls, node, scratch, path=path)
+        self.pending_shared = saved
+        unseen = (self.all - set(K.get("ran", ()))) | set(K.get("spawn", ()))
+        kept = today & unseen
+        out = sel | entry | test_readers | kept
+        why.append(f"{path}:{start} {cls}.{attr} entries {','.join(sorted(changed))[:120]}: "
+                   f"probed {probed}, entry lines {len(entry)}, test readers {len(test_readers)}, "
+                   f"untraced {len(kept)}; {len(out)} of today's {len(today)}")
         return out
 
     def dedented_blocks(self, fp, old_text, scopes, path, why):
@@ -1423,6 +1659,41 @@ class Selector:
         if path.startswith("sqlglot/"):
             return set(self.all)
         return self.test_importers(path)
+
+
+def table_literal(value):
+    """The dict literal of a class table and a dump of what surrounds it:
+    {...}, or {k: v for k, v in {...}.items() if <filter>} (Spark's
+    TRANSFORMS). None for anything else."""
+    if isinstance(value, ast.Dict):
+        return value, "dict"
+    if isinstance(value, ast.DictComp) and len(value.generators) == 1:
+        g = value.generators[0]
+        it = g.iter
+        if (isinstance(g.target, ast.Tuple) and len(g.target.elts) == 2
+                and all(isinstance(e, ast.Name) for e in g.target.elts)
+                and isinstance(value.key, ast.Name) and value.key.id == g.target.elts[0].id
+                and isinstance(value.value, ast.Name) and value.value.id == g.target.elts[1].id
+                and not g.is_async and isinstance(it, ast.Call) and not it.args and not it.keywords
+                and isinstance(it.func, ast.Attribute) and it.func.attr == "items"
+                and isinstance(it.func.value, ast.Dict)):
+            return it.func.value, ast.dump(ast.DictComp(key=value.key, value=value.value, generators=[
+                ast.comprehension(target=g.target, iter=ast.Constant(None), ifs=g.ifs, is_async=0)]))
+    return None
+
+
+def is_key_filter(value, attr):
+    """{k: v for k, v in ATTR.items() if <filter>}: a copy without some keys."""
+    if not (isinstance(value, ast.DictComp) and len(value.generators) == 1):
+        return False
+    g = value.generators[0]
+    it = g.iter
+    return (isinstance(g.target, ast.Tuple) and len(g.target.elts) == 2
+            and all(isinstance(e, ast.Name) for e in g.target.elts)
+            and isinstance(value.key, ast.Name) and value.key.id == g.target.elts[0].id
+            and isinstance(value.value, ast.Name) and value.value.id == g.target.elts[1].id
+            and isinstance(it, ast.Call) and isinstance(it.func, ast.Attribute) and it.func.attr == "items"
+            and isinstance(it.func.value, ast.Name) and it.func.value.id == attr and not it.args)
 
 
 def _dump(v):
