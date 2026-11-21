@@ -1,0 +1,12 @@
+diff --git a/sqlglot/errors.py b/sqlglot/errors.py
+--- a/sqlglot/errors.py
++++ b/sqlglot/errors.py
+@@ -14,7 +14,7 @@
+ 
+ class ErrorLevel(AutoName):
+     IGNORE = auto()
+-    """Ignore all errors."""
++    """Ignore all errors. T46_DOCSTRING_ADVERSARY"""
+ 
+     WARN = auto()
+     """Log all errors."""

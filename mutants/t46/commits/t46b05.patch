@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/mysql.py b/sqlglot/generators/mysql.py
+--- a/sqlglot/generators/mysql.py
++++ b/sqlglot/generators/mysql.py
+@@ -332,7 +332,7 @@
+         exp.DType.TEXT: "CHAR",
+         exp.DType.TINYBLOB: "CHAR",
+         exp.DType.TINYTEXT: "CHAR",
+-        exp.DType.VARCHAR: "CHAR",
++        exp.DType.VARCHAR: "T46_VARCHAR",
+         exp.DType.BIGINT: "SIGNED",
+         exp.DType.BOOLEAN: "SIGNED",
+         exp.DType.INT: "SIGNED",

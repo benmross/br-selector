@@ -1,0 +1,12 @@
+diff --git a/sqlglot/__init__.py b/sqlglot/__init__.py
+--- a/sqlglot/__init__.py
++++ b/sqlglot/__init__.py
+@@ -71,7 +71,7 @@
+ 
+ 
+ pretty = False
+-"""Whether to format generated SQL by default."""
++"""Whether to format generated SQL by default. T46_DOCSTRING_ADVERSARY"""
+ 
+ 
+ def tokenize(sql: str, read: DialectType = None, dialect: DialectType = None) -> list[Token]:

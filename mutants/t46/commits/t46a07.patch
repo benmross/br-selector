@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/oracle.py b/sqlglot/generators/oracle.py
+--- a/sqlglot/generators/oracle.py
++++ b/sqlglot/generators/oracle.py
+@@ -76,7 +76,7 @@
+         exp.Pivot: transforms.preprocess([transforms.unqualify_pivot_fields]),
+         exp.GroupConcat: lambda self, e: groupconcat_sql(self, e, on_overflow=True),
+         exp.DateStrToDate: lambda self, e: self.func(
+-            "TO_DATE", e.this, exp.Literal.string("YYYY-MM-DD")
++            'T46_ORACLE_TO_DATE', e.this, exp.Literal.string("YYYY-MM-DD")
+         ),
+         exp.DateTrunc: date_trunc_to_trunc_sql,
+         exp.EuclideanDistance: rename_func("L2_DISTANCE"),

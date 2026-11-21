@@ -1,0 +1,12 @@
+diff --git a/sqlglot/tokens.py b/sqlglot/tokens.py
+--- a/sqlglot/tokens.py
++++ b/sqlglot/tokens.py
+@@ -389,7 +389,7 @@
+         "ROW": TokenType.ROW,
+         "ROWS": TokenType.ROWS,
+         "SCHEMA": TokenType.SCHEMA,
+-        "SELECT": TokenType.SELECT,
++        "T46_SELECT": TokenType.SELECT,
+         "SEMI": TokenType.SEMI,
+         "SESSION": TokenType.SESSION,
+         "SESSION_USER": TokenType.SESSION_USER,

@@ -1,0 +1,169 @@
+{
+  "commits": {
+    "t46a00": {
+      "kind": "a lambda body",
+      "path": "sqlglot/generator.py",
+      "proof_challenge": "wrong runtime name or SQL; base/subclass copies must retain lambda coverage"
+    },
+    "t46a01": {
+      "kind": "a lambda body",
+      "path": "sqlglot/generators/bigquery.py",
+      "proof_challenge": "wrong runtime name or SQL; base/subclass copies must retain lambda coverage"
+    },
+    "t46a02": {
+      "kind": "a lambda body",
+      "path": "sqlglot/generators/duckdb.py",
+      "proof_challenge": "wrong runtime name or SQL; base/subclass copies must retain lambda coverage"
+    },
+    "t46a03": {
+      "kind": "a lambda body",
+      "path": "sqlglot/generators/presto.py",
+      "proof_challenge": "wrong runtime name or SQL; base/subclass copies must retain lambda coverage"
+    },
+    "t46a04": {
+      "kind": "a lambda body",
+      "path": "sqlglot/generators/postgres.py",
+      "proof_challenge": "wrong runtime name or SQL; base/subclass copies must retain lambda coverage"
+    },
+    "t46a05": {
+      "kind": "a lambda body",
+      "path": "sqlglot/generators/redshift.py",
+      "proof_challenge": "wrong runtime name or SQL; base/subclass copies must retain lambda coverage"
+    },
+    "t46g00": {
+      "kind": "g inert string",
+      "path": "sqlglot/__init__.py",
+      "proof_challenge": "docstring consumer/enum/metaclass must not change behavior"
+    },
+    "t46g01": {
+      "kind": "g inert string",
+      "path": "sqlglot/errors.py",
+      "proof_challenge": "docstring consumer/enum/metaclass must not change behavior"
+    },
+    "t46g02": {
+      "kind": "g inert string",
+      "path": "sqlglot/dialects/dialect.py",
+      "proof_challenge": "docstring consumer/enum/metaclass must not change behavior"
+    },
+    "t46g03": {
+      "kind": "g inert string",
+      "path": "sqlglot/dialects/dialect.py",
+      "proof_challenge": "docstring consumer/enum/metaclass must not change behavior"
+    },
+    "t46g04": {
+      "kind": "g inert string",
+      "path": "sqlglot/expressions/core.py",
+      "proof_challenge": "docstring consumer/enum/metaclass must not change behavior"
+    },
+    "t46g05": {
+      "kind": "g inert string",
+      "path": "sqlglot/optimizer/__init__.py",
+      "proof_challenge": "docstring consumer/enum/metaclass must not change behavior"
+    },
+    "t46b00": {
+      "kind": "b table value",
+      "path": "sqlglot/generators/redshift.py",
+      "proof_challenge": "type-name runtime consumers, aliases and cross-dialect casts"
+    },
+    "t46b01": {
+      "kind": "b table value",
+      "path": "sqlglot/generators/presto.py",
+      "proof_challenge": "type-name runtime consumers, aliases and cross-dialect casts"
+    },
+    "t46b02": {
+      "kind": "b table value",
+      "path": "sqlglot/generators/postgres.py",
+      "proof_challenge": "type-name runtime consumers, aliases and cross-dialect casts"
+    },
+    "t46b03": {
+      "kind": "b table value",
+      "path": "sqlglot/generators/duckdb.py",
+      "proof_challenge": "type-name runtime consumers, aliases and cross-dialect casts"
+    },
+    "t46b04": {
+      "kind": "b table value",
+      "path": "sqlglot/generators/bigquery.py",
+      "proof_challenge": "type-name runtime consumers, aliases and cross-dialect casts"
+    },
+    "t46b05": {
+      "kind": "b table value",
+      "path": "sqlglot/generators/mysql.py",
+      "proof_challenge": "type-name runtime consumers, aliases and cross-dialect casts"
+    },
+    "t46c00": {
+      "kind": "c table key",
+      "path": "sqlglot/dialects/redshift.py",
+      "proof_challenge": "token trie, cross-dialect imports and required popped keys"
+    },
+    "t46c01": {
+      "kind": "c table key",
+      "path": "sqlglot/dialects/duckdb.py",
+      "proof_challenge": "token trie, cross-dialect imports and required popped keys"
+    },
+    "t46c02": {
+      "kind": "c table key",
+      "path": "sqlglot/dialects/snowflake.py",
+      "proof_challenge": "token trie, cross-dialect imports and required popped keys"
+    },
+    "t46c03": {
+      "kind": "c table key",
+      "path": "sqlglot/dialects/tsql.py",
+      "proof_challenge": "token trie, cross-dialect imports and required popped keys"
+    },
+    "t46c04": {
+      "kind": "c table key",
+      "path": "sqlglot/dialects/bigquery.py",
+      "proof_challenge": "token trie, cross-dialect imports and required popped keys"
+    },
+    "t46c05": {
+      "kind": "c table key",
+      "path": "sqlglot/tokens.py",
+      "proof_challenge": "token trie, cross-dialect imports and required popped keys"
+    },
+    "t46a06": {
+      "kind": "a lambda body",
+      "path": "sqlglot/generators/snowflake.py",
+      "proof_challenge": "subclass dispatch callback after table copies"
+    },
+    "t46g06": {
+      "kind": "g inert string",
+      "path": "sqlglot/errors.py",
+      "proof_challenge": "attribute documentation has no __doc__ value consumer"
+    },
+    "t46r00": {
+      "kind": "b stored rename factory",
+      "path": "sqlglot/generators/bigquery.py",
+      "proof_challenge": "closure capture, inherited dispatch, runtime function name formatting"
+    },
+    "t46r01": {
+      "kind": "b stored rename factory",
+      "path": "sqlglot/generators/clickhouse.py",
+      "proof_challenge": "closure capture, inherited dispatch, runtime function name formatting"
+    },
+    "t46r02": {
+      "kind": "b stored rename factory",
+      "path": "sqlglot/generators/snowflake.py",
+      "proof_challenge": "closure capture, inherited dispatch, runtime function name formatting"
+    },
+    "t46r03": {
+      "kind": "b stored rename factory",
+      "path": "sqlglot/generators/mysql.py",
+      "proof_challenge": "closure capture, inherited dispatch, runtime function name formatting"
+    },
+    "t46r04": {
+      "kind": "b stored rename factory",
+      "path": "sqlglot/generators/presto.py",
+      "proof_challenge": "closure capture, inherited dispatch, runtime function name formatting"
+    },
+    "t46r05": {
+      "kind": "b stored rename factory",
+      "path": "sqlglot/generators/duckdb.py",
+      "proof_challenge": "closure capture, inherited dispatch, runtime function name formatting"
+    },
+    "t46a07": {
+      "kind": "a lambda body",
+      "path": "sqlglot/generators/oracle.py",
+      "proof_challenge": "runtime helper name corruption in a distinct stored callback"
+    }
+  }
+}

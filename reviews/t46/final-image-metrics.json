@@ -1,0 +1,56 @@
+{
+  "sample1": {
+    "cpu_s": 1.656646,
+    "n": 30,
+    "selection_s": 116.857,
+    "host_cost_differences": []
+  },
+  "sample2": {
+    "cpu_s": 1.723169,
+    "n": 30,
+    "selection_s": 116.857,
+    "host_cost_differences": []
+  },
+  "sample3": {
+    "cpu_s": 1.666987,
+    "n": 30,
+    "selection_s": 116.857,
+    "host_cost_differences": []
+  },
+  "t41": {
+    "cpu_s": 22.065249,
+    "n": 82,
+    "selection_s": 1721.508,
+    "host_cost_differences": []
+  },
+  "t46": {
+    "cpu_s": 11.358935,
+    "n": 33,
+    "selection_s": 397.708,
+    "host_cost_differences": []
+  },
+  "tracked": {
+    "cpu_s": 73.518525,
+    "n": 424,
+    "selection_s": 6984.938,
+    "host_cost_differences": []
+  },
+  "hid": {
+    "cpu_s": 20.389776,
+    "n": 400,
+    "selection_s": 3445.519,
+    "host_cost_differences": []
+  },
+  "fresha": {
+    "cpu_s": 58.807158,
+    "n": 150,
+    "selection_s": 3358.298,
+    "host_cost_differences": []
+  },
+  "freshb": {
+    "cpu_s": 14.096923,
+    "n": 50,
+    "selection_s": 556.021,
+    "host_cost_differences": []
+  }
+}

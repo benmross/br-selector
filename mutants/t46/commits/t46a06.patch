@@ -1,0 +1,12 @@
+diff --git a/sqlglot/generators/snowflake.py b/sqlglot/generators/snowflake.py
+--- a/sqlglot/generators/snowflake.py
++++ b/sqlglot/generators/snowflake.py
+@@ -418,7 +418,7 @@
+         exp.ArrayAppend: array_append_sql("ARRAY_APPEND"),
+         exp.ArrayPrepend: array_append_sql("ARRAY_PREPEND"),
+         exp.ArrayContains: lambda self, e: self.func(
+-            "ARRAY_CONTAINS",
++            'T46_CALLBACK_ARRAY_CONTAINS',
+             e.expression
+             if e.args.get("ensure_variant") is False
+             else exp.cast(e.expression, exp.DType.VARIANT, copy=False),
