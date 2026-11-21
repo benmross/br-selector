@@ -29,9 +29,16 @@ def run_suite():
     )
     failing = set()
     for line in r.stdout.splitlines():
+        if not line.startswith(("FAILED", "ERROR", "SUBFAILED")):
+            continue
+        # pytest 9 writes SUBFAILED[<subtest description, may hold spaces>]
+        # (params) <test id> - message: take the test id token itself
+        ids = re.findall(r"(?<!\S)(tests/[^\s\[]+\.py(?:::[^\s\[]+)?)", line)
         m = re.match(r"(?:FAILED|ERROR|SUBFAILED)\S*\s+(\S+?)(?:\s+-\s.*)?$", line)
-        if m:
-            nid = m.group(1).split("[", 1)[0] if m.group(1).split("[", 1)[0] in tests else m.group(1)
+        if ids or m:
+            known = [i for i in ids if i.split("[", 1)[0] in tests]
+            raw = known[0] if known else ids[0] if ids else m.group(1)
+            nid = raw.split("[", 1)[0] if raw.split("[", 1)[0] in tests else raw
             if nid in tests:
                 failing.add(tests[nid])
             elif "::" not in nid:  # a whole file failed to import
