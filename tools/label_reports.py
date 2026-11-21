@@ -29,6 +29,18 @@ def report_failures(prefix, tests):
     return failure_numbers(ids, tests)
 
 
+def startup_failures(text, returncode, src, tests):
+    """A patched shadow module can stop pytest before plugins are imported.
+
+    Only a real Python traceback through the overlay qualifies; argument,
+    timeout and infrastructure failures remain errors rather than labels.
+    """
+    if returncode in (1, 2) and 'Traceback (most recent call last):' in text \
+            and re.search(r'File [\"\']' + re.escape(src.rstrip('/') + '/'), text):
+        return set(tests.values())
+    return None
+
+
 def summary_failures(text, tests):
     """Recover saved pytest 9 summaries, including multiline SQL subtest tags."""
     summary = text.rsplit("short test summary info", 1)[-1]

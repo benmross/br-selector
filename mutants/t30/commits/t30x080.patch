@@ -1,0 +1,12 @@
+diff --git a/tests/dialects/test_dialect.py b/tests/dialects/test_dialect.py
+--- a/tests/dialects/test_dialect.py
++++ b/tests/dialects/test_dialect.py
+@@ -6115,7 +6115,7 @@
+             result = parse_one("SELECT MY_CUSTOM_FUNC(a)", dialect="snowflake")
+             self.assertIsInstance(result.find(exp.Length), exp.Length)
+         finally:
+-            Snowflake.parser_class = original
++            Snowflake.parser_class = Dialect.parser_class
+ 
+     @unittest.skipIf(_PARSER_IS_COMPILED, "mypyc compiled parsers cannot be subclassed")
+     def test_custom_dialect(self):

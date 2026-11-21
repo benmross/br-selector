@@ -1,0 +1,48 @@
+{
+  "baseline_failure_keys": [
+    [
+      "SUBFAILED",
+      "tpc-ds 88",
+      "tests/test_executor.py::TestExecutor::test_execute_tpcds"
+    ]
+  ],
+  "added_after_subtest_reconciliation": {
+    "t30x014": [
+      1106
+    ],
+    "t30x015": [
+      1106
+    ],
+    "t30x016": [
+      1106
+    ],
+    "t30x025": [
+      1106
+    ],
+    "t30x036": [
+      1106
+    ],
+    "t30x045": [
+      1106
+    ],
+    "t30x048": [
+      1106
+    ]
+  },
+  "deselected": [
+    1490
+  ],
+  "reason": "Pinned max_nodes OOMs alone with the required 1 GiB cap",
+  "baseline_environment_failure": "TPC-DS 88 exceeds DuckDB reference execution memory (819 MiB); other new subtest failures are counted",
+  "broad_numbered_tests": 1619,
+  "smoke_failure_counts_are_lower_bounds": true,
+  "additional_mutant_exclusions": {
+    "t30x044": [
+      "tests/test_executor.py::TestExecutor::test_execute_tpcds"
+    ]
+  },
+  "container": "python:3.13-slim@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90",
+  "cpuset": "8-9",
+  "memory_bytes": 1073741824,
+  "pytest_workers": 0
+}

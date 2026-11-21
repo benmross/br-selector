@@ -1,17 +1,18 @@
-# t30 handoff
+# Handoff
 
-Model gpt-6.1-sol. Baseline be28115d6b491536992e294aff9ae9b1d2a27dee.
-Branch w/t30. Started 07:15 UTC, hard stop 09:45 UTC.
+Model: gpt-6.1-sol. Baseline be28115d6b491536992e294aff9ae9b1d2a27dee.
+All 83 mutants are labeled. Five baseline misses are fixed by two rules that
+only widen. Original nine measurement sets retain identical selections/costs.
+The t30 simulated total improves from 3344.690 s to 2153.452 s, five misses to
+zero. 161 selector tests and 22 tools tests pass. Sources restored by checksum.
 
-76 mutants generated. Legion br-label-t30 on CPUs 8–9, 1 GiB memory and swap,
-2 pytest workers. Parser max_nodes (1490) explicitly deselected: it OOMs alone
-in a fresh 1 GiB container; OOM attempts were discarded. All other 1619 numbered
-tests included. Structured labels pending; no proven miss claimed yet.
+Legion label container exited 0, no running label job. CPUs 8–9, 1 GiB. Scope
+limits (1490, DuckDB query 88, selected OOM case 44, smoke controls) are explicit
+in mutants/t30/manifest.json and label_quality.json. No tainted OOM label used.
 
-Draft rule extends the existing shape guard into literal container entries.
-All 148 selector tests pass. Identical selections on samples, 238 gate mutants,
-t3, t14, t15, t24a and all 600 proxies; no narrowing, no historical misses.
-Measurement artifacts: work/t30-measure/ and tools/t30_measure.py.
+The candidate is the final tip of w/t30. The exact hash, final gate PASS line,
+image CPU and push status are recorded in the authoritative result file:
+/home/benmross/herald/projects/buildathon/tasks/t30-blast-newkinds3.result.md
 
-Next command:
-ssh legion 'free -g; tail -3 ~/bt-watchdog.log; docker logs --tail 12 br-label-t30'
+Exact next command: read that result, then review w/t30. This worker never
+submits, writes buildathon/queue/, or pushes to main.

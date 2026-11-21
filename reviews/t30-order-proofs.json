@@ -1,0 +1,74 @@
+{
+  "baseline-heavy": {
+    "returncode": 1,
+    "targets": [
+      "tests/test_executor.py::TestExecutor::test_execute_tpcds"
+    ],
+    "failing": [
+      1106
+    ]
+  },
+  "baseline-pair": {
+    "returncode": 0,
+    "targets": [
+      "tests/test_generator.py::TestGenerator::test_identify",
+      "tests/dialects/test_bigquery.py::TestBigQuery::test_string_agg"
+    ],
+    "failing": []
+  },
+  "mutant-alone": {
+    "returncode": 0,
+    "targets": [
+      "tests/dialects/test_bigquery.py::TestBigQuery::test_string_agg"
+    ],
+    "failing": []
+  },
+  "mutant-pair": {
+    "returncode": 1,
+    "targets": [
+      "tests/test_generator.py::TestGenerator::test_identify",
+      "tests/dialects/test_bigquery.py::TestBigQuery::test_string_agg"
+    ],
+    "failing": [
+      73
+    ]
+  },
+  "joint-alone-0": {
+    "returncode": 0,
+    "targets": [
+      "tests/test_diff.py"
+    ],
+    "failing": []
+  },
+  "joint-alone-1": {
+    "returncode": 0,
+    "targets": [
+      "tests/test_diff.py"
+    ],
+    "failing": []
+  },
+  "joint-together": {
+    "returncode": 2,
+    "targets": [
+      "tests/test_diff.py"
+    ],
+    "failing": [
+      1055,
+      1056,
+      1057,
+      1058,
+      1059,
+      1060,
+      1061,
+      1062,
+      1063,
+      1064,
+      1065,
+      1066,
+      1067,
+      1068
+    ]
+  },
+  "joint_only_failure_confirmed": true,
+  "order_dependence_confirmed": true
+}

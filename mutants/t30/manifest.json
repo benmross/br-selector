@@ -5,314 +5,449 @@
       "description": "metaclass registry key",
       "paths": [
         "sqlglot/dialects/dialect.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x001": {
       "kind": "metaclass",
       "description": "metaclass time trie",
       "paths": [
         "sqlglot/dialects/dialect.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x002": {
       "kind": "metaclass",
       "description": "metaclass string parser lookup",
       "paths": [
         "sqlglot/dialects/dialect.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x003": {
       "kind": "metaclass",
       "description": "metaclass inherited generator lookup",
       "paths": [
         "sqlglot/dialects/dialect.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x004": {
       "kind": "metaclass",
       "description": "metaclass shared transform mutation",
       "paths": [
         "sqlglot/dialects/dialect.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x005": {
       "kind": "metaclass",
       "description": "metaclass quote endpoint",
       "paths": [
         "sqlglot/dialects/dialect.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x006": {
       "kind": "metaclass",
       "description": "tokenizer init-subclass quote source",
       "paths": [
         "sqlglot/tokens.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x007": {
       "kind": "metaclass",
       "description": "tokenizer string-name inheritance",
       "paths": [
         "sqlglot/tokens.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x008": {
       "kind": "metaclass",
       "description": "expression required-args comprehension",
       "paths": [
         "sqlglot/expressions/core.py"
-      ]
+      ],
+      "tests": [
+        "tests/dialects/test_dialect.py",
+        "tests/test_parser.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x009": {
       "kind": "metaclass",
       "description": "quote converter at import",
       "paths": [
         "sqlglot/tokens.py"
-      ]
+      ],
+      "tests": [
+        "tests/dialects/test_dialect.py",
+        "tests/test_parser.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x010": {
       "kind": "metaclass",
       "description": "hive quote tuple value",
       "paths": [
         "sqlglot/dialects/hive.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x011": {
       "kind": "metaclass",
       "description": "bigquery quote scalar value",
       "paths": [
         "sqlglot/dialects/bigquery.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x012": {
       "kind": "metaclass",
       "description": "generator string-read setting",
       "paths": [
         "sqlglot/generator.py"
-      ]
+      ],
+      "tests": [
+        "tests/dialects/test_dialect.py",
+        "tests/test_parser.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x013": {
       "kind": "metaclass",
       "description": "snowflake inverse time map value",
       "paths": [
         "sqlglot/dialects/snowflake.py"
-      ]
+      ],
+      "tests": [
+        "tests/dialects/test_dialect.py",
+        "tests/test_parser.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x014": {
       "kind": "cache",
       "description": "dispatch memo stored under base class",
       "paths": [
         "sqlglot/generator.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x015": {
       "kind": "cache",
       "description": "dispatch memo read under base class",
       "paths": [
         "sqlglot/generator.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x016": {
       "kind": "cache",
       "description": "dispatch memo mutates previous cached table",
       "paths": [
         "sqlglot/generator.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x017": {
       "kind": "cache",
       "description": "optimizer lazy global cached wrong name",
       "paths": [
         "sqlglot/optimizer/__init__.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_optimizer.py",
+        "tests/test_generator.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x018": {
       "kind": "cache",
       "description": "optimizer lazy global writes extra name",
       "paths": [
         "sqlglot/optimizer/__init__.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_optimizer.py",
+        "tests/test_generator.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x019": {
       "kind": "cache",
       "description": "optimizer lazy RULES registry target",
       "paths": [
         "sqlglot/optimizer/__init__.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_optimizer.py",
+        "tests/test_generator.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x020": {
       "kind": "cache",
       "description": "optimizer lazy scope registry target",
       "paths": [
         "sqlglot/optimizer/__init__.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_optimizer.py",
+        "tests/test_generator.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x021": {
       "kind": "cache",
       "description": "optimizer rule registry swap",
       "paths": [
         "sqlglot/optimizer/optimizer.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_optimizer.py",
+        "tests/test_generator.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x022": {
       "kind": "cache",
       "description": "scope column-cache reset",
       "paths": [
         "sqlglot/optimizer/scope.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x023": {
       "kind": "cache",
       "description": "resolver cache key loses only-visible",
       "paths": [
         "sqlglot/optimizer/resolver.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x024": {
       "kind": "cache",
       "description": "dialect registry reload pollutes base",
       "paths": [
         "sqlglot/dialects/dialect.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_optimizer.py",
+        "tests/test_generator.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x025": {
       "kind": "cache",
       "description": "dialect registry lazy result fallback",
       "paths": [
         "sqlglot/dialects/dialect.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x026": {
       "kind": "infrastructure",
       "description": "identity SQL whitespace literal",
       "paths": [
         "tests/fixtures/identity.sql"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x027": {
       "kind": "infrastructure",
       "description": "optimizer fixture metadata",
       "paths": [
         "tests/fixtures/optimizer/qualify_columns.sql"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x028": {
       "kind": "infrastructure",
       "description": "fixture comment becomes statement",
       "paths": [
         "tests/fixtures/optimizer/qualify_columns.sql"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x029": {
       "kind": "infrastructure",
       "description": "test helper fixture separator",
       "paths": [
         "tests/helpers.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x030": {
       "kind": "infrastructure",
       "description": "test helper comment-filter sense",
       "paths": [
         "tests/helpers.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x031": {
       "kind": "infrastructure",
       "description": "test infrastructure collection config",
       "paths": [
         "pyproject.toml"
-      ]
+      ],
+      "tests": [
+        "tests/test_parser.py",
+        "tests/test_optimizer.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x032": {
       "kind": "infrastructure",
       "description": "public re-export changes bound target",
       "paths": [
         "sqlglot/__init__.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_parser.py",
+        "tests/test_optimizer.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x033": {
       "kind": "infrastructure",
       "description": "public re-export removed",
       "paths": [
         "sqlglot/__init__.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_parser.py",
+        "tests/test_optimizer.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x034": {
       "kind": "infrastructure",
       "description": "TYPE_CHECKING made runtime",
       "paths": [
         "sqlglot/__init__.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x035": {
       "kind": "infrastructure",
       "description": "Rust import fallback catch narrowed",
       "paths": [
         "sqlglot/tokens.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_parser.py",
+        "tests/test_optimizer.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x036": {
       "kind": "infrastructure",
       "description": "new module shadows stdlib json",
       "paths": [
         "json.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_parser.py",
+        "tests/test_optimizer.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x037": {
       "kind": "infrastructure",
       "description": "new Rust module triggers deprecation warning",
       "paths": [
         "sqlglotrs.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_parser.py",
+        "tests/test_optimizer.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x038": {
       "kind": "infrastructure",
       "description": "new conftest fails all setup",
       "paths": [
         "tests/conftest.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_parser.py",
+        "tests/test_optimizer.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x039": {
       "kind": "infrastructure",
       "description": "deleted test support file",
       "paths": [
         "tests/helpers.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_parser.py",
+        "tests/test_optimizer.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x040": {
       "kind": "shape",
       "description": "dataclass field becomes ClassVar",
       "paths": [
         "sqlglot/lineage.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_lineage.py",
+        "tests/test_diff.py",
+        "tests/test_optimizer.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x041": {
       "kind": "shape",
       "description": "dataclass required field becomes InitVar",
       "paths": [
         "sqlglot/diff.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_lineage.py",
+        "tests/test_diff.py",
+        "tests/test_optimizer.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x042": {
       "kind": "shape",
       "description": "dataclass decorator argument",
       "paths": [
         "sqlglot/lineage.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x043": {
       "kind": "shape",
       "description": "dataclass field default factory",
       "paths": [
         "sqlglot/lineage.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_lineage.py",
+        "tests/test_diff.py",
+        "tests/test_optimizer.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x044": {
       "kind": "shape",
       "description": "default argument references changed runtime expression",
       "paths": [
         "sqlglot/optimizer/optimizer.py"
+      ],
+      "label_scope": "broad except 1490 and selected test 1106; original 1 GiB run OOM-killed and was rejected",
+      "deselect": [
+        "tests/test_executor.py::TestExecutor::test_execute_tpcds"
       ]
     },
     "t30x045": {
@@ -320,49 +455,71 @@
       "description": "boolean and-or",
       "paths": [
         "tests/helpers.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x046": {
       "kind": "shape",
       "description": "membership operator",
       "paths": [
         "sqlglot/tokens.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_lineage.py",
+        "tests/test_diff.py",
+        "tests/test_optimizer.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x047": {
       "kind": "shape",
       "description": "slice bound",
       "paths": [
         "sqlglot/optimizer/optimizer.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x048": {
       "kind": "shape",
       "description": "arithmetic operator",
       "paths": [
         "tests/helpers.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x049": {
       "kind": "shape",
       "description": "multiline string whitespace",
       "paths": [
         "sqlglot/lineage.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x050": {
       "kind": "shape",
       "description": "pure function move",
       "paths": [
         "tests/helpers.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_lineage.py",
+        "tests/test_diff.py",
+        "tests/test_optimizer.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x051": {
       "kind": "shape",
       "description": "dataclass field declaration order",
       "paths": [
         "sqlglot/lineage.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_lineage.py",
+        "tests/test_diff.py",
+        "tests/test_optimizer.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x052": {
       "kind": "shape",
@@ -370,182 +527,266 @@
       "paths": [
         "sqlglot/optimizer/__init__.py",
         "sqlglot/optimizer/optimizer.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_lineage.py",
+        "tests/test_diff.py",
+        "tests/test_optimizer.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x053": {
       "kind": "shape",
       "description": "SQL fixture whitespace only",
       "paths": [
         "tests/fixtures/identity.sql"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x054": {
       "kind": "comparison",
       "description": "profile safe 1-test site sqlglot/dialects/clickhouse.py:67 !=",
       "paths": [
         "sqlglot/dialects/clickhouse.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x055": {
       "kind": "comparison",
       "description": "profile safe 1-test site sqlglot/dialects/dialect.py:232 is not",
       "paths": [
         "sqlglot/dialects/dialect.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x056": {
       "kind": "comparison",
       "description": "profile safe 1-test site sqlglot/executor/env.py:128 !=",
       "paths": [
         "sqlglot/executor/env.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x057": {
       "kind": "comparison",
       "description": "profile safe 1-test site sqlglot/expressions/builders.py:884 is",
       "paths": [
         "sqlglot/expressions/builders.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x058": {
       "kind": "comparison",
       "description": "profile safe 1-test site sqlglot/expressions/query.py:683 is not",
       "paths": [
         "sqlglot/expressions/query.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x059": {
       "kind": "comparison",
       "description": "profile safe 1-test site sqlglot/generator.py:1817 !=",
       "paths": [
         "sqlglot/generator.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x060": {
       "kind": "comparison",
       "description": "profile safe 1-test site sqlglot/generators/athena.py:60 is not",
       "paths": [
         "sqlglot/generators/athena.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x061": {
       "kind": "comparison",
       "description": "profile safe 1-test site sqlglot/generators/bigquery.py:247 !=",
       "paths": [
         "sqlglot/generators/bigquery.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x062": {
       "kind": "comparison",
       "description": "profile safe 1-test site sqlglot/generators/clickhouse.py:37 ==",
       "paths": [
         "sqlglot/generators/clickhouse.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x063": {
       "kind": "comparison",
       "description": "profile safe 1-test site sqlglot/generators/doris.py:601 is not",
       "paths": [
         "sqlglot/generators/doris.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x064": {
       "kind": "metaclass",
       "description": "nested quote pair loses endpoint",
       "paths": [
         "sqlglot/dialects/hive.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x065": {
       "kind": "metaclass",
       "description": "nested quote entry becomes empty list",
       "paths": [
         "sqlglot/dialects/bigquery.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x066": {
       "kind": "metaclass",
       "description": "escape item changes type",
       "paths": [
         "sqlglot/dialects/hive.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x067": {
       "kind": "metaclass",
       "description": "time-map value changes type",
       "paths": [
         "sqlglot/dialects/mysql.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x068": {
       "kind": "comparison",
       "description": "chained lower bound",
       "paths": [
         "sqlglot/anonymize.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x069": {
       "kind": "comparison",
       "description": "chained upper bound",
       "paths": [
         "sqlglot/generators/bigquery.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x070": {
       "kind": "comparison",
       "description": "comparison lambda equality",
       "paths": [
         "sqlglot/executor/env.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_parser.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x071": {
       "kind": "comparison",
       "description": "comparison lambda mapping read",
       "paths": [
         "sqlglot/diff.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x072": {
       "kind": "comparison",
       "description": "comparison in comprehension",
       "paths": [
         "sqlglot/dialects/athena.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x073": {
       "kind": "comparison",
       "description": "comparison in import-time generator",
       "paths": [
         "sqlglot/dialects/dialect.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_parser.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x074": {
       "kind": "comparison",
       "description": "comparison operand advances parser",
       "paths": [
         "sqlglot/parser.py"
-      ]
+      ],
+      "tests": [
+        "tests/test_parser.py"
+      ],
+      "label_scope": "smoke: main selects all 1620 tests, so a miss is impossible regardless of failures outside the smoke"
     },
     "t30x075": {
       "kind": "shape",
       "description": "PEP 701 comment in f-string expression",
       "paths": [
         "sqlglot/lineage.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x076": {
       "kind": "metaclass",
       "description": "time-map key changes type",
       "paths": [
         "sqlglot/dialects/mysql.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     },
     "t30x077": {
       "kind": "metaclass",
       "description": "quote tuple arity shrinks",
       "paths": [
         "sqlglot/dialects/sqlite.py"
-      ]
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t30x078": {
+      "kind": "shape",
+      "description": "two individually harmless edits fail only together",
+      "paths": [
+        "sqlglot/helper.py",
+        "sqlglot/diff.py"
+      ],
+      "tests": [
+        "tests/test_diff.py"
+      ],
+      "label_scope": "smoke: inserted import-time code makes main select all 1620 tests"
+    },
+    "t30x079": {
+      "kind": "cache",
+      "description": "test cleanup snapshots wrong shared parser",
+      "paths": [
+        "tests/dialects/test_dialect.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t30x080": {
+      "kind": "cache",
+      "description": "test cleanup restores wrong shared parser",
+      "paths": [
+        "tests/dialects/test_dialect.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t30x081": {
+      "kind": "cache",
+      "description": "test cleanup omitted shared parser restoration",
+      "paths": [
+        "tests/dialects/test_dialect.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
+    },
+    "t30x082": {
+      "kind": "metaclass",
+      "description": "test-local dialect class overwrites shared registry",
+      "paths": [
+        "tests/dialects/test_dialect.py"
+      ],
+      "label_scope": "full numbered suite except memory-infeasible test 1490"
     }
   }
 }

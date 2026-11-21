@@ -1,0 +1,29 @@
+[
+  {
+    "file": "sqlglot/dialects/dialect.py",
+    "function": "__new__",
+    "line": 306,
+    "end": 432,
+    "statements": 56,
+    "import_statements": 56,
+    "not_import": []
+  },
+  {
+    "file": "sqlglot/expressions/core.py",
+    "function": "__init_subclass__",
+    "line": 105,
+    "end": 112,
+    "statements": 4,
+    "import_statements": 4,
+    "not_import": []
+  },
+  {
+    "file": "sqlglot/tokens.py",
+    "function": "__init_subclass__",
+    "line": 84,
+    "end": 125,
+    "statements": 13,
+    "import_statements": 13,
+    "not_import": []
+  }
+]

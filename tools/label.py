@@ -8,6 +8,7 @@ Touch <answers>.stop to finish the current mutant and stop with source restored.
 An optional <answers>.order JSON list prioritizes ids for an unsharded run.
 """
 import json
+import glob
 import os
 import subprocess
 import sys
@@ -16,7 +17,7 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, "/kit")
 from selector import apply, parse_patch  # noqa: E402
-from label_reports import report_failures  # noqa: E402
+from label_reports import report_failures, startup_failures  # noqa: E402
 
 muts, src, out = (os.path.abspath(p) for p in sys.argv[1:4])
 shard, nshards = (int(x) for x in (sys.argv[4:6] if len(sys.argv) > 5 else ("0", "1")))
@@ -36,15 +37,19 @@ def oom_kills():
         return 0
 
 
-def run_suite(tag, targets=("tests",)):
+def run_suite(tag, targets=("tests",), deselect=()):
     oom_before = oom_kills()
     prefix = out + ".reports/" + tag
+    # A shadow module can fail before pytest_configure clears old reports.
+    for path in glob.glob(prefix + ".*.json"):
+        os.unlink(path)
     suite_env = dict(env, LABEL_REPORT_PREFIX=prefix,
                      LABEL_STOP_AFTER_FILE=out + ".stop-after", LABEL_STOP_REQUEST_FILE=out + ".stop")
+    skipped = [n for n in os.environ.get("LABEL_DESELECT", "").split(",") if n] + list(deselect)
     r = subprocess.run(
         [sys.executable, "-m", "pytest", *targets, "-q", "-n", os.environ.get("LABEL_N", "1"), "--dist", os.environ.get("LABEL_DIST", "load"), "-rfE", "-p", "no:cacheprovider",
          "-o", "addopts=", "--timeout=300", "--tb=no", "-p", "label_trace",
-         *[arg for nodeid in os.environ.get("LABEL_DESELECT", "").split(",") if nodeid
+         *[arg for nodeid in skipped
            for arg in ("--deselect", nodeid)]],
         cwd=src, env=suite_env, capture_output=True, text=True,
     )
@@ -62,6 +67,11 @@ def run_suite(tag, targets=("tests",)):
         raise RuntimeError(f"OOM during pytest {tag}; refusing an infrastructure-dependent label")
     if r.returncode not in (0, 1, 2):
         raise RuntimeError(f"pytest exited {r.returncode}; see {log_dir}/{tag}.log")
+    if not glob.glob(prefix + ".*.json"):
+        startup = startup_failures(r.stdout + "\n" + r.stderr, r.returncode, src, tests)
+        if startup is not None:
+            print(tag, "pytest startup failed in patched source; all collection users fail", flush=True)
+            return startup
     return report_failures(prefix, tests)
 
 
@@ -111,7 +121,8 @@ for k, name in enumerate(names):
             if old_path is not None and old_path != new_path:
                 os.unlink(old_path)
         t0 = time.time()
-        failing = run_suite(cid, manifest.get(cid, {}).get("tests") or ["tests"]) - baseline
+        failing = run_suite(cid, manifest.get(cid, {}).get("tests") or ["tests"],
+                            manifest.get(cid, {}).get("deselect", ())) - baseline
     finally:
         for p, text in saved.items():
             if text is None:

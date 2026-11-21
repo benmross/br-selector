@@ -664,6 +664,11 @@ class Selector:
         if same_ast(old_tree.body, new_tree.body, min(touched or {0}), max(touched or {0})):
             why.append(f"{path}: syntax tree unchanged")
             return set()
+        if path.startswith("tests/"):
+            shared = changed_test_state(old_tree, new_tree, touched)
+            if shared:
+                why.append(f"{path}: edited {shared} mutates shared test state, everything")
+                return set(self.all)
         swaps = comparison_swaps(old_tree.body, new_tree.body, min(touched or {0}), max(touched or {0}))
         if swaps:
             verdict = self.comparison_verdict(path, swaps, why)
@@ -1325,6 +1330,90 @@ def literal_structure_changed(before, after):
         return any(_dump(k) in previous and literal_structure_changed(previous[_dump(k)], v)
                    for k, v in zip(after.keys, after.values) if k is not None)
     return False
+
+def changed_test_state(old_tree, new_tree, touched):
+    """An edited test/helper can leave imported or module state for later tests.
+
+    Runtime coverage credits the writer, not tests that observe its state.
+    Inspect the whole enclosing function: changing a saved original value can
+    corrupt a later restoration even when the changed statement is a read.
+    Local objects and self/cls attributes keep ordinary coverage selection.
+    """
+    mutators = {"add", "append", "clear", "discard", "extend", "insert", "pop", "popitem",
+                "remove", "reverse", "set", "setdefault", "sort", "update", "clear_cache",
+                "clear_column_cache"}
+    for tree in (old_tree, new_tree):
+        bindings, imports = set(), {}
+        for node in tree.body:
+            if isinstance(node, ast.Import):
+                for a in node.names:
+                    name = a.asname or a.name.split(".")[0]
+                    bindings.add(name); imports[name] = a.name if a.asname else a.name.split(".")[0]
+            elif isinstance(node, ast.ImportFrom):
+                for a in node.names:
+                    name = a.asname or a.name
+                    bindings.add(name); imports[name] = (node.module or "") + "." + a.name
+            elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                bindings.add(node.name)
+            elif isinstance(node, (ast.Assign, ast.AnnAssign)):
+                bindings.update(assigned_names(node) or ())
+
+        def root(node):
+            while isinstance(node, (ast.Attribute, ast.Subscript)):
+                node = node.value
+            return node.id if isinstance(node, ast.Name) else None
+
+        def imported_ref(node, refs):
+            if isinstance(node, ast.Name): return refs.get(node.id, "")
+            if isinstance(node, ast.Attribute):
+                parent = imported_ref(node.value, refs)
+                return parent + "." + node.attr if parent else ""
+            return ""
+
+        for fn in ast.walk(tree):
+            if not isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)) \
+                    or not any(fn.lineno <= line <= fn.end_lineno for line in touched):
+                continue
+            params = {a.arg for a in fn.args.posonlyargs + fn.args.args + fn.args.kwonlyargs}
+            params |= {a.arg for a in (fn.args.vararg, fn.args.kwarg) if a is not None}
+            external = bindings - params - {"self", "cls"}
+            refs = {name:value for name,value in imports.items() if name not in params}
+            nodes = list(ast.walk(fn))
+            globals_ = {name for n in nodes if isinstance(n, ast.Global) for name in n.names}
+            # Track aliases of shared objects, but not fresh constructor/call results.
+            for _ in range(len(nodes)):
+                previous = len(external)
+                for n in nodes:
+                    if isinstance(n, ast.ClassDef) and any(root(b) in external for b in n.bases):
+                        # A fresh subclass can still inherit shared mutable tables.
+                        external.add(n.name)
+                    if isinstance(n, (ast.Assign, ast.AnnAssign)) and root(n.value) in external:
+                        external.update(assigned_names(n) or ())
+                        ref = imported_ref(n.value, refs)
+                        if ref:
+                            refs.update({name:ref for name in (assigned_names(n) or ())})
+                if len(external) == previous: break
+            for n in nodes:
+                if isinstance(n, (ast.Assign, ast.AnnAssign, ast.AugAssign, ast.Delete)):
+                    targets = n.targets if isinstance(n, (ast.Assign, ast.Delete)) else [n.target]
+                    if any((isinstance(t, (ast.Attribute, ast.Subscript)) and root(t) in external)
+                           or (isinstance(t, ast.Name) and t.id in globals_) for t in targets):
+                        return fn.name
+                if isinstance(n, ast.Call):
+                    if isinstance(n.func, ast.Attribute) and n.func.attr in mutators \
+                            and root(n.func.value) in external:
+                        return fn.name
+                    if isinstance(n.func, ast.Name) and n.func.id in {"setattr", "delattr"} \
+                            and n.args and root(n.args[0]) in external:
+                        return fn.name
+                if isinstance(n, ast.ClassDef):
+                    for base in n.bases:
+                        imported = imported_ref(base, refs)
+                        if imported == "sqlglot.Dialect" or imported.startswith("sqlglot.dialects."):
+                            # _Dialect.__new__ registers even a test-local class globally.
+                            return fn.name
+    return None
+
 
 def _is_ref(node, names):
     return (isinstance(node, ast.Name) and node.id in names) or \
