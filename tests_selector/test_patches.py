@@ -546,12 +546,20 @@ def test_stock_argparse_help_proof(before, after, expected):
     assert load_selector().argparse_help_only(ast.parse(before), ast.parse(after)) is expected
 
 
-def test_argparse_help_keeps_ordinary_users(sandbox):
+def test_argparse_help_keeps_observed_module_conservative(sandbox):
     run, src = sandbox
     (src / 'sqlglot/other.py').write_text(ARGPARSE_SRC)
     answers, why, _ = run({'help': diff('sqlglot/other.py', ARGPARSE_SRC,
                          ARGPARSE_SRC.replace('return the query', 'print the query'))})
-    assert answers['help'] == {3}, why
+    assert answers['help'] == ALL, why
+
+
+def test_argparse_help_narrows_only_unobserved_module(sandbox):
+    run, src = sandbox
+    (src / 'sqlglot/unused.py').write_text(ARGPARSE_SRC)
+    answers, why, _ = run({'help': diff('sqlglot/unused.py', ARGPARSE_SRC,
+                         ARGPARSE_SRC.replace('return the query', 'print the query'))})
+    assert answers['help'] == set(), why
 
 
 # ---------------------------------------------------------------- comparison profile
