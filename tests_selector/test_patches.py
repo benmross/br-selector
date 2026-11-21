@@ -517,6 +517,43 @@ def test_indexed_inert_intervals_equal_runtime_tokenization():
                                          selector.Scopes(ast.parse(text))) == {1}
 
 
+ARGPARSE_SRC = ('import argparse\n'
+                'parser = argparse.ArgumentParser(description="query")\n'
+                'parser.add_argument("--x", action="store_true", help="return the query")\n'
+                'args = parser.parse_args()\n')
+
+
+@pytest.mark.parametrize('before,after,expected', [
+    (ARGPARSE_SRC, ARGPARSE_SRC.replace('return the query', 'print the query'), True),
+    (ARGPARSE_SRC, ARGPARSE_SRC.replace('return the query', '%(unknown)s'), False),
+    (ARGPARSE_SRC, ARGPARSE_SRC.replace('return the query', 'café'), False),
+    (ARGPARSE_SRC, ARGPARSE_SRC.replace('"--x"', '"--y"'), False),
+    (ARGPARSE_SRC.replace('action="store_true"', 'action=Custom'),
+     ARGPARSE_SRC.replace('action="store_true"', 'action=Custom').replace('return the query', 'print the query'), False),
+    (ARGPARSE_SRC.replace('description="query"', 'formatter_class=Custom'),
+     ARGPARSE_SRC.replace('description="query"', 'formatter_class=Custom').replace('return the query', 'print the query'), False),
+    (ARGPARSE_SRC.replace('args = ', 'escaped = parser\nargs = '),
+     ARGPARSE_SRC.replace('args = ', 'escaped = parser\nargs = ').replace('return the query', 'print the query'), False),
+    (ARGPARSE_SRC.replace('args = ', 'parser.register("action", "store_true", Custom)\nargs = '),
+     ARGPARSE_SRC.replace('args = ', 'parser.register("action", "store_true", Custom)\nargs = ').replace('return the query', 'print the query'), False),
+    (ARGPARSE_SRC.replace('args = ', 'parser = Custom()\nargs = '),
+     ARGPARSE_SRC.replace('args = ', 'parser = Custom()\nargs = ').replace('return the query', 'print the query'), False),
+    (ARGPARSE_SRC.replace('args = ', 'argparse.ArgumentParser = Custom\nargs = '),
+     ARGPARSE_SRC.replace('args = ', 'argparse.ArgumentParser = Custom\nargs = ').replace('return the query', 'print the query'), False),
+])
+def test_stock_argparse_help_proof(before, after, expected):
+    import ast
+    assert load_selector().argparse_help_only(ast.parse(before), ast.parse(after)) is expected
+
+
+def test_argparse_help_keeps_ordinary_users(sandbox):
+    run, src = sandbox
+    (src / 'sqlglot/other.py').write_text(ARGPARSE_SRC)
+    answers, why, _ = run({'help': diff('sqlglot/other.py', ARGPARSE_SRC,
+                         ARGPARSE_SRC.replace('return the query', 'print the query'))})
+    assert answers['help'] == {3}, why
+
+
 # ---------------------------------------------------------------- comparison profile
 
 CMP_SRC = (

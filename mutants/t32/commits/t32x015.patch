@@ -1,12 +1,12 @@
-diff --git a/sqlglot/dialects/hive.py b/sqlglot/dialects/hive.py
---- a/sqlglot/dialects/hive.py
-+++ b/sqlglot/dialects/hive.py
-@@ -79,7 +79,7 @@
-         "D": "%-j",
-         "E": "%a",
-         "EE": "%a",
--        "EEE": "%a",
-+        'EEE_t32_15': "%a",
-         "EEEE": "%A",
-         "z": "%Z",
-         "Z": "%z",
+diff --git a/sqlglot/__main__.py b/sqlglot/__main__.py
+--- a/sqlglot/__main__.py
++++ b/sqlglot/__main__.py
+@@ -50,7 +50,7 @@
+     "--tokenize",
+     dest="tokenize",
+     action="store_true",
+-    help="Tokenize and return the tokens list",
++    help="Tokenize and return the tokens list (t32 proof case 15)",
+ )
+ parser.add_argument(
+     "--error-level",

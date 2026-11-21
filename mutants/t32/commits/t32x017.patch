@@ -1,12 +1,12 @@
-diff --git a/sqlglot/dialects/postgres.py b/sqlglot/dialects/postgres.py
---- a/sqlglot/dialects/postgres.py
-+++ b/sqlglot/dialects/postgres.py
-@@ -45,7 +45,7 @@
-         "FMDD": "%-d",  # - is no leading zero for Python; same for FM in postgres
-         "FMDDD": "%-j",  # day of year
-         "FMHH12": "%-I",  # 9
--        "FMHH24": "%-H",  # 9
-+        'FMHH24_t32_17': "%-H",  # 9
-         "FMMI": "%-M",  # Minute
-         "FMMM": "%-m",  # 1
-         "FMSS": "%-S",  # Second
+diff --git a/sqlglot/__main__.py b/sqlglot/__main__.py
+--- a/sqlglot/__main__.py
++++ b/sqlglot/__main__.py
+@@ -50,7 +50,7 @@
+     "--tokenize",
+     dest="tokenize",
+     action="store_true",
+-    help="Tokenize and return the tokens list",
++    help="Tokenize and return the tokens list (t32 proof case 17)",
+ )
+ parser.add_argument(
+     "--error-level",

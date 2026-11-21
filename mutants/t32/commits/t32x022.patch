@@ -1,12 +1,12 @@
-diff --git a/sqlglot/dialects/teradata.py b/sqlglot/dialects/teradata.py
---- a/sqlglot/dialects/teradata.py
-+++ b/sqlglot/dialects/teradata.py
-@@ -22,7 +22,7 @@
-         "M": "%-M",
-         "MI": "%M",
-         "MM": "%m",
--        "MMM": "%b",
-+        'MMM_t32_22': "%b",
-         "MMMM": "%B",
-         "D": "%-d",
-         "DD": "%d",
+diff --git a/sqlglot/__main__.py b/sqlglot/__main__.py
+--- a/sqlglot/__main__.py
++++ b/sqlglot/__main__.py
+@@ -50,7 +50,7 @@
+     "--tokenize",
+     dest="tokenize",
+     action="store_true",
+-    help="Tokenize and return the tokens list",
++    help="Tokenize and return the tokens list (t32 proof case 22)",
+ )
+ parser.add_argument(
+     "--error-level",

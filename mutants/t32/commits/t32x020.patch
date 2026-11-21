@@ -1,12 +1,12 @@
-diff --git a/sqlglot/dialects/postgres.py b/sqlglot/dialects/postgres.py
---- a/sqlglot/dialects/postgres.py
-+++ b/sqlglot/dialects/postgres.py
-@@ -70,7 +70,7 @@
-         "dy": "%aenlower",  # tue
-         "TZ": "%Z",  # uppercase timezone name
-         "US": "%f",  # zero padded microsecond
--        "ww": "%U",  # 1-based week of year
-+        'ww_t32_20': "%U",  # 1-based week of year
-         "WW": "%U",  # 1-based week of year
-         "yy": "%y",  # 15
-         "YY": "%y",  # 15
+diff --git a/sqlglot/__main__.py b/sqlglot/__main__.py
+--- a/sqlglot/__main__.py
++++ b/sqlglot/__main__.py
+@@ -50,7 +50,7 @@
+     "--tokenize",
+     dest="tokenize",
+     action="store_true",
+-    help="Tokenize and return the tokens list",
++    help="Tokenize and return the tokens list (t32 proof case 20)",
+ )
+ parser.add_argument(
+     "--error-level",

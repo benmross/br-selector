@@ -1,12 +1,12 @@
-diff --git a/sqlglot/dialects/dremio.py b/sqlglot/dialects/dremio.py
---- a/sqlglot/dialects/dremio.py
-+++ b/sqlglot/dialects/dremio.py
-@@ -28,7 +28,7 @@
-         "MONTH": "%B",
-         "month": "%B",
-         "DDD": "%j",
--        "ddd": "%j",
-+        'ddd_t32_18': "%j",
-         "DD": "%d",
-         "dd": "%d",
-         "DY": "%a",
+diff --git a/sqlglot/__main__.py b/sqlglot/__main__.py
+--- a/sqlglot/__main__.py
++++ b/sqlglot/__main__.py
+@@ -50,7 +50,7 @@
+     "--tokenize",
+     dest="tokenize",
+     action="store_true",
+-    help="Tokenize and return the tokens list",
++    help="Tokenize and return the tokens list (t32 proof case 18)",
+ )
+ parser.add_argument(
+     "--error-level",

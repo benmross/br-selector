@@ -1,0 +1,12 @@
+diff --git a/sqlglot/optimizer/pushdown_projections.py b/sqlglot/optimizer/pushdown_projections.py
+--- a/sqlglot/optimizer/pushdown_projections.py
++++ b/sqlglot/optimizer/pushdown_projections.py
+@@ -216,7 +216,7 @@
+         clauses need no separate registration. Nested queries have their own owners.
+         """
+         while id(node) not in owners:
+-            assert node.parent is not None
++            assert node.parent == not None
+             node = node.parent
+ 
+         return owners[id(node)]

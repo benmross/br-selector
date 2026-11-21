@@ -1,12 +1,12 @@
-diff --git a/sqlglot/dialects/drill.py b/sqlglot/dialects/drill.py
---- a/sqlglot/dialects/drill.py
-+++ b/sqlglot/dialects/drill.py
-@@ -33,7 +33,7 @@
-         "dd": "%d",
-         "d": "%-d",
-         "HH": "%H",
--        "H": "%-H",
-+        'H_t32_23': "%-H",
-         "hh": "%I",
-         "h": "%-I",
-         "mm": "%M",
+diff --git a/sqlglot/__main__.py b/sqlglot/__main__.py
+--- a/sqlglot/__main__.py
++++ b/sqlglot/__main__.py
+@@ -50,7 +50,7 @@
+     "--tokenize",
+     dest="tokenize",
+     action="store_true",
+-    help="Tokenize and return the tokens list",
++    help="Tokenize and return the tokens list (t32 proof case 23)",
+ )
+ parser.add_argument(
+     "--error-level",

@@ -791,8 +791,10 @@ class Selector:
             # Never execute patch-supplied code in the selector. Even an
             # innocent import may loop, fork, write files, or produce unlimited
             # output. Unknown import effects need a conservative selection.
-            why.append(f"{path}: possible import failure, everything")
-            return set(self.all)
+            if not argparse_help_only(old_tree, new_tree):
+                why.append(f"{path}: possible import failure, everything")
+                return set(self.all)
+            why.append(f"{path}: only stock argparse help text changed, import effects unchanged")
         return out
 
     def dedented_blocks(self, fp, old_text, scopes, path, why):
@@ -1251,6 +1253,131 @@ def comparison_swaps(a_list, b_list, lo, hi):
 
 UNSAFE_FUNCS = {"__new__", "__init_subclass__", "__set_name__", "__class_getitem__"}
 DYNAMIC = re.compile(r"getattr\(|__dict__|vars\(")
+
+
+def argparse_help_only(old_tree, new_tree):
+    """Only ASCII, percent-free help strings on a stock ArgumentParser change.
+
+    Stock argparse actions store help text without interpreting it during
+    add_argument. Percent formatting happens when help is rendered; prohibit
+    percent characters in both versions. Prove the parser has not escaped,
+    been rebound, registered custom actions, or acquired a custom formatter.
+    All other AST fields, including argument names/defaults/actions, agree.
+    This only removes an import-failure fallback; ordinary users stay selected.
+    """
+    imports = [n for n in old_tree.body if isinstance(n, ast.Import)
+               for alias in n.names if alias.name == 'argparse' and alias.asname is None]
+    if len(imports) != 1:
+        return False
+    changes = []
+
+    def same(a, b, chain=()):
+        if type(a) is not type(b):
+            return False
+        if isinstance(a, ast.Constant) and a.value != b.value:
+            if not (type(a.value) is str and type(b.value) is str
+                    and a.value.isascii() and b.value.isascii()
+                    and '%' not in a.value and '%' not in b.value
+                    and a.kind == b.kind and len(chain) == 4):
+                return False
+            module, stmt, call, keyword, const = (*chain, a)
+            if not (isinstance(module, ast.Module) and isinstance(stmt, ast.Expr)
+                    and stmt in module.body and isinstance(call, ast.Call)
+                    and stmt.value is call and isinstance(keyword, ast.keyword)
+                    and keyword.arg == 'help' and isinstance(call.func, ast.Attribute)
+                    and call.func.attr == 'add_argument' and isinstance(call.func.value, ast.Name)):
+                return False
+            changes.append(call)
+            return True
+        if isinstance(a, ast.AST):
+            return all(same(getattr(a, field), getattr(b, field), chain + (a,)) for field in a._fields)
+        if isinstance(a, list):
+            return len(a) == len(b) and all(same(x, y, chain) for x, y in zip(a, b))
+        return a == b
+
+    if not same(old_tree, new_tree) or not changes:
+        return False
+    # A constant's ancestors are Module, Expr, Call, keyword (four nodes).
+    names = {call.func.value.id for call in changes}
+    parents = {id(child): node for node in ast.walk(old_tree) for child in ast.iter_child_nodes(node)}
+    stores = {name: [] for name in names | {'argparse'}}
+    for node in ast.walk(old_tree):
+        if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Store) and node.id in stores:
+            stores[node.id].append(node)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and node.name in stores:
+            return False
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            for alias in node.names:
+                bound = alias.asname or alias.name.split('.')[0]
+                if bound in stores and not (node is imports[0] and bound == 'argparse'):
+                    return False
+    if stores['argparse']:
+        return False
+    # Before a changed registration, allow only imports, parser construction
+    # and literal argument registrations. No arbitrary helper can replace the
+    # stock parser/action registry between construction and the changed call.
+    last_change = max(call.lineno for call in changes)
+    for stmt in old_tree.body:
+        if stmt.lineno > last_change or isinstance(stmt, (ast.Import, ast.ImportFrom)):
+            continue
+        if isinstance(stmt, ast.Assign) and len(stmt.targets) == 1 \
+                and isinstance(stmt.targets[0], ast.Name) and stmt.targets[0].id in names:
+            continue  # constructor checked below
+        if isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant) and type(stmt.value.value) is str:
+            continue
+        if not (isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call)
+                and isinstance(stmt.value.func, ast.Attribute) and stmt.value.func.attr == 'add_argument'
+                and isinstance(stmt.value.func.value, ast.Name) and stmt.value.func.value.id in names):
+            return False
+        call = stmt.value
+        if not all(isinstance(v, ast.Constant) and type(v.value) is str for v in call.args):
+            return False
+        for keyword in call.keywords:
+            if isinstance(keyword.value, ast.Constant):
+                continue
+            if keyword.arg == 'type' and isinstance(keyword.value, ast.Name) and keyword.value.id == 'str':
+                # A source-level replacement of built-in str would be a new
+                # callback; reject all bindings other than its implicit one.
+                if any(n == 'str' for _, n in bound_names(Scopes(old_tree))):
+                    return False
+                continue
+            return False
+    for name in names:
+        if len(stores[name]) != 1:
+            return False
+        assignment = parents[id(stores[name][0])]
+        if not (isinstance(assignment, ast.Assign) and assignment in old_tree.body
+                and len(assignment.targets) == 1 and isinstance(assignment.value, ast.Call)):
+            return False
+        ctor = assignment.value
+        if not (isinstance(ctor.func, ast.Attribute) and ctor.func.attr == 'ArgumentParser'
+                and isinstance(ctor.func.value, ast.Name) and ctor.func.value.id == 'argparse'
+                and not ctor.args and all(k.arg in {'description', 'prog'}
+                    and isinstance(k.value, ast.Constant) and type(k.value.value) is str for k in ctor.keywords)):
+            return False
+        if any(assignment.lineno >= call.lineno for call in changes if call.func.value.id == name):
+            return False
+        for node in ast.walk(old_tree):
+            if not isinstance(node, ast.Name) or not isinstance(node.ctx, ast.Load):
+                continue
+            if node.id == 'argparse' and node is not ctor.func.value:
+                return False
+            if node.id != name:
+                continue
+            attr = parents[id(node)]
+            call = parents.get(id(attr))
+            if not (isinstance(attr, ast.Attribute) and attr.attr in {'add_argument', 'parse_args'}
+                    and isinstance(attr.ctx, ast.Load) and isinstance(call, ast.Call) and call.func is attr):
+                return False
+            if attr.attr == 'add_argument':
+                if any(k.arg is None for k in call.keywords):
+                    return False
+                actions = [k.value for k in call.keywords if k.arg == 'action']
+                if any(not isinstance(v, ast.Constant) or v.value not in
+                       {'store', 'store_const', 'store_true', 'store_false', 'append', 'append_const',
+                        'count', 'help', 'version', 'extend'} for v in actions):
+                    return False
+    return True
 
 
 def inert_name_ranges(text, scopes):

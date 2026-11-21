@@ -284,6 +284,46 @@
       "kind": "could_raise",
       "source_dataset": "fresha",
       "narrowed": true
+    },
+    "h7x031": {
+      "kind": "could_raise",
+      "source_dataset": "hid",
+      "coordination": "all 15 select-everything commits"
+    },
+    "h7x109": {
+      "kind": "syntax_error",
+      "source_dataset": "hid",
+      "coordination": "all 15 select-everything commits"
+    },
+    "h7x110": {
+      "kind": "read_at_import",
+      "source_dataset": "hid",
+      "coordination": "all 15 select-everything commits"
+    },
+    "h7x148": {
+      "kind": "could_raise",
+      "source_dataset": "hid",
+      "coordination": "all 15 select-everything commits"
+    },
+    "h7x172": {
+      "kind": "read_at_import",
+      "source_dataset": "hid",
+      "coordination": "all 15 select-everything commits"
+    },
+    "h7x263": {
+      "kind": "read_at_import",
+      "source_dataset": "hid",
+      "coordination": "all 15 select-everything commits"
+    },
+    "h7x373": {
+      "kind": "read_at_import",
+      "source_dataset": "hid",
+      "coordination": "all 15 select-everything commits"
+    },
+    "h7x377": {
+      "kind": "syntax_error",
+      "source_dataset": "hid",
+      "coordination": "all 15 select-everything commits"
     }
   }
 }

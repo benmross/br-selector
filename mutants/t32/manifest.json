@@ -121,124 +121,109 @@
       "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
     },
     "t32x015": {
-      "kind": "TIME_MAPPING_key_nonempty_unique",
-      "file": "sqlglot/dialects/hive.py",
-      "line": 82,
-      "old": "EEE",
-      "new": "EEE_t32_15",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "kind": "stock_argparse_help_only",
+      "file": "sqlglot/__main__.py",
+      "old": "Tokenize and return the tokens list",
+      "new": "Tokenize and return the tokens list (t32 proof case 15)",
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
     },
     "t32x016": {
-      "kind": "TIME_MAPPING_key_nonempty_unique",
-      "file": "sqlglot/dialects/hive.py",
-      "line": 58,
-      "old": "yy",
-      "new": "yy_t32_16",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "kind": "stock_argparse_help_only",
+      "file": "sqlglot/__main__.py",
+      "old": "Tokenize and return the tokens list",
+      "new": "Tokenize and return the tokens list (t32 proof case 16)",
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
     },
     "t32x017": {
-      "kind": "TIME_MAPPING_key_nonempty_unique",
-      "file": "sqlglot/dialects/postgres.py",
-      "line": 48,
-      "old": "FMHH24",
-      "new": "FMHH24_t32_17",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "kind": "stock_argparse_help_only",
+      "file": "sqlglot/__main__.py",
+      "old": "Tokenize and return the tokens list",
+      "new": "Tokenize and return the tokens list (t32 proof case 17)",
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
     },
     "t32x018": {
-      "kind": "TIME_MAPPING_key_nonempty_unique",
-      "file": "sqlglot/dialects/dremio.py",
-      "line": 31,
-      "old": "ddd",
-      "new": "ddd_t32_18",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "kind": "stock_argparse_help_only",
+      "file": "sqlglot/__main__.py",
+      "old": "Tokenize and return the tokens list",
+      "new": "Tokenize and return the tokens list (t32 proof case 18)",
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
     },
     "t32x019": {
-      "kind": "TIME_MAPPING_key_nonempty_unique",
-      "file": "sqlglot/dialects/postgres.py",
-      "line": 63,
-      "old": "ss",
-      "new": "ss_t32_19",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "kind": "stock_argparse_help_only",
+      "file": "sqlglot/__main__.py",
+      "old": "Tokenize and return the tokens list",
+      "new": "Tokenize and return the tokens list (t32 proof case 19)",
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
     },
     "t32x020": {
-      "kind": "TIME_MAPPING_key_nonempty_unique",
-      "file": "sqlglot/dialects/postgres.py",
-      "line": 73,
-      "old": "ww",
-      "new": "ww_t32_20",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "kind": "stock_argparse_help_only",
+      "file": "sqlglot/__main__.py",
+      "old": "Tokenize and return the tokens list",
+      "new": "Tokenize and return the tokens list (t32 proof case 20)",
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
     },
     "t32x021": {
-      "kind": "TIME_MAPPING_key_nonempty_unique",
-      "file": "sqlglot/dialects/teradata.py",
-      "line": 36,
-      "old": "SSSSSS",
-      "new": "SSSSSS_t32_21",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "kind": "stock_argparse_help_only",
+      "file": "sqlglot/__main__.py",
+      "old": "Tokenize and return the tokens list",
+      "new": "Tokenize and return the tokens list (t32 proof case 21)",
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
     },
     "t32x022": {
-      "kind": "TIME_MAPPING_key_nonempty_unique",
-      "file": "sqlglot/dialects/teradata.py",
-      "line": 25,
-      "old": "MMM",
-      "new": "MMM_t32_22",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "kind": "stock_argparse_help_only",
+      "file": "sqlglot/__main__.py",
+      "old": "Tokenize and return the tokens list",
+      "new": "Tokenize and return the tokens list (t32 proof case 22)",
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
     },
     "t32x023": {
-      "kind": "TIME_MAPPING_key_nonempty_unique",
-      "file": "sqlglot/dialects/drill.py",
-      "line": 36,
-      "old": "H",
-      "new": "H_t32_23",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "kind": "stock_argparse_help_only",
+      "file": "sqlglot/__main__.py",
+      "old": "Tokenize and return the tokens list",
+      "new": "Tokenize and return the tokens list (t32 proof case 23)",
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
     },
     "t32x024": {
-      "kind": "TIME_MAPPING_key_nonempty_unique",
-      "file": "sqlglot/dialects/dremio.py",
-      "line": 52,
-      "old": "ampm",
-      "new": "ampm_t32_24",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "kind": "stock_argparse_help_only",
+      "file": "sqlglot/__main__.py",
+      "old": "Tokenize and return the tokens list",
+      "new": "Tokenize and return the tokens list (t32 proof case 24)",
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
     },
     "t32x025": {
-      "kind": "TIME_MAPPING_key_nonempty_unique",
-      "file": "sqlglot/dialects/spark2.py",
-      "line": 31,
-      "old": "ss",
-      "new": "ss_t32_25",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "kind": "stock_argparse_help_only",
+      "file": "sqlglot/__main__.py",
+      "old": "Tokenize and return the tokens list",
+      "new": "Tokenize and return the tokens list (t32 proof case 25)",
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
     },
     "t32x026": {
-      "kind": "TIME_MAPPING_key_nonempty_unique",
-      "file": "sqlglot/dialects/exasol.py",
-      "line": 32,
-      "old": "MONTH",
-      "new": "MONTH_t32_26",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "kind": "stock_argparse_help_only",
+      "file": "sqlglot/__main__.py",
+      "old": "Tokenize and return the tokens list",
+      "new": "Tokenize and return the tokens list (t32 proof case 26)",
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
     },
     "t32x027": {
-      "kind": "TIME_MAPPING_key_nonempty_unique",
-      "file": "sqlglot/dialects/postgres.py",
-      "line": 59,
-      "old": "MI",
-      "new": "MI_t32_27",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "kind": "stock_argparse_help_only",
+      "file": "sqlglot/__main__.py",
+      "old": "Tokenize and return the tokens list",
+      "new": "Tokenize and return the tokens list (t32 proof case 27)",
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
     },
     "t32x028": {
-      "kind": "TIME_MAPPING_key_nonempty_unique",
-      "file": "sqlglot/dialects/postgres.py",
-      "line": 78,
-      "old": "YYY",
-      "new": "YYY_t32_28",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "kind": "stock_argparse_help_only",
+      "file": "sqlglot/__main__.py",
+      "old": "Tokenize and return the tokens list",
+      "new": "Tokenize and return the tokens list (t32 proof case 28)",
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
     },
     "t32x029": {
-      "kind": "TIME_MAPPING_key_nonempty_unique",
-      "file": "sqlglot/dialects/dremio.py",
-      "line": 40,
-      "old": "hh24",
-      "new": "hh24_t32_29",
-      "proof": "same-type display literal; import readers are reviewed hook, display extension, same-name alias, or inert documentation/comment"
+      "kind": "stock_argparse_help_only",
+      "file": "sqlglot/__main__.py",
+      "old": "Tokenize and return the tokens list",
+      "new": "Tokenize and return the tokens list (t32 proof case 29)",
+      "proof": "whole-file AST differs only in percent-free ASCII help strings; stock unescaped parser and actions"
     }
   }
 }

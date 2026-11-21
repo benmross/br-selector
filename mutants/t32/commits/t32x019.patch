@@ -1,12 +1,12 @@
-diff --git a/sqlglot/dialects/postgres.py b/sqlglot/dialects/postgres.py
---- a/sqlglot/dialects/postgres.py
-+++ b/sqlglot/dialects/postgres.py
-@@ -60,7 +60,7 @@
-         "mm": "%m",  # 01
-         "MM": "%m",  # 01
-         "OF": "%z",  # utc offset
--        "ss": "%S",  # zero padded second
-+        'ss_t32_19': "%S",  # zero padded second
-         "SS": "%S",  # zero padded second
-         "TMDay": "%A",  # TM is locale dependent
-         "TMDy": "%a",
+diff --git a/sqlglot/__main__.py b/sqlglot/__main__.py
+--- a/sqlglot/__main__.py
++++ b/sqlglot/__main__.py
+@@ -50,7 +50,7 @@
+     "--tokenize",
+     dest="tokenize",
+     action="store_true",
+-    help="Tokenize and return the tokens list",
++    help="Tokenize and return the tokens list (t32 proof case 19)",
+ )
+ parser.add_argument(
+     "--error-level",

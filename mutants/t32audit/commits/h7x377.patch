@@ -1,0 +1,12 @@
+diff --git a/sqlglot/expressions/builders.py b/sqlglot/expressions/builders.py
+--- a/sqlglot/expressions/builders.py
++++ b/sqlglot/expressions/builders.py
+@@ -844,7 +844,7 @@
+     mapping = {normalize_table_name(k, dialect=dialect): v for k, v in mapping.items()}
+ 
+     def _replace_tables(node: Expr) -> Expr:
+-        if isinstance(node, Table) and node.meta_get("replace") is not False:
++        if isinstance(node, Table) and node.meta_get("replace") == not False:
+             call = node.this
+             if isinstance(call, Func) and not isinstance(call, Anonymous):
+                 return node
