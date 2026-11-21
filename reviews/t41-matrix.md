@@ -5,11 +5,11 @@
 | a | 14 | 10 | 10 | 14 | 0 | 0 |
 | b | 12 | 10 | 9 | 12 | 0 | 0 |
 | c | 11 | 10 | 8 | 11 | 0 | 0 |
-| d | 10 | 9 | 3 | 10 | 1 | 1 |
-| e | 13 | 9 | 7 | 13 | 3 | 0 |
-| f | 12 | 9 | 5 | 12 | 1 | 0 |
-| g | 10 | 9 | 0 | 10 | 0 | 0 |
-| all | 82 | 66 | 42 | 82 | 5 | 1 |
+| d | 10 | 10 | 3 | 10 | 1 | 1 |
+| e | 13 | 10 | 7 | 13 | 3 | 0 |
+| f | 12 | 10 | 5 | 12 | 1 | 0 |
+| g | 10 | 10 | 0 | 10 | 0 | 0 |
+| all | 82 | 70 | 42 | 82 | 5 | 1 |
 
 | Stratum | Patch | Change | Failing | Failing tests | Main selects | Main reason | dc91341 selects | dc91341 miss | Main cleared selects | Main cleared miss |
 |---|---|---|---:|---|---:|---|---:|---|---:|---|
@@ -59,7 +59,7 @@
 | d | t41x046 | high byte range includes delete | 0 |  | 1620 | sqlglot/generator.py:28 module constant _HIGH_BYTE_RE: 3 read it; sqlglot/generator.py: possible import failure, everything | 3 | no | 3 | no |
 | d | t41x047 | mysql time mapping key in trie | 7 | TestClickhouse::test_clickhouse, TestDuckDB::test_time, TestHive::test_time, TestMySQL::test_date_format (+3) | 1620 | sqlglot/dialects/mysql.py:50 class MySQL users 291; sqlglot/dialects/mysql.py: possible import failure, everything | 291 | MISS 2: TestHive::test_time, TestPresto::test_to_char | 291 | MISS 2: TestHive::test_time, TestPresto::test_to_char |
 | d | t41x048 | mysql month-name key in trie | 8 | TestClickhouse::test_clickhouse, TestExasol::test_stringFunctions, TestMySQL::test_date_format, TestMySQL::test_monthname (+4) | 1620 | sqlglot/dialects/mysql.py:46 class MySQL users 291; sqlglot/dialects/mysql.py: possible import failure, everything | 291 | no | 291 | no |
-| d | t41x049 | test canonical atom regex | unlabeled |  | 1620 | tests/test_time.py:9 test module level 4; tests/test_time.py: possible import failure, everything | 4 |  | 4 |  |
+| d | t41x049 | test canonical atom regex | 0 |  | 1620 | tests/test_time.py:9 test module level 4; tests/test_time.py: possible import failure, everything | 4 | no | 4 | no |
 | e | t41x050 | tsql dialect registry name | 1 | TestGenerator::test_generator_memory | 1620 | sqlglot/dialects/dialect.py:133 class Dialects never instantiated, module runs at import: everything; sqlglot/dialects/dialect.py: possible import failure, everything | 2 | MISS 1: TestGenerator::test_generator_memory | 1620 | no |
 | e | t41x051 | doris dialect registry name | 2 | TestGenerator::test_generator_memory, TestTime::test_canonical_time_format_vocabulary | 1620 | sqlglot/dialects/dialect.py:108 class Dialects never instantiated, module runs at import: everything; sqlglot/dialects/dialect.py: possible import failure, everything | 0 | MISS 2: TestGenerator::test_generator_memory, TestTime::test_canonical_time_format_vocabulary | 1620 | no |
 | e | t41x052 | drill dialect registry name | 1 | TestGenerator::test_generator_memory | 1620 | sqlglot/dialects/dialect.py:110 class Dialects never instantiated, module runs at import: everything; sqlglot/dialects/dialect.py: possible import failure, everything | 0 | MISS 1: TestGenerator::test_generator_memory | 1620 | no |
@@ -69,7 +69,7 @@
 | e | t41x056 | isinf function name | 3 | TestClickhouse::test_clickhouse, TestDuckDB::test_isinf, TestOptimizer::test_annotate_funcs | 1620 | sqlglot/expressions/math.py:152 class IsInf users 5; sqlglot/expressions/math.py: possible import failure, everything | 5 | no | 5 | no |
 | e | t41x057 | sign function alias | 1 | TestPresto::test_signum | 1620 | sqlglot/expressions/math.py:194 class Sign users 4; sqlglot/expressions/math.py: possible import failure, everything | 4 | no | 4 | no |
 | e | t41x058 | getbit function alias | 0 |  | 1620 | sqlglot/expressions/math.py:285 class Getbit users 8; sqlglot/expressions/math.py: possible import failure, everything | 8 | no | 8 | no |
-| e | t41x059 | trunc function alias | unlabeled |  | 1620 | sqlglot/expressions/math.py:203 class Trunc users 19; sqlglot/expressions/math.py: possible import failure, everything | 19 |  | 19 |  |
+| e | t41x059 | trunc function alias | 0 |  | 1620 | sqlglot/expressions/math.py:203 class Trunc users 19; sqlglot/expressions/math.py: possible import failure, everything | 19 | no | 19 | no |
 | e | t41x060 | skip integration env name | unlabeled |  | 1620 | tests/helpers.py:66 test module level 1377; tests/helpers.py: possible import failure, everything | 96 |  | 1377 |  |
 | e | t41x061 | fabric test dialect name | unlabeled |  | 1620 | tests/dialects/test_fabric.py:5 test module level 7; tests/dialects/test_fabric.py: possible import failure, everything | 7 |  | 7 |  |
 | e | t41x062 | risingwave test dialect name | unlabeled |  | 1620 | tests/dialects/test_risingwave.py:5 test module level 2; tests/dialects/test_risingwave.py: possible import failure, everything | 2 |  | 2 |  |
@@ -82,7 +82,7 @@
 | f | t41x070 | leakcheck null stream mode | 0 |  | 1620 | tests/leakcheck.py:97 test module level 0; tests/leakcheck.py: possible import failure, everything | 0 | no | 0 | no |
 | f | t41x071 | sqlite skip reason text | 0 |  | 1620 | tests/dialects/test_sqlite.py:36 definition header of test_variadic_iif_execution: callers 0; tests/dialects/test_sqlite.py:36 test module level 42; tests/dialects/test_sqlite.py: possible import failure, everything | 0 | no | 42 | no |
 | f | t41x072 | zoneinfo skip reason text | 0 |  | 1620 | tests/test_expressions.py:1235 definition header of test_convert_python39: callers 1; tests/test_expressions.py:1235 test module level 79; tests/test_expressions.py: possible import failure, everything | 0 | no | 79 | no |
-| f | t41x073 | serde skip reason text | unlabeled |  | 1620 | tests/test_serde.py:30 definition header of test_custom_expression: callers 1; tests/test_serde.py:30 test module level 5; tests/test_serde.py: possible import failure, everything | 0 |  | 5 |  |
+| f | t41x073 | serde skip reason text | 0 |  | 1620 | tests/test_serde.py:30 definition header of test_custom_expression: callers 1; tests/test_serde.py:30 test module level 5; tests/test_serde.py: possible import failure, everything | 0 | no | 5 | no |
 | f | t41x075 | drill test dialect name | unlabeled |  | 1620 | tests/dialects/test_drill.py:5 test module level 3; tests/dialects/test_drill.py: possible import failure, everything | 3 |  | 3 |  |
 | f | t41x076 | dialect test first skip reason | unlabeled |  | 1620 | tests/dialects/test_dialect.py:6100 definition header of test_patch_dialect_parser: callers 1; tests/dialects/test_dialect.py:6100 test module level 1020; tests/dialects/test_dialect.py: possible import failure, everything | 0 |  | 1020 |  |
 | g | t41x077 | pretty setting docstring | 0 |  | 1620 | sqlglot/__init__.py:74 module level 1518; sqlglot/__init__.py: possible import failure, everything | 1518 | no | 1518 | no |
@@ -94,4 +94,4 @@
 | g | t41x084 | lowercase strategy docstring | 0 |  | 1620 | sqlglot/dialects/dialect.py:141 class NormalizationStrategy never instantiated, module runs at import: everything; sqlglot/dialects/dialect.py: possible import failure, everything | 0 | no | 1620 | no |
 | g | t41x085 | uppercase strategy docstring | 0 |  | 1620 | sqlglot/dialects/dialect.py:144 class NormalizationStrategy never instantiated, module runs at import: everything; sqlglot/dialects/dialect.py: possible import failure, everything | 0 | no | 1620 | no |
 | g | t41x086 | case sensitive strategy docstring | 0 |  | 1620 | sqlglot/dialects/dialect.py:147 class NormalizationStrategy never instantiated, module runs at import: everything; sqlglot/dialects/dialect.py: possible import failure, everything | 0 | no | 1620 | no |
-| g | t41x087 | optimizer package docstring | unlabeled |  | 1620 | sqlglot/optimizer/__init__.py:2 module level 0; sqlglot/optimizer/__init__.py: possible import failure, everything | 1620 |  | 0 |  |
+| g | t41x087 | optimizer package docstring | 0 |  | 1620 | sqlglot/optimizer/__init__.py:2 module level 0; sqlglot/optimizer/__init__.py: possible import failure, everything | 1620 | no | 0 | no |

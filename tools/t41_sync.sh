@@ -1,6 +1,6 @@
 #!/bin/sh
 # Pull t41 labels from the Legion, refresh the matrix, print a short status.
-cd "$(dirname "$0")/../.." || exit 1
+cd "$(dirname "$0")/.." || exit 1
 for i in 1 2 3; do
     rsync -a --timeout=40 legion:br/t41/mutants/t41/answers.json legion:br/t41/mutants/t41/answers.json.baseline mutants/t41/ \
         && rsync -a --timeout=40 legion:br/t41/mutants/t41/answers.json.logs/ work/t41-label-logs/ && break
